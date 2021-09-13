@@ -17,15 +17,28 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>测试</tag>
+        <tag>自带的</tag>
+      </tags>
   </entry>
   <entry>
     <title>测试</title>
     <url>/YingYingMonstre.github.io/2021/04/21/%E6%B5%8B%E8%AF%95/</url>
-    <content><![CDATA[<p>空格</p>
+    <content><![CDATA[<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><p>空格</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&amp;nbsp;</span><br></pre></td></tr></table></figure>
 <p>tab</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&amp;emsp;</span><br></pre></td></tr></table></figure>
 <p>回车</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&amp;nbsp;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>真测试</tag>
+      </tags>
   </entry>
 </search>

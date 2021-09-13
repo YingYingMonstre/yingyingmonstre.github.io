@@ -4,11 +4,11 @@
     src: url("../diy-font/DottedSongtiCircleRegular.otf"); /* 修改成你的字体 */
     font-display: swap;
 }
-/*
-h1#site-title {
+span#subtitle {
     font-family: 'pixel' !important;
 }
-span#subtitle {
+/*
+h1#site-title {
     font-family: 'pixel' !important;
 }
 a#site-name {
@@ -62,6 +62,22 @@ img {
   background-color: #49b1f5;
 }
 
+/* 文章页背景 */
+.layout_post>#post {
+    /* 以下代表白色透明度为0.8 */
+    background: rgba(255,255,255,.8);
+}
+/* 所有背景（包括首页卡片、文章页、页面页等） */
+#aside_content .card-widget, #recent-posts>.recent-post-item, .layout_page>div:first-child:not(.recent-posts), .layout_post>#page, .layout_post>#post, .read-mode .layout_post>#post{
+    /* 以下代表白色透明度为0.8 */
+    background: rgba(255,255,255,.8);
+}
+#web_bg {
+  background: #7F7FD5;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
 /* 页脚透明渐变 */
 #footer {
     background: rgba(255,255,255,.15);
@@ -81,4 +97,21 @@ img {
 
 #footer #footer-wrap a {
     color: var(--font-color)
+}
+
+/* 分类卡片隐藏 */
+#aside_content
+.card-archives
+ul.card-archive-list
+> .card-archive-list-item
+a
+span:first-child,
+#aside_content
+.card-categories
+ul.card-category-list
+> .card-category-list-item
+a
+span:first-child {
+    width: auto;
+    min-width: 50%;
 }
