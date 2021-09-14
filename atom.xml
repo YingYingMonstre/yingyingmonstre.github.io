@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>银河之家</title>
+  
+  
+  <link href="https://yingyingmonstre.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://yingyingmonstre.github.io/"/>
+  <updated>2021-09-14T05:16:56.693Z</updated>
+  <id>https://yingyingmonstre.github.io/</id>
+  
+  <author>
+    <name>银河</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一</title>
+    <link href="https://yingyingmonstre.github.io/2021/09/14/%E4%B8%80/"/>
+    <id>https://yingyingmonstre.github.io/2021/09/14/%E4%B8%80/</id>
+    <published>2021-09-14T05:16:37.000Z</published>
+    <updated>2021-09-14T05:16:56.693Z</updated>
+    
+    <content type="html"><![CDATA[<p>无</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;无&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+    <category term="无" scheme="https://yingyingmonstre.github.io/tags/%E6%97%A0/"/>
+    
+  </entry>
+  
+</feed>
