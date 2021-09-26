@@ -1,10 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>XCTF-Web基础篇</title>
+    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
+    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
+<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
+<p>方法三：通过Burpsuite抓包查看源代码</p>
+<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
+<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
+<p>[步骤]</p>
+<p>1.根据提示robots,可以直接想到robots.txt</p>
+<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
+<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
+<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
+<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
+<p>掌握有关备份文件的知识</p>
+<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
+<p><strong>[环境]</strong></p>
+<p>无</p>
+<p><strong>[工具]</strong></p>
+<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
+<p><strong>[步骤]</strong></p>
+<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
+<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
+<p>3.保存到本地打开，即可看到flag</p>
+<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
+<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关cookie的知识，了解cookie所在位置</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
+<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
+<p>3.点击查看数据包，在消息头内可发现flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
+<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
+<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
+<p>初步了解前端知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
+<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
+<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
+<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
+<p>了解弱口令，掌握爆破方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<ul>
+<li>burpsuite</li>
+<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
+</ul>
+<p><strong>[步骤]</strong></p>
+<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
+<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
+<p>2.设置爆破点为password</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
+<p>3.加载字典</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
+<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
+<p>5.点进去查看响应包，获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
+<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
+<p>php中有两种比较符号</p>
+<p>=== 会同时比较字符串的值和类型</p>
+<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
+<p><strong>[目地]</strong></p>
+<p>掌握php的弱类型比较</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
+<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
+<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
+<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
+<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
+<p>HTTP工作原理</p>
+<p><strong>[目的]</strong></p>
+<p>掌握常用http请求方式</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox和cmd</p>
+<p><strong>[步骤]</strong></p>
+<p>GET请求在url后加?a=1即可</p>
+<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
+<p>返回如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>或者用burpsuite实现GET、POST的抓包：</p>
+<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
+<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
+<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
+<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
+<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关X-Forwarded-For和Referer的知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、burpsuite</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
+<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
+<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
+<p>了解php一句话木马、如何使用webshell</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、hackbar</p>
+<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
+<p><strong>[步骤]</strong></p>
+<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
+<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
+<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
+<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
+<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
+<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
+<p><strong>[目地]</strong></p>
+<p>掌握命令拼接的方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
+<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
+<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
+<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
+<p>javascript的代码审计</p>
+<p><strong>[目地]</strong></p>
+<p>掌握简单的javascript函数</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
+<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
+<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
+
+<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
+
+<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
+<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
+<p>web请求头中的location作用</p>
+<p><strong>【实验目的】</strong></p>
+<p>掌握web响应包头部常见参数</p>
+<p><strong>【实验环境】</strong></p>
+<p>Windows</p>
+<p><strong>【实验工具】</strong></p>
+<p>firefox</p>
+<p><strong>【实验步骤】</strong></p>
+<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
+<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
+<p>我的：burpsuite抓包，看到有flag。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>XCTF</tag>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ModbusTCP协议学习</title>
     <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<p>原文链接：<a href="https://www.cnblogs.com/ioufev/articles/10830028.html">ModbusTCP协议 - ioufev - 博客园 (cnblogs.com)</a></p>
-<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
 <p>Modbus协议是一项应用层报文传输协议，包括ASCII、RTU、<strong>TCP</strong>三种报文类型。</p>
 <p>标准的Modbus协议物理层接口有RS232、RS422、RS485和<strong>以太网</strong>接口，采用<strong>master/slave</strong>方式通信。</p>
 <h2 id="Modbus-TCP数据帧"><a href="#Modbus-TCP数据帧" class="headerlink" title="Modbus TCP数据帧"></a>Modbus TCP数据帧</h2><p>Modbus TCP的数据帧可分为两部分：<strong>MBAP</strong>+<strong>PDU</strong>。其协议特征如图所示。</p>
@@ -324,6 +517,7 @@
 <p>这样就将模拟量离散化了，例如：某设备的采样周期为1秒，其在第五秒的时间采集的温度为35度，而第六秒的温度为36度，该设备就只能标称第五秒时间温度35度，第六秒时间温度36度，而第五点五秒的时间其标称也只是35度，但是其实际的模拟量是35.5度。这样就将模拟信号离散化。其采集的数据就是离散化了，不再是连续的模拟量信号。</p>
 <p>由于计算机只识别0和1两个信号，即开关量信号，用其来表示数值都是使用数字串来表示，由于计算能力的问题，其数字串不能无限长，即其表达的精度也是有限的，同样的以温度为例，由于数字串限制，其表达温度的精度只能达到0.1度，小于该单位的数值则不能被标称，这样就必须将离散量进行量化，将其变为数字量。即35.68度的温度则表示为35.6度。</p>
 </blockquote>
+<p>参考文章：<a href="https://www.cnblogs.com/ioufev/articles/10830028.html">ModbusTCP协议 - ioufev - 博客园 (cnblogs.com)</a></p>
 ]]></content>
       <categories>
         <category>protocol</category>
@@ -331,6 +525,252 @@
       <tags>
         <tag>Modbus</tag>
         <tag>protocol</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>XCTF-逆向基础篇</title>
+    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-%E9%80%86%E5%90%91%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
+    <content><![CDATA[<h2 id="insanity"><a href="#insanity" class="headerlink" title="insanity"></a>insanity</h2><p><strong>[工具]</strong></p>
+<p>exeinfo pe, IDA </p>
+<p><strong>[分析过程]</strong></p>
+<p>0x01.查壳和程序的详细信息</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/1.png" alt="img"></p>
+<p>发现这不是PE文件,是ELF文件，将程序在Linux环境下运行</p>
+<p>0x02,查看程序的详细信息</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/2.png" alt="img"></p>
+<p>发现是32位的程序</p>
+<p>0x03.IDA </p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/3.png" alt="img"></p>
+<p>F5查看伪函数</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/4.png" alt="img"></p>
+<p>发现一个关键的字符串，&amp;strs,发现是取这个字符串输出，然后，跟进strs</p>
+<p>(shift + f12 字符串窗口)</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/5.png" alt="img"></p>
+<p>发现有一个明显的提示：This_is_a_flag</p>
+<p>猜测9447{This_is_a_flag}是最后的falg</p>
+<p>或者直接用记事本打开，仔细找也能找到。</p>
+<h2 id="python-trade"><a href="#python-trade" class="headerlink" title="python-trade"></a>python-trade</h2><p><strong>[工具]</strong></p>
+<p>在线python反编译</p>
+<p><strong>[分析过程]</strong></p>
+<p>0x01.下载附件</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/python-trade/1.png" alt="img"></p>
+<p>注：</p>
+<p>pyc文件是py文件编译后生成的字节码文件</p>
+<p>0x02.在线Python反编译</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/python-trade/2.png" alt="img"></p>
+<p>这是生成的py文件</p>
+<p>然后，对这个文件的运算逻辑进行逆向</p>
+<p>0x03.写EXP</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line">correct = <span class="string">&quot;XlNkVmtUI1MgXWBZXCFeKY+AaXNt&quot;</span></span><br><span class="line">s = base64.b64decode(correct)</span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">    flag += <span class="built_in">chr</span>((i-<span class="number">16</span>) ^ <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/python-trade/3.png" alt="img"></p>
+<p>先对字符串进行b64decode,然后，再进行xor运算得到最后的flag:nctf{d3c0mpil1n9_PyC}</p>
+<p>0x04.运行脚本</p>
+<p>nctf{d3c0mpil1n9_PyC}</p>
+<h2 id="re1"><a href="#re1" class="headerlink" title="re1"></a>re1</h2><p><strong>[工具]</strong></p>
+<p>exeinfo pe, IDA </p>
+<p><strong>[分析过程]</strong></p>
+<p>参考</p>
+<p>0x01.运行程序</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/1.png" alt="img"></p>
+<p>可以看到需要输入正确的flag</p>
+<p>那么现在，我们需要判断程序是多少位的，有没有加壳</p>
+<p>0x02.exeinfope查详细信息</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/2.png" alt="img"></p>
+<p>可以看到程序是32位的，是Microsoft Visual c++编译的，并且没有加壳</p>
+<p>注：查壳工具还有PEID，EID，但是推荐EID或者exeinfope，因为，PEID查壳的时候有时候不准确</p>
+<p>那么，我们可以用静态分析神器 IDA 打开，进一步分析了</p>
+<p>0x03.</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/3.png" alt="img"></p>
+<p>然后，查找主函数main,可以看到右侧的是反汇编的汇编代码，这时候，我们可以直接分析汇编语言，但是，汇编语言看起来太多，费劲。这个时候就可以是有IDA是最强大的功能F5了，它能够直接将汇编代码生成C语言代码，虽然和这个程序的源码不完全一样，但是逻辑关系是一样的</p>
+<p>F5查看伪代码</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/4.png" alt="img"></p>
+<p>这是整个main函数的运算逻辑</p>
+<p>可以看到一个关键的字符串，print(aFlag)，那么证明这就是输入正确flag，然后，会输出aFlag证明你的flag正确，然后，继续往上分析，可以看到v3的值，是由strcmp()决定的，比较v5和输入的字符串，如果一样就会进入后面的if判断，所以,我们继续往上分析，看看哪里又涉及v5，可以看到开头的_mm_storeu_si128(），对其进行分析发现它类似于memset(),将xmmword_413E34的值赋值给v5，所以，我们可以得到正确的flag应该在xmmword_413E34中，然后，我们双击413E34进行跟进</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/5.png" alt="img"></p>
+<p>可以看到一堆十六进制的数</p>
+<p>这时，我们使用IDA的另一个功能 R ，能够将十六进制的数转换为字符串。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/6.png" alt="img"></p>
+<p>这就是我们最后的flag了</p>
+<p>注：这里要跟大家普及一个知识了，及大端与小端</p>
+<p>假设一个十六进制数0x12345678</p>
+<p>大端的存储方式是：12,34,56,78，然后读取的时候也是从前往后读</p>
+<p>小端的存储方式是：78,56,34,12，然后读取的时候是从后往前读取</p>
+<p>所以，最后的flag应该是：DUTCTF{We1c0met0DUTCTF}</p>
+<p>0x04.运行程序输入正确的flag</p>
+<p>方法二：记事本打开，也能找到。</p>
+<p>方法三：OD–》插件–》中文搜索引擎–》ASCII也能搜到。</p>
+<h2 id="game"><a href="#game" class="headerlink" title="game"></a>game</h2><p>我的做法（暴力破解）：先用exeinfo pe查壳，发现是32位未加壳。用OD打开，用插件里的中文搜索ASCII，能找到done flag is的字符串。然后找到关键CALL（00B301BB和00B30359），修改跳转（从%d那里直接改为CALL xxxx跳到done那里）。运行到那里之后就可以得到flag了。</p>
+<p>直接玩游戏：从1输到8。</p>
+<p>爆破方法二：找到F5后伪代码最后那部分判断的代码（空格切换到图形视图，对着最后的那部分再空格切换回来），patch修改，正好有8个JNZ，改5个为jz，然后Edit–》Patch program–》Apply patches to input file，点OK，再回去运行就可以得到了。</p>
+<p>IDA分析代码逻辑：先是判断是输入的是否是1-8，然后进入后面的if判断然后进行循环，这个时候应该就是程序的亮暗的显示，然后，如果byte_532E28每一位都是1，那么，就会进入sub_457AB4,然后我们猜测这里应该就是最后的flag的地方。然后跟进 sub_457AB4。（注：这里说明一下，如果IDA不能正确的获得自定义函数的名字，那么IDA会用sub__加上自定义函数的起始地址来定义函数的名字）</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/game/8.png" alt="img"></p>
+<p>这里只截取了后面的部分，发现函数进行了两次xor运算，xor的逆运算也是xor，那么我们就可以根据这个运算来写脚本得到最后的flag。</p>
+<p>这里看到v2和v59这就证明了这是两个数组的运算，所以我们应该将上面的字符串分成两个数组，分别从v2和v59开始</p>
+<p>0x05.写EXP</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/game/9.png" alt="img"></p>
+<p>这里先是通过循环，将a和b数组的值进行xor运算，然后再将数组a的值与0x13xor运算</p>
+<p>chr()：是将十六进制转换为字符串</p>
+<p>0x05.运行脚本</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/game/10.png" alt="img"></p>
+<p>得到最后的flag: zsctf{T9is_tOpic_1s_v5ry_int7resting_b6t_others_are_n0t}。</p>
+<p>广度优先搜索法：未证。</p>
+<h2 id="Hello，CTF"><a href="#Hello，CTF" class="headerlink" title="Hello，CTF"></a>Hello，CTF</h2><p>查壳，32位、无壳。</p>
+<p>IDA从main开始分析，F5查看伪代码。首先，可以看到先是将字符串复制到v13的位置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strcpy(&amp;v13, &quot;437261636b4d654a757374466f7246756e&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>然后，后面对输入进行了判断，输入的字符串不能大于17接着，将字符串以十六进制输出，然后，再将得到的十六进制字符添加到v10最后，进行比较，看输入的字符串是否和v10的字符串相等，如果相等，则得到真确的flag。最后将字符串转换为十六进制。</p>
+<h2 id="open-source"><a href="#open-source" class="headerlink" title="open-source"></a>open-source</h2><p>代码审计：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">first = <span class="number">0xcafe</span></span><br><span class="line">flag = first * <span class="number">31337</span> + (second % <span class="number">17</span>) * <span class="number">11</span> + <span class="built_in">len</span>(<span class="string">&quot;h4cky0u&quot;</span>) - <span class="number">1615810207</span></span><br></pre></td></tr></table></figure>
+
+<p>关键在于second的取值。观察代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> second = atoi(argv[<span class="number">2</span>]);</span><br><span class="line">    <span class="keyword">if</span> (second % <span class="number">5</span> == <span class="number">3</span> || second % <span class="number">17</span> != <span class="number">8</span>) &#123;</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">&quot;ha, you won&#x27;t get it!\n&quot;</span>);</span><br><span class="line">    	<span class="built_in">exit</span>(<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里想到要get it就要将if里的逻辑取反，即second % 5 != 3 &amp;&amp; second % 17 == 8。</p>
+<p>故(second % 17) * 11=8*11=88。得到flag=12648430–化为16进制–》c0ffee。</p>
+<h2 id="simple-unpack"><a href="#simple-unpack" class="headerlink" title="simple_unpack"></a>simple_unpack</h2><p><strong>[工具]</strong></p>
+<p>exeinfo pe, IDA, upx </p>
+<p><strong>[分析过程]</strong></p>
+<p>0x01.查壳和程序的详细信息</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/1.png" alt="img"></p>
+<p>发现有upx壳。</p>
+<p>注：windows下的文件是PE文件，Linux/Unix下的文件是ELF文件</p>
+<p>0x02.UPX 脱壳</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/2.png" alt="img"></p>
+<p>upx -d 即可对upx壳进行脱壳</p>
+<p>0x03.载入IDA</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/3.png" alt="img"></p>
+<p>还是从main函数开始分析，结果我们再右侧发现了意外惊喜</p>
+<p>运行程序，输入我们看到的flag:flag{Upx_1s_n0t_a_d3liv3r_c0mp4ny}</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/4.png" alt="img"></p>
+<h2 id="logmein"><a href="#logmein" class="headerlink" title="logmein"></a>logmein</h2><p><strong>[工具]</strong></p>
+<p>exeinfo pe, IDA </p>
+<p><strong>[分析过程]</strong></p>
+<p>0x01.查壳和查看程序的详细信息</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/1.png" alt="img"></p>
+<p>发现程序是一个ELF文件，将其放入Linux环境中进行分析</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/2.png" alt="img"></p>
+<p>发现程序是64位的，使用静态分析工具IDA进行分析</p>
+<p>0x02.IDA</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/3.png" alt="img"></p>
+<p>从main函数开始分析，使用F5查看伪代码</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/4.png" alt="img"></p>
+<p>发现main函数的整个运算逻辑</p>
+<p>先是，将指定字符串复制到v8</p>
+<p>s是用户输入的字符串，先进行比较长度，如果长度比v8小，则进入sub_4007c0函数</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/5.png" alt="img"></p>
+<p>可以看出输出字符串Incorrect password,然后，退出</p>
+<p>如果长度大于或等与v8则进入下面的循环</p>
+<p>看到判断如果输入的字符串和经过运算后的后字符串不等，则进入sub_4007c0,输出Incorrect password,</p>
+<p>如果想得，则进入sub_4007f0函数</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/6.png" alt="img"></p>
+<p>证明输入的字符串就是flag</p>
+<p>接下来写脚本</p>
+<p>0x03.Write EXP</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">v7 &#x3D; &quot;harambe&quot;</span><br><span class="line">v6 &#x3D; 7</span><br><span class="line">v8 &#x3D; &quot;:\&quot;AL_RT^L*.?+6&#x2F;46&quot;</span><br><span class="line">flag &#x3D; &quot;&quot;</span><br><span class="line">for i in range(0, len(v8)):</span><br><span class="line">    flag +&#x3D; chr(ord((v7[i % 7])) ^ ord(v8[i]))</span><br><span class="line">print(flag)</span><br></pre></td></tr></table></figure>
+
+<p>由于程序是小段的存储方式，所以，ebmarah就得变成harambe（C语言数据在内存中是小端存储，一开始v7是一个数据，so）</p>
+<p>ord():是将字符串转换为ascii格式，为了方便运算</p>
+<p>chr():是将ascii转换为字符串</p>
+<p>运行脚本得到最后的flag:RC3-2016-XORISGUD</p>
+<p>（直接用C语言更方便些）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">#define BYTE unsigned char</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">void main() &#123;</span><br><span class="line">	int i;</span><br><span class="line">	int v6 &#x3D; 7;</span><br><span class="line">	__int64 v7 &#x3D; 28537194573619560LL;</span><br><span class="line">	char v8[18] &#x3D; &quot;:\&quot;AL_RT^L*.?+6&#x2F;46&quot;;</span><br><span class="line">	char s[18] &#x3D; &quot;&quot;;</span><br><span class="line">	for ( i &#x3D; 0; i &lt; strlen(v8); ++i ) &#123;</span><br><span class="line">		s[i] +&#x3D; (char)(*((BYTE*)&amp;v7 + i % v6) ^ v8[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;%s\n&quot;,s);</span><br><span class="line"></span><br><span class="line">	system(&quot;pause&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="no-strings-attached"><a href="#no-strings-attached" class="headerlink" title="no-strings-attached"></a>no-strings-attached</h2><p><strong>[工具]</strong></p>
+<p>exeinfo pe, IDA, GDB</p>
+<p><strong>[分析过程]</strong></p>
+<p>0x01.查壳和查看程序的详细信息</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/1.png" alt="img"></p>
+<p>说明程序是ELF文件，32位</p>
+<p>0x02.使用静态分析工具IDA进行分析</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/2.png" alt="img"></p>
+<p>然后对main函数使用F5查看伪代码</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/3.png" alt="img"></p>
+<p>然后，对每个函数进行跟进，最后发现authenricate(),符合获得flag的函数，对其进行跟进</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/4.png" alt="img"></p>
+<p>然后我们发现一个特殊的函数decrypt,根据字面的意思是加密，那么我们可以大概的猜测是一个对dword_8048A90所对应的字符串进行加密，</p>
+<p>加密得到的就应该是我们需要的flag，后面的判断应该就是将字符串输出。</p>
+<p>这里我们有两种思维方式:</p>
+<p>第一种就是跟进decrypt然后分析它的运算逻辑，然后，自己写脚本，得到最后的flag</p>
+<p>第二种就涉及逆向的另一种调试方式，及动态调试，这里我就用动态调试了，之前的一直是静态调试</p>
+<p>0x03.GDB动态调试</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/5.png" alt="img"></p>
+<p>gdb ./no_strings_attached 将文件加载到GDB中</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/6.png" alt="img"></p>
+<p>既然是动态调试，那么如果让它一直不停，那我不就相当于运行了嘛，所以，我们就需要下断点，断点就是让程序运行到断点处就停止</p>
+<p>之前通过IDA，我们知道关键函数是decrypt,所以我们把断点设置在decrypt处，b在GDB中就是下断点的意思，及在decrypt处下断点</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/7.png" alt="img"></p>
+<p>r就是运行的意思，这里运行到了我们之前下的断点处，停止。</p>
+<p>我们要的是经过decrypt函数，生成的字符串，所以我们这里就需要运行一步，GDB中用n来表示运行一步</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/8.png" alt="img"></p>
+<p>然后我们就需要去查看内存了，去查找最后生成的字符串</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/9.png" alt="img"></p>
+<p>通过IDA生成的汇编指令，我们可以看出进过decrypt函数后，生成的字符串保存在EAX寄存器中，所以，我们在GDB就去查看eax寄存器的值</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/10.png" alt="img"></p>
+<p>x:就是用来查看内存中数值的，后面的200代表查看多少个，wx代表是以word字节查看看，$eax代表的eax寄存器中的值</p>
+<p>在这里我们看到0x00000000，这就证明这个字符串结束了，因为，在C中，代表字符串结尾的就是”\0”,那么前面的就是经过decrypt函数生成的falg</p>
+<p>那我们就需要将这些转换为字符串的形式</p>
+<p>0x04.Write EXP</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/11.png" alt="img"></p>
+<p>首先将寄存器中的值提取出来，然后利用Python的decode函数，通过”hex”的方式转化为字符串，然后输出</p>
+<p>0x05.运行脚本</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/12.png" alt="img"></p>
+<p>得到最后的flag: 9447{you_are_an_international_mystery}</p>
+<p>IDA分析就分析它的decrypt函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">s &#x3D; [0x3a, 0x36, 0x37, 0x3b, 0x80, 0x7a, 0x71, 0x78,</span><br><span class="line">     0x63, 0x66, 0x73, 0x67, 0x62, 0x65, 0x73, 0x60,</span><br><span class="line">     0x6b, 0x71, 0x78, 0x6a, 0x73, 0x70, 0x64, 0x78,</span><br><span class="line">     0x6e, 0x70, 0x70, 0x64, 0x70, 0x64, 0x6e, 0x7b,</span><br><span class="line">     0x76, 0x78, 0x6a, 0x73, 0x7b, 0x80]</span><br><span class="line">v6 &#x3D; len(s)</span><br><span class="line">a2 &#x3D; [1, 2, 3, 4, 5]</span><br><span class="line">v7 &#x3D; len(a2)</span><br><span class="line">v2 &#x3D; v6</span><br><span class="line">dest &#x3D; s</span><br><span class="line">v4 &#x3D; 0</span><br><span class="line">while v4 &lt; v6:</span><br><span class="line">        dest[v4] -&#x3D; a2[v4 % 5]</span><br><span class="line">        v4 +&#x3D; 1</span><br><span class="line"></span><br><span class="line">flag &#x3D; &#39;&#39;</span><br><span class="line">for j in dest:</span><br><span class="line">    flag +&#x3D; chr(j)</span><br><span class="line">print(flag)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="getit"><a href="#getit" class="headerlink" title="getit"></a>getit</h2><p><strong>[工具]</strong></p>
+<p>exeinfo pe, IDA, GDB  </p>
+<p><strong>[分析过程]</strong></p>
+<p>0x01.查壳和程序的详细信息</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/1.png" alt="img"></p>
+<p>可以看出这是一个ELF文件，64位</p>
+<p>0x02.IDA</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/2.png" alt="img"></p>
+<p>对main函数进行F5查看伪代码</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/3.png" alt="img"></p>
+<p>可以看到先判断v5是否大于s存储字符串的长度，然后通过运算，最后将得到的flag写入文件。</p>
+<p>但是有意思的地方在flag.txt文件所在的位置是/tmp目录，这个目录是Linux下的临时文件夹，程序运行完，生成flag的txt文件被清理了，所以我们找不到文件</p>
+<p>我们这时候通过IDA查看汇编代码，按空格键可以生成所有的汇编文件</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/4.png" alt="img"></p>
+<p>然后我们向下追踪，追踪到for循环的位置，因为，flag是在这里存入文件的，所以，我们可以在内存中找到正要存储的字符串</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/5.png" alt="img"></p>
+<p>我们将鼠标指向strlen(),在下面可以看到汇编所在的地址，然后我们根据大概的地址去看汇编代码</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/6.png" alt="img"></p>
+<p>可以看到这是调用strlen()函数的汇编指令</p>
+<p>我们通过上一个图片，可以知道经过for()的判断条件后，还要进行一步fseek函数，所以，根据汇编代码，可以确定jnb loc_4008B5就是fseek()函数，那么，mov eax,[rbp+var_3C]肯定就是最后要得到的flag了</p>
+<p>0x04.GDB</p>
+<p>这里我们用linux下的动态调试工具gdb进行动态调试，这里介绍一下，对gdb进行强化的两个工具peda和pwndbg，这两个工具可以强化视觉效果，可以更加清楚的显示堆栈，内存，寄存机的情况</p>
+<p>先加载程序</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/7.png" alt="img"></p>
+<p>然后，用b 下断点</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/8.png" alt="img"></p>
+<p>然后，运行 R</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/9.png" alt="img"></p>
+<p>这里我们可以看出，程序停止在0x400832的位置，然后，要被移动的字符串在RDX的位置</p>
+<p>注：</p>
+<p>这里介绍一下一下RDX，RDX存的是i/0指针，0x6010e0,这个位置存的字符串是最后的flag:SharifCTF{b70c59275fcfa8aebf2d5911223c6589}</p>
+<p>以为这里涉及的是程序读写函数，所以涉及的就是i/o指针</p>
+<p>所以我们能得到最后的flag: SharifCTF{b70c59275fcfa8aebf2d5911223c6589}</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">s &#x3D; &quot;c61b68366edeb7bdce3c6820314b7498&quot;</span><br><span class="line">v3 &#x3D; 0</span><br><span class="line">v5 &#x3D; 0</span><br><span class="line">t &#x3D; &quot;&quot;</span><br><span class="line"></span><br><span class="line">while v5 &lt; len(s):</span><br><span class="line">    if v5 &amp; 1:</span><br><span class="line">        v3 &#x3D; 1</span><br><span class="line">    else:</span><br><span class="line">        v3 &#x3D; -1</span><br><span class="line">    t +&#x3D; chr(ord(s[v5]) + v3)</span><br><span class="line">    v5 +&#x3D; 1</span><br><span class="line"></span><br><span class="line">print(t)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="csaw2013reversing2"><a href="#csaw2013reversing2" class="headerlink" title="csaw2013reversing2"></a>csaw2013reversing2</h2><p><a href="https://blog.csdn.net/weixin_43784056/article/details/103655968">XCTF-csaw2013reversing2_臭nana的博客-CSDN博客</a></p>
+<p>默认if条件不成立，跳过了sub_401000的解码，输出一堆乱码。</p>
+<h2 id="maze"><a href="#maze" class="headerlink" title="maze"></a>maze</h2><p>迷宫问题</p>
+<p><img src="https://www.pianshen.com/images/271/7d91ebf895b8ed648ed3ab80de463137.JPEG" alt="在这里插入图片描述"></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>XCTF</tag>
+        <tag>逆向</tag>
       </tags>
   </entry>
 </search>
