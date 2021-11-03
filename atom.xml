@@ -6,7 +6,7 @@
   <link href="https://yingyingmonstre.github.io/atom.xml" rel="self"/>
   
   <link href="https://yingyingmonstre.github.io/"/>
-  <updated>2021-10-31T16:45:11.137Z</updated>
+  <updated>2021-11-03T04:59:26.845Z</updated>
   <id>https://yingyingmonstre.github.io/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MacBook Air M1安装gym问题汇总</title>
+    <link href="https://yingyingmonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/"/>
+    <id>https://yingyingmonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</id>
+    <published>2021-11-03T04:00:00.000Z</published>
+    <updated>2021-11-03T04:59:26.845Z</updated>
+    
+    <content type="html"><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p><ol start="0"><li>关于本机</li></ol><ul><li>macOS Monterey版本12.0.1</li><li>MacBook Air（M1，2020）</li><li>芯片 Apple M1</li></ul><ol><li>环境相关</li></ol><p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551%E3%80%82%E4%B8%BB%E8%A6%81%E6%98%AF%E4%B8%BA%E4%BA%86%E5%AE%89%E8%A3%85pytorch%E3%80%82">https://zhuanlan.zhihu.com/p/410961551。主要是为了安装pytorch。</a></p><ol start="2"><li>下载gym</li></ol><p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p><p>git clone <a href="https://github.com/openai/gym.git">https://github.com/openai/gym.git</a></p><p>cd gym</p><p>pip install -e ‘.[all]’</p><ol start="3"><li>No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</li></ol><p>问题状况：在pip install -e ‘.[all]’时报错。</p><p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p><ol start="4"><li>unable to execute ‘swig’: No such file or directory</li></ol><p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p><p>解决方法：brew install swig</p><ol start="5"><li>zsh: command not found: brew</li></ol><p>问题状况：在第4步输入brew install swig后报错。</p><p>解决方法：mac安装homebrew，</p><p>用以下命令安装，序列号选择中科大（1）的</p><p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p><p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p><ol start="6"><li>from . import multiarray等</li></ol><p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure><p>解决方法：重新安装了numpy之后就可以用了。</p><p>pip uninstall numpy</p><p>pip install numpy</p><ol start="7"><li>zsh:killed</li></ol><p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p><p>解决方法：删除环境重新搭建环境就可以了</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;安装gym花了一天时间，中途出了很多问题，特此记录。&lt;/p&gt;
+&lt;ol start=&quot;0&quot;&gt;
+&lt;li&gt;关于本机&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;macOS Monterey版本12.0.1&lt;/li&gt;
+&lt;li&gt;MacBook Air（M1，2020）&lt;/li&gt;
+&lt;li&gt;</summary>
+      
+    
+    
+    
+    <category term="强化学习" scheme="https://yingyingmonstre.github.io/categories/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="强化学习" scheme="https://yingyingmonstre.github.io/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>莫烦强化学习入门（二）</title>
