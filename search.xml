@@ -64,200 +64,6 @@
       </tags>
   </entry>
   <entry>
-    <title>XCTF-Web基础篇</title>
-    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
-    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
-<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
-<p>方法三：通过Burpsuite抓包查看源代码</p>
-<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
-<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
-<p>[步骤]</p>
-<p>1.根据提示robots,可以直接想到robots.txt</p>
-<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
-<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
-<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
-<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
-<p>掌握有关备份文件的知识</p>
-<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
-<p><strong>[环境]</strong></p>
-<p>无</p>
-<p><strong>[工具]</strong></p>
-<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
-<p><strong>[步骤]</strong></p>
-<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
-<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
-<p>3.保存到本地打开，即可看到flag</p>
-<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
-<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关cookie的知识，了解cookie所在位置</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
-<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
-<p>3.点击查看数据包，在消息头内可发现flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
-<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
-<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
-<p>初步了解前端知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
-<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
-<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
-<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
-<p>了解弱口令，掌握爆破方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<ul>
-<li>burpsuite</li>
-<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
-</ul>
-<p><strong>[步骤]</strong></p>
-<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
-<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
-<p>2.设置爆破点为password</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
-<p>3.加载字典</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
-<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
-<p>5.点进去查看响应包，获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
-<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
-<p>php中有两种比较符号</p>
-<p>=== 会同时比较字符串的值和类型</p>
-<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
-<p><strong>[目地]</strong></p>
-<p>掌握php的弱类型比较</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
-<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
-<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
-<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
-<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
-<p>HTTP工作原理</p>
-<p><strong>[目的]</strong></p>
-<p>掌握常用http请求方式</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox和cmd</p>
-<p><strong>[步骤]</strong></p>
-<p>GET请求在url后加?a=1即可</p>
-<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
-<p>返回如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>或者用burpsuite实现GET、POST的抓包：</p>
-<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
-<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
-<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
-<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
-<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关X-Forwarded-For和Referer的知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、burpsuite</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
-<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
-<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
-<p>了解php一句话木马、如何使用webshell</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、hackbar</p>
-<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
-<p><strong>[步骤]</strong></p>
-<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
-<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
-<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
-<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
-<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
-<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
-<p><strong>[目地]</strong></p>
-<p>掌握命令拼接的方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
-<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
-<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
-<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
-<p>javascript的代码审计</p>
-<p><strong>[目地]</strong></p>
-<p>掌握简单的javascript函数</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
-<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
-<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
-
-<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
-
-<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
-<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
-<p>web请求头中的location作用</p>
-<p><strong>【实验目的】</strong></p>
-<p>掌握web响应包头部常见参数</p>
-<p><strong>【实验环境】</strong></p>
-<p>Windows</p>
-<p><strong>【实验工具】</strong></p>
-<p>firefox</p>
-<p><strong>【实验步骤】</strong></p>
-<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
-<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
-<p>我的：burpsuite抓包，看到有flag。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>XCTF</tag>
-        <tag>Web</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ModbusTCP协议学习</title>
     <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
@@ -591,34 +397,61 @@
       </tags>
   </entry>
   <entry>
-    <title>莫烦强化学习入门（一）</title>
-    <url>/YingYingMonstre.github.io/2021/10/31/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B8%80/</url>
-    <content><![CDATA[<h3 id="什么是强化学习"><a href="#什么是强化学习" class="headerlink" title="什么是强化学习"></a>什么是强化学习</h3><h4 id="从无到有"><a href="#从无到有" class="headerlink" title="从无到有"></a>从无到有</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL1.png"></p>
-<p>强化学习是一类算法，是让计算机实现从一开始什么都不懂，脑袋里没有一点想法，通过不断地尝试，从错误中学习，最后找到规律，学会了达到目的的方法。这就是一个完整的强化学习过程。实际中的强化学习例子有很多。比如近期最有名的 Alpha go，机器头一次在围棋场上战胜人类高手；让计算机自己学着玩经典游戏 Atari，这些都是让计算机在不断的尝试中更新自己的行为准则，从而一步步学会如何下好围棋、如何操控游戏得到高分。既然要让计算机自己学，那计算机通过什么来学习呢？</p>
-<h4 id="虚拟老师"><a href="#虚拟老师" class="headerlink" title="虚拟老师"></a>虚拟老师</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL2.png"></p>
-<p>原来计算机也需要一位虚拟的老师，这个老师比较吝啬，他不会告诉你如何移动、如何做决定，他为你做的事只有给你的行为打分，那我们应该以什么形式学习这些现有的资源，或者说怎么样只从分数中学习到我应该怎样做决定呢？很简单，我只需要记住那些高分，低分对应的行为，下次用同样的行为拿高分，并避免低分的行为。</p>
-<p>比如老师会根据我的开心程度来打分——我开心时，可以得到高分，我不开心时得到低分。有了这些被打分的经验，我就能判断为了拿到高分，我应该选择一张开心的脸， 避免选到伤心的脸。这也是强化学习的核心思想。可以看出在强化学习中，一种行为的分数是十分重要的。所以强化学习具有分数导向性。我们换一个角度来思考。这种分数导向性好比我们在监督学习中的正确标签。</p>
-<h4 id="对比监督学习"><a href="#对比监督学习" class="headerlink" title="对比监督学习"></a>对比监督学习</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL3.png"></p>
-<p>我们知道监督学习，是已经有了数据和数据对应的正确标签，比如这样。监督学习就能学习出那些脸对应哪种标签。不过强化学习还要更进一步，一开始它并没有数据和标签。</p>
-<p>他要通过一次次在环境中的尝试，获取这些数据和标签，然后再学习通过哪些数据能够对应哪些标签，通过学习到的这些规律，尽可能地选择带来高分的行为 (比如这里的开心脸)。这也就证明了在强化学习中，分数标签就是他的老师，他和监督学习中的老师也差不多。</p>
-<h4 id="RL-算法们"><a href="#RL-算法们" class="headerlink" title="RL 算法们"></a>RL 算法们</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL4.png"></p>
-<p>强化学习是一个大家族，他包含了很多种算法，我们也会一一提到之中一些比较有名的算法，比如有通过行为的价值来选取特定行为的方法，包括使用表格学习的Q learning、Sarsa，使用神经网络学习的 Deep Q Network，还有直接输出行为的 Policy Gradients，又或者了解所处的环境，想象出一个虚拟的环境并从虚拟的环境中学习 等等。</p>
-<h3 id="强化学习方法汇总"><a href="#强化学习方法汇总" class="headerlink" title="强化学习方法汇总"></a>强化学习方法汇总</h3><p>了解强化学习中常用到的几种方法，以及他们的区别，对我们根据特定问题选择方法时很有帮助。强化学习是一个大家族，发展历史也不短，具有很多种不同方法。比如说比较知名的控制方法 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-q-learning">Q learning</a>，<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-PG">Policy Gradients</a>，还有基于对环境的理解的 model-based RL 等等。接下来我们通过分类的方式来了解他们的区别。</p>
-<h4 id="Model-free-和-Model-based"><a href="#Model-free-和-Model-based" class="headerlink" title="Model-free 和 Model-based"></a>Model-free 和 Model-based</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd1.png"></p>
-<p>我们可以将所有强化学习的方法分为理不理解所处环境，如果我们不尝试去理解环境，环境给了我们什么就是什么。我们就把这种方法叫做 model-free，这里的 model 就是用模型来表示环境，那理解了环境也就是学会了用一个模型来代表环境，所以这种就是 model-based 方法。我们想象：现在环境就是我们的世界，我们的机器人正在这个世界里玩耍，他不理解这个世界是怎样构成的，也不理解世界对于他的行为会怎么样反馈。举个例子，他决定丢颗原子弹去真实的世界，结果把自己给炸死了，所有结果都是那么现实。不过如果采取的是 model-based RL，机器人会通过过往的经验，先理解真实世界是怎样的，并建立一个模型来模拟现实世界的反馈，最后他不仅可以在现实世界中玩耍，也能在模拟的世界中玩耍，这样就没必要去炸真实世界，连自己也炸死了，他可以像玩游戏一样炸炸游戏里的世界，也保住了自己的小命。那我们就来说说这两种方式的强化学习各用那些方法吧。</p>
-<p>Model-free 的方法有很多，像 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-q-learning">Q learning</a>、<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-sarsa">Sarsa</a>、<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-PG">Policy Gradients</a> 都是从环境中得到反馈然后从中学习。而 model-based RL 只是多了一道程序——为真实世界建模，也可以说他们都是 model-free 的强化学习，只是 model-based 多出了一个虚拟环境，我们不仅可以像 model-free 那样在现实中玩耍，还能在游戏中玩耍，而玩耍的方式也都是 model-free 中那些玩耍方式，最终 model-based 还有一个杀手锏是 model-free 超级羡慕的，那就是想象力。</p>
-<p>Model-free 中，机器人只能按部就班，一步一步等待真实世界的反馈，再根据反馈采取下一步行动。而 model-based，他能通过想象来预判断接下来将要发生的所有情况，然后选择这些想象情况中最好的那种。并依据这种情况来采取下一步的策略，这也就是围棋场上 AlphaGo 能够超越人类的原因。接下来，我们再来用另外一种分类方法将强化学习分为基于概率和基于价值。</p>
-<h4 id="基于概率-和-基于价值"><a href="#基于概率-和-基于价值" class="headerlink" title="基于概率 和 基于价值"></a>基于概率 和 基于价值</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd2.png"></p>
-<p>基于概率是强化学习中最直接的一种，他能通过感官分析所处的环境，直接输出下一步要采取的各种动作的概率，然后根据概率采取行动，所以每种动作都有可能被选中，只是可能性不同。而基于价值的方法输出则是所有动作的价值，我们会根据最高价值来选着动作，相比基于概率的方法，基于价值的决策部分更为铁定、毫不留情，就选价值最高的；而基于概率的，即使某个动作的概率最高，但是还是不一定会选到他。</p>
-<p>我们现在说的动作都是一个一个不连续的动作，而对于选取连续的动作，基于价值的方法是无能为力的。我们却能用一个概率分布在连续动作中选取特定动作，这也是基于概率的方法的优点之一。那么这两类使用的方法又有哪些呢?</p>
-<p>比如在基于概率这边，有 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-PG">Policy Gradients</a>，在基于价值这边有 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-q-learning">Q learning</a>、<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-sarsa">Sarsa</a> 等。而且我们还能结合这两类方法的优势之处，创造更牛逼的一种方法，叫做 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-AC">Actor-Critic</a>，actor 会基于概率做出动作，而 critic 会对做出的动作给出动作的价值，这样就在原有的 policy gradients 上加速了学习过程。</p>
-<h4 id="回合更新-和-单步更新"><a href="#回合更新-和-单步更新" class="headerlink" title="回合更新 和 单步更新"></a>回合更新 和 单步更新</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd3.png"></p>
-<p>强化学习还能用另外一种方式分类，回合更新和单步更新，想象强化学习就是在玩游戏，游戏回合有开始和结束。回合更新指的是游戏开始后，我们要等待游戏结束，然后再总结这一回合中的所有转折点，再更新我们的行为准则。而单步更新则是在游戏进行中每一步都在更新，不用等待游戏的结束，这样我们就能边玩边学习了。</p>
-<p>再来说说方法，Monte-carlo learning 和基础版的 policy gradients 等 都是回合更新制，Q learning、Sarsa、升级版的 policy gradients 等都是单步更新制。因为单步更新更有效率，所以现在大多方法都是基于单步更新。比如有的强化学习问题并不属于回合问题。</p>
-<h4 id="在线学习-和-离线学习"><a href="#在线学习-和-离线学习" class="headerlink" title="在线学习 和 离线学习"></a>在线学习 和 离线学习</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd4.png"></p>
-<p>这个视频的最后一种分类方式是 在线学习和离线学习。所谓在线学习，就是指我必须本人在场，并且一定是本人边玩边学习；而离线学习是你可以选择自己玩，也可以选择看着别人玩，通过看别人玩来学习别人的行为准则，离线学习同样是从过往的经验中学习，但是这些过往的经历没必要是自己的经历，任何人的经历都能被学习。或者我也不必要边玩边学习，我可以白天先存储下来玩耍时的记忆，然后晚上通过离线学习来学习白天的记忆。那么每种学习的方法又有哪些呢?</p>
-<p>最典型的在线学习就是 Sarsa 了，还有一种优化 Sarsa 的算法，叫做 Sarsa lambda，最典型的离线学习就是 Q learning，后来人也根据离线学习的属性，开发了更强大的算法，比如让计算机学会玩电动的 Deep-Q-Network。</p>
-<p>这就是我们从各种不同的角度来对比了强化学习中的多种算法。</p>
+    <title>莫烦强化学习入门（三）</title>
+    <url>/YingYingMonstre.github.io/2021/11/08/Q-learning/</url>
+    <content><![CDATA[<h3 id="什么是-Q-Leaning"><a href="#什么是-Q-Leaning" class="headerlink" title="什么是 Q Leaning"></a>什么是 Q Leaning</h3><p>今天我们会来说说强化学习中一个很有名的算法——Q-learning。</p>
+<h4 id="行为准则"><a href="#行为准则" class="headerlink" title="行为准则"></a>行为准则</h4><p><img src="https://static.mofanpy.com/results/ML-intro/q1.png"></p>
+<p>我们做事情都会有一个自己的行为准则，比如小时候爸妈常说”不写完作业就不准看电视”。所以我们在写作业的这种状态下，好的行为就是继续写作业，直到写完它，我们还可以得到奖励。不好的行为就是没写完就跑去看电视了，被爸妈发现，后果很严重。小时候这种事情做多了，也就变成我们不可磨灭的记忆。这和我们要提到的Q learning 有什么关系呢?原来 Q learning 也是一个决策过程，和小时候的这种情况差不多。我们举例说明。</p>
+<p>假设现在我们处于写作业的状态而且我们以前并没有尝试过写作业时看电视，所以现在我们有两种选择：1.继续写作业，2. 跑去看电视。因为以前没有被罚过，所以我选看电视，然后现在的状态变成了看电视，我又选了继续看电视，接着我还是看电视。最后爸妈回家，发现我没写完作业就去看电视了，狠狠地惩罚了我一次，我也深刻地记下了这一次经历，并在我的脑海中将 “没写完作业就看电视” 这种行为更改为负面行为，我们在看看 Q learning 根据很多这样的经历是如何来决策的吧。</p>
+<h4 id="QLearning-决策"><a href="#QLearning-决策" class="headerlink" title="QLearning 决策"></a>QLearning 决策</h4><p><img src="https://static.mofanpy.com/results/ML-intro/q2.png"></p>
+<p>假设我们的行为准则已经学习好了，现在我们处于状态s1，我在写作业，我有两个行为 a1、a2，分别是看电视和写作业，根据我的经验，在这种 s1 状态下, a2 写作业带来的潜在奖励要比 a1 看电视高，这里的潜在奖励我们可以用一个有关于 s 和 a 的 Q 表格代替，在我的记忆Q表格中, Q(s1, a1)=-2 要小于 Q(s1, a2)=1，所以我们判断要选择 a2 作为下一个行为。现在我们的状态更新成 s2，我们还是有两个同样的选择，重复上面的过程，在行为准则Q表中寻找 Q(s2, a1) Q(s2, a2) 的值, 并比较他们的大小，选取较大的一个。接着根据 a2 我们到达 s3 并在此重复上面的决策过程。Q learning 的方法也就是这样决策的。看完决策，我看在来研究一下这张行为准则 Q 表是通过什么样的方式更改，提升的。</p>
+<h4 id="QLearning-更新"><a href="#QLearning-更新" class="headerlink" title="QLearning 更新"></a>QLearning 更新</h4><p><img src="https://static.mofanpy.com/results/ML-intro/q3.png"></p>
+<p>所以我们回到之前的流程，根据 Q 表的估计，因为在 s1 中, a2 的值比较大，通过之前的决策方法，我们在 s1 采取了 a2，并到达 s2，这时我们开始更新用于决策的 Q 表，接着我们并没有在实际中采取任何行为，而是想象自己在 s2 上采取了每种行为，分别看看两种行为哪一个的 Q 值大。比如说 Q(s2, a2) 的值比 Q(s2, a1) 的大, 所以我们把大的 Q(s2, a2) 乘上一个衰减值 gamma (比如是0.9) 并加上到达s2时所获取的奖励 R (这里还没有获取到我们的棒棒糖, 所以奖励为 0)，因为会获取实实在在的奖励 R，我们将这个作为我现实中 Q(s1, a2) 的值, 但是我们之前是根据 Q 表估计 Q(s1, a2) 的值。所以有了现实和估计值，我们就能更新Q(s1, a2)，根据估计与现实的差距，将这个差距乘以一个学习效率 alpha 累加上老的 Q(s1, a2) 的值 变成新的值。但时刻记住，我们虽然用 maxQ(s2) 估算了一下 s2 状态, 但还没有在 s2 做出任何的行为, s2 的行为决策要等到更新完了以后再重新另外做。这就是 off-policy 的 Q learning 是如何决策和学习优化决策的过程。</p>
+<h4 id="QLearning-整体算法"><a href="#QLearning-整体算法" class="headerlink" title="QLearning 整体算法"></a>QLearning 整体算法</h4><p><img src="https://static.mofanpy.com/results/ML-intro/q4.png"></p>
+<p>这一张图概括了我们之前所有的内容。这也是 Q learning 的算法，每次更新我们都用到了 Q 现实和 Q 估计，而且 Q learning 的迷人之处就是在 Q(s1, a2) 现实中，也包含了一个 Q(s2) 的最大估计值，将对下一步的衰减的最大估计和当前所得到的奖励当成这一步的现实，很奇妙吧。最后我们来说说这套算法中一些参数的意义。Epsilon greedy 是用在决策上的一种策略，比如 epsilon = 0.9 时，就说明有90% 的情况我会按照 Q 表的最优值选择行为，10% 的时间使用随机选行为。alpha是学习率，来决定这次的误差有多少是要被学习的，alpha是一个小于1的数。gamma 是对未来 reward 的衰减值。我们可以这样想象。</p>
+<h4 id="QLearning-中的-Gamma"><a href="#QLearning-中的-Gamma" class="headerlink" title="QLearning 中的 Gamma"></a>QLearning 中的 Gamma</h4><p><img src="https://static.mofanpy.com/results/ML-intro/q5.png"></p>
+<p>我们重写一下 Q(s1) 的公式，将 Q(s2) 拆开，因为Q(s2)可以像 Q(s1)一样，是关于Q(s3) 的，所以可以写成这样。然后以此类推，不停地这样写下去，最后就能写成这样，可以看出Q(s1) 是有关于之后所有的奖励，但这些奖励正在衰减，离 s1 越远的状态衰减越严重。不好理解? 行，我们想象 Qlearning 的机器人天生近视眼，gamma = 1 时，机器人有了一副合适的眼镜，在 s1 看到的 Q 是未来没有任何衰变的奖励，也就是机器人能清清楚楚地看到之后所有步的全部价值；但是当 gamma =0，近视机器人没了眼镜，只能摸到眼前的 reward，同样也就只在乎最近的大奖励；如果 gamma 从 0 变到 1，眼镜的度数由浅变深，对远处的价值看得越清楚，所以机器人渐渐变得有远见，不仅仅只看眼前的利益，也为自己的未来着想。</p>
+<h3 id="小例子"><a href="#小例子" class="headerlink" title="小例子"></a>小例子</h3><h4 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h4><p>这一次我们会用 tabular Q-learning 的方法实现一个小例子，例子的环境是一个一维世界，在世界的右边有宝藏，探索者只要得到宝藏尝到了甜头，然后以后就记住了得到宝藏的方法，这就是他用强化学习所学习到的行为。</p>
+<blockquote>
+<p>-o—T</p>
+<p>T 就是宝藏的位置, o 是探索者的位置</p>
+</blockquote>
+<p>Q-learning 是一种记录行为值 (Q value) 的方法，每种在一定状态的行为都会有一个值 <code>Q(s, a)</code>，就是说 行为 <code>a</code> 在 <code>s</code> 状态的值是 <code>Q(s, a)</code>。<code>s</code> 在上面的探索者游戏中，就是 <code>o</code> 所在的地点了。而每一个地点探索者都能做出两个行为 <code>left/right</code>，这就是探索者的所有可行的 <code>a</code> 啦。</p>
+<p>如果在某个地点 <code>s1</code>，探索者计算了他能有的两个行为, <code>a1/a2=left/right</code>，计算结果是 <code>Q(s1, a1) &gt; Q(s1, a2)</code>，那么探索者就会选择 <code>left</code> 这个行为。这就是 Q learning 的行为选择简单规则。</p>
+<p>==当然我们还会细说更具体的规则。在之后的教程中，我们会更加详细得讲解 RL 中的各种方法，下面的内容，大家大概看看就行，有个大概的 RL 概念就行，知道 RL 的一些关键步骤就行，这节的算法不用仔细研究。==</p>
+<h4 id="预设值"><a href="#预设值" class="headerlink" title="预设值"></a>预设值</h4><p>这一次需要的模块和参数设置：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">N_STATES = <span class="number">6</span>   <span class="comment"># 1维世界的宽度</span></span><br><span class="line">ACTIONS = [<span class="string">&#x27;left&#x27;</span>, <span class="string">&#x27;right&#x27;</span>]     <span class="comment"># 探索者的可用动作</span></span><br><span class="line">EPSILON = <span class="number">0.9</span>   <span class="comment"># 贪婪度 greedy</span></span><br><span class="line">ALPHA = <span class="number">0.1</span>     <span class="comment"># 学习率</span></span><br><span class="line">GAMMA = <span class="number">0.9</span>    <span class="comment"># 奖励递减值</span></span><br><span class="line">MAX_EPISODES = <span class="number">13</span>   <span class="comment"># 最大回合数</span></span><br><span class="line">FRESH_TIME = <span class="number">0.3</span>    <span class="comment"># 移动间隔时间</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Q-表"><a href="#Q-表" class="headerlink" title="Q 表"></a>Q 表</h4><p>对于 tabular Q learning，我们必须将所有的 Q values (行为值) 放在 <code>q_table</code> 中，更新 <code>q_table</code> 也是在更新他的行为准则。<code>q_table</code> 的 index 是所有对应的 <code>state</code> (探索者位置)，columns 是对应的 <code>action</code> (探索者行为)。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_q_table</span>(<span class="params">n_states, actions</span>):</span></span><br><span class="line">    table = pd.DataFrame(</span><br><span class="line">        np.zeros((n_states, <span class="built_in">len</span>(actions))),     <span class="comment"># q_table 全 0 初始</span></span><br><span class="line">        columns=actions,    <span class="comment"># columns 对应的是行为名称</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> table</span><br><span class="line"></span><br><span class="line"><span class="comment"># q_table:</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">   left  right</span></span><br><span class="line"><span class="string">0   0.0    0.0</span></span><br><span class="line"><span class="string">1   0.0    0.0</span></span><br><span class="line"><span class="string">2   0.0    0.0</span></span><br><span class="line"><span class="string">3   0.0    0.0</span></span><br><span class="line"><span class="string">4   0.0    0.0</span></span><br><span class="line"><span class="string">5   0.0    0.0</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="定义动作"><a href="#定义动作" class="headerlink" title="定义动作"></a>定义动作</h4><p>接着定义探索者是如何挑选行为的。这是我们引入 <code>epsilon greedy</code> 的概念。因为在初始阶段，随机的探索环境，往往比固定的行为模式要好，所以这也是累积经验的阶段，我们希望探索者不会那么贪婪(greedy)。所以 <code>EPSILON</code> 就是用来控制贪婪程度的值。<code>EPSILON</code> 可以随着探索时间不断提升(越来越贪婪)，不过在这个例子中，我们就固定成 <code>EPSILON = 0.9</code>，90% 的时间是选择最优策略，10% 的时间来探索。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在某个 state 地点, 选择行为</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">choose_action</span>(<span class="params">state, q_table</span>):</span></span><br><span class="line">    state_actions = q_table.iloc[state, :]  <span class="comment"># 选出这个 state 的所有 action 值</span></span><br><span class="line">    <span class="keyword">if</span> (np.random.uniform() &gt; EPSILON) <span class="keyword">or</span> (state_actions.<span class="built_in">all</span>() == <span class="number">0</span>):  <span class="comment"># 非贪婪 or 或者这个 state 还没有探索过</span></span><br><span class="line">        action_name = np.random.choice(ACTIONS)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        action_name = state_actions.argmax()    <span class="comment"># 贪婪模式</span></span><br><span class="line">    <span class="keyword">return</span> action_name</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="环境反馈-S-R"><a href="#环境反馈-S-R" class="headerlink" title="环境反馈 S_, R"></a>环境反馈 S_, R</h4><p>做出行为后，环境也要给我们的行为一个反馈，反馈出下个 state (S_) 和 在上个 state (S) 做出 action (A) 所得到的 reward (R)。这里定义的规则就是，只有当 <code>o</code> 移动到了 <code>T</code>，探索者才会得到唯一的一个奖励，奖励值 R=1，其他情况都没有奖励。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_env_feedback</span>(<span class="params">S, A</span>):</span></span><br><span class="line">    <span class="comment"># This is how agent will interact with the environment</span></span><br><span class="line">    <span class="keyword">if</span> A == <span class="string">&#x27;right&#x27;</span>:    <span class="comment"># move right</span></span><br><span class="line">        <span class="keyword">if</span> S == N_STATES - <span class="number">2</span>:   <span class="comment"># terminate</span></span><br><span class="line">            S_ = <span class="string">&#x27;terminal&#x27;</span></span><br><span class="line">            R = <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            S_ = S + <span class="number">1</span></span><br><span class="line">            R = <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:   <span class="comment"># move left</span></span><br><span class="line">        R = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> S == <span class="number">0</span>:</span><br><span class="line">            S_ = S  <span class="comment"># reach the wall</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            S_ = S - <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> S_, R</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="环境更新"><a href="#环境更新" class="headerlink" title="环境更新"></a>环境更新</h4><p>接下来就是环境的更新了，不用细看。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_env</span>(<span class="params">S, episode, step_counter</span>):</span></span><br><span class="line">    <span class="comment"># This is how environment be updated</span></span><br><span class="line">    env_list = [<span class="string">&#x27;-&#x27;</span>]*(N_STATES-<span class="number">1</span>) + [<span class="string">&#x27;T&#x27;</span>]   <span class="comment"># &#x27;---------T&#x27; our environment</span></span><br><span class="line">    <span class="keyword">if</span> S == <span class="string">&#x27;terminal&#x27;</span>:</span><br><span class="line">        interaction = <span class="string">&#x27;Episode %s: total_steps = %s&#x27;</span> % (episode+<span class="number">1</span>, step_counter)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\r&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(interaction), end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        time.sleep(<span class="number">2</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\r                                &#x27;</span>, end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        env_list[S] = <span class="string">&#x27;o&#x27;</span></span><br><span class="line">        interaction = <span class="string">&#x27;&#x27;</span>.join(env_list)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\r&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(interaction), end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        time.sleep(FRESH_TIME)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="强化学习主循环"><a href="#强化学习主循环" class="headerlink" title="强化学习主循环"></a>强化学习主循环</h4><p>最重要的地方就在这里。你定义的 RL 方法都在这里体现。在之后的教程中，我们会更加详细得讲解 RL 中的各种方法，下面的内容，大家大概看看就行，这节内容不用仔细研究。</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/2-1-1.png"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rl</span>():</span></span><br><span class="line">    q_table = build_q_table(N_STATES, ACTIONS)  <span class="comment"># 初始 q table</span></span><br><span class="line">    <span class="keyword">for</span> episode <span class="keyword">in</span> <span class="built_in">range</span>(MAX_EPISODES):     <span class="comment"># 回合</span></span><br><span class="line">        step_counter = <span class="number">0</span></span><br><span class="line">        S = <span class="number">0</span>   <span class="comment"># 回合初始位置</span></span><br><span class="line">        is_terminated = <span class="literal">False</span>   <span class="comment"># 是否回合结束</span></span><br><span class="line">        update_env(S, episode, step_counter)    <span class="comment"># 环境更新</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> is_terminated:</span><br><span class="line"></span><br><span class="line">            A = choose_action(S, q_table)   <span class="comment"># 选行为</span></span><br><span class="line">            S_, R = get_env_feedback(S, A)  <span class="comment"># 实施行为并得到环境的反馈</span></span><br><span class="line">            q_predict = q_table.loc[S, A]    <span class="comment"># 估算的(状态-行为)值</span></span><br><span class="line">            <span class="keyword">if</span> S_ != <span class="string">&#x27;terminal&#x27;</span>:</span><br><span class="line">                q_target = R + GAMMA * q_table.iloc[S_, :].<span class="built_in">max</span>()   <span class="comment">#  实际的(状态-行为)值 (回合没结束)</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                q_target = R     <span class="comment">#  实际的(状态-行为)值 (回合结束)</span></span><br><span class="line">                is_terminated = <span class="literal">True</span>    <span class="comment"># terminate this episode</span></span><br><span class="line"></span><br><span class="line">            q_table.loc[S, A] += ALPHA * (q_target - q_predict)  <span class="comment">#  q_table 更新</span></span><br><span class="line">            S = S_  <span class="comment"># 探索者移动到下一个 state</span></span><br><span class="line"></span><br><span class="line">            update_env(S, episode, step_counter+<span class="number">1</span>)  <span class="comment"># 环境更新</span></span><br><span class="line"></span><br><span class="line">            step_counter += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> q_table</span><br></pre></td></tr></table></figure>
+
+<p>写好所有的评估和更新准则后，我们就能开始训练了，把探索者丢到环境中，让它自己去玩吧。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    q_table = rl()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;\r\nQ-table:\n&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(q_table)</span><br></pre></td></tr></table></figure>
+
+<p>如果想一次性看到全部代码，请去我的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/tree/master/contents/1_command_line_reinforcement_learning/treasure_on_right.py">Github</a></p>
 <p><strong>原文地址：</strong><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/">强化学习 (Reinforcement Learning) | 莫烦Python (mofanpy.com)</a></p>
 <p><strong>学习资料：</strong></p>
 <ul>
@@ -632,7 +465,201 @@
         <category>强化学习</category>
       </categories>
       <tags>
-        <tag>强化学习</tag>
+        <tag>强化学习 Q-Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>XCTF-Web基础篇</title>
+    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
+    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
+<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
+<p>方法三：通过Burpsuite抓包查看源代码</p>
+<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
+<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
+<p>[步骤]</p>
+<p>1.根据提示robots,可以直接想到robots.txt</p>
+<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
+<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
+<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
+<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
+<p>掌握有关备份文件的知识</p>
+<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
+<p><strong>[环境]</strong></p>
+<p>无</p>
+<p><strong>[工具]</strong></p>
+<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
+<p><strong>[步骤]</strong></p>
+<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
+<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
+<p>3.保存到本地打开，即可看到flag</p>
+<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
+<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关cookie的知识，了解cookie所在位置</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
+<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
+<p>3.点击查看数据包，在消息头内可发现flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
+<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
+<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
+<p>初步了解前端知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
+<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
+<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
+<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
+<p>了解弱口令，掌握爆破方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<ul>
+<li>burpsuite</li>
+<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
+</ul>
+<p><strong>[步骤]</strong></p>
+<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
+<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
+<p>2.设置爆破点为password</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
+<p>3.加载字典</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
+<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
+<p>5.点进去查看响应包，获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
+<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
+<p>php中有两种比较符号</p>
+<p>=== 会同时比较字符串的值和类型</p>
+<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
+<p><strong>[目地]</strong></p>
+<p>掌握php的弱类型比较</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
+<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
+<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
+<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
+<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
+<p>HTTP工作原理</p>
+<p><strong>[目的]</strong></p>
+<p>掌握常用http请求方式</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox和cmd</p>
+<p><strong>[步骤]</strong></p>
+<p>GET请求在url后加?a=1即可</p>
+<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
+<p>返回如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>或者用burpsuite实现GET、POST的抓包：</p>
+<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
+<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
+<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
+<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
+<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关X-Forwarded-For和Referer的知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、burpsuite</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
+<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
+<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
+<p>了解php一句话木马、如何使用webshell</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、hackbar</p>
+<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
+<p><strong>[步骤]</strong></p>
+<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
+<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
+<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
+<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
+<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
+<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
+<p><strong>[目地]</strong></p>
+<p>掌握命令拼接的方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
+<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
+<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
+<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
+<p>javascript的代码审计</p>
+<p><strong>[目地]</strong></p>
+<p>掌握简单的javascript函数</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
+<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
+<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
+
+<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
+
+<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
+<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
+<p>web请求头中的location作用</p>
+<p><strong>【实验目的】</strong></p>
+<p>掌握web响应包头部常见参数</p>
+<p><strong>【实验环境】</strong></p>
+<p>Windows</p>
+<p><strong>【实验工具】</strong></p>
+<p>firefox</p>
+<p><strong>【实验步骤】</strong></p>
+<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
+<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
+<p>我的：burpsuite抓包，看到有flag。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>XCTF</tag>
+        <tag>Web</tag>
       </tags>
   </entry>
   <entry>
@@ -677,6 +704,51 @@
 <li><a href="https://gym.openai.com/">OpenAI gym</a> (可学), 提供了很多现成的模拟环境</li>
 </ul>
 <h4 id="快速了解强化学习"><a href="#快速了解强化学习" class="headerlink" title="快速了解强化学习"></a>快速了解强化学习</h4><p>我也会制作每种强化学习对应的简介视频 (在这个学习列表里: <a href="https://mofanpy.com/tutorials/machine-learning/ML-intro/">有趣的机器学习</a>)，大家可以只花很少的时间来观看了解这些学习方法的不同之处。有了一定概念和基础，我们在这套教材里实现起来就容易多了。而且不懂的时候也能只花很少的时间回顾就行。</p>
+<p><strong>原文地址：</strong><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/">强化学习 (Reinforcement Learning) | 莫烦Python (mofanpy.com)</a></p>
+<p><strong>学习资料：</strong></p>
+<ul>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning">强化学习教程</a></li>
+<li><a href="https://www.youtube.com/watch?v=G5BDgzxfLvA&list=PLXO45tsB95cLYyEsEylpPvTY-8ErPt2O_">强化学习模拟程序</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/ML-practice/RL-build-arm-from-scratch1">强化学习实战</a></li>
+<li>学习书籍 <a href="https://mofanpy.com/static/files/Reinforcement_learning_An_introduction.pdf">Reinforcement learning: An introduction</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>莫烦强化学习入门（一）</title>
+    <url>/YingYingMonstre.github.io/2021/10/31/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E4%B8%80/</url>
+    <content><![CDATA[<h3 id="什么是强化学习"><a href="#什么是强化学习" class="headerlink" title="什么是强化学习"></a>什么是强化学习</h3><h4 id="从无到有"><a href="#从无到有" class="headerlink" title="从无到有"></a>从无到有</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL1.png"></p>
+<p>强化学习是一类算法，是让计算机实现从一开始什么都不懂，脑袋里没有一点想法，通过不断地尝试，从错误中学习，最后找到规律，学会了达到目的的方法。这就是一个完整的强化学习过程。实际中的强化学习例子有很多。比如近期最有名的 Alpha go，机器头一次在围棋场上战胜人类高手；让计算机自己学着玩经典游戏 Atari，这些都是让计算机在不断的尝试中更新自己的行为准则，从而一步步学会如何下好围棋、如何操控游戏得到高分。既然要让计算机自己学，那计算机通过什么来学习呢？</p>
+<h4 id="虚拟老师"><a href="#虚拟老师" class="headerlink" title="虚拟老师"></a>虚拟老师</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL2.png"></p>
+<p>原来计算机也需要一位虚拟的老师，这个老师比较吝啬，他不会告诉你如何移动、如何做决定，他为你做的事只有给你的行为打分，那我们应该以什么形式学习这些现有的资源，或者说怎么样只从分数中学习到我应该怎样做决定呢？很简单，我只需要记住那些高分，低分对应的行为，下次用同样的行为拿高分，并避免低分的行为。</p>
+<p>比如老师会根据我的开心程度来打分——我开心时，可以得到高分，我不开心时得到低分。有了这些被打分的经验，我就能判断为了拿到高分，我应该选择一张开心的脸， 避免选到伤心的脸。这也是强化学习的核心思想。可以看出在强化学习中，一种行为的分数是十分重要的。所以强化学习具有分数导向性。我们换一个角度来思考。这种分数导向性好比我们在监督学习中的正确标签。</p>
+<h4 id="对比监督学习"><a href="#对比监督学习" class="headerlink" title="对比监督学习"></a>对比监督学习</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL3.png"></p>
+<p>我们知道监督学习，是已经有了数据和数据对应的正确标签，比如这样。监督学习就能学习出那些脸对应哪种标签。不过强化学习还要更进一步，一开始它并没有数据和标签。</p>
+<p>他要通过一次次在环境中的尝试，获取这些数据和标签，然后再学习通过哪些数据能够对应哪些标签，通过学习到的这些规律，尽可能地选择带来高分的行为 (比如这里的开心脸)。这也就证明了在强化学习中，分数标签就是他的老师，他和监督学习中的老师也差不多。</p>
+<h4 id="RL-算法们"><a href="#RL-算法们" class="headerlink" title="RL 算法们"></a>RL 算法们</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL4.png"></p>
+<p>强化学习是一个大家族，他包含了很多种算法，我们也会一一提到之中一些比较有名的算法，比如有通过行为的价值来选取特定行为的方法，包括使用表格学习的Q learning、Sarsa，使用神经网络学习的 Deep Q Network，还有直接输出行为的 Policy Gradients，又或者了解所处的环境，想象出一个虚拟的环境并从虚拟的环境中学习 等等。</p>
+<h3 id="强化学习方法汇总"><a href="#强化学习方法汇总" class="headerlink" title="强化学习方法汇总"></a>强化学习方法汇总</h3><p>了解强化学习中常用到的几种方法，以及他们的区别，对我们根据特定问题选择方法时很有帮助。强化学习是一个大家族，发展历史也不短，具有很多种不同方法。比如说比较知名的控制方法 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-q-learning">Q learning</a>，<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-PG">Policy Gradients</a>，还有基于对环境的理解的 model-based RL 等等。接下来我们通过分类的方式来了解他们的区别。</p>
+<h4 id="Model-free-和-Model-based"><a href="#Model-free-和-Model-based" class="headerlink" title="Model-free 和 Model-based"></a>Model-free 和 Model-based</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd1.png"></p>
+<p>我们可以将所有强化学习的方法分为理不理解所处环境，如果我们不尝试去理解环境，环境给了我们什么就是什么。我们就把这种方法叫做 model-free，这里的 model 就是用模型来表示环境，那理解了环境也就是学会了用一个模型来代表环境，所以这种就是 model-based 方法。我们想象：现在环境就是我们的世界，我们的机器人正在这个世界里玩耍，他不理解这个世界是怎样构成的，也不理解世界对于他的行为会怎么样反馈。举个例子，他决定丢颗原子弹去真实的世界，结果把自己给炸死了，所有结果都是那么现实。不过如果采取的是 model-based RL，机器人会通过过往的经验，先理解真实世界是怎样的，并建立一个模型来模拟现实世界的反馈，最后他不仅可以在现实世界中玩耍，也能在模拟的世界中玩耍，这样就没必要去炸真实世界，连自己也炸死了，他可以像玩游戏一样炸炸游戏里的世界，也保住了自己的小命。那我们就来说说这两种方式的强化学习各用那些方法吧。</p>
+<p>Model-free 的方法有很多，像 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-q-learning">Q learning</a>、<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-sarsa">Sarsa</a>、<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-PG">Policy Gradients</a> 都是从环境中得到反馈然后从中学习。而 model-based RL 只是多了一道程序——为真实世界建模，也可以说他们都是 model-free 的强化学习，只是 model-based 多出了一个虚拟环境，我们不仅可以像 model-free 那样在现实中玩耍，还能在游戏中玩耍，而玩耍的方式也都是 model-free 中那些玩耍方式，最终 model-based 还有一个杀手锏是 model-free 超级羡慕的，那就是想象力。</p>
+<p>Model-free 中，机器人只能按部就班，一步一步等待真实世界的反馈，再根据反馈采取下一步行动。而 model-based，他能通过想象来预判断接下来将要发生的所有情况，然后选择这些想象情况中最好的那种。并依据这种情况来采取下一步的策略，这也就是围棋场上 AlphaGo 能够超越人类的原因。接下来，我们再来用另外一种分类方法将强化学习分为基于概率和基于价值。</p>
+<h4 id="基于概率-和-基于价值"><a href="#基于概率-和-基于价值" class="headerlink" title="基于概率 和 基于价值"></a>基于概率 和 基于价值</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd2.png"></p>
+<p>基于概率是强化学习中最直接的一种，他能通过感官分析所处的环境，直接输出下一步要采取的各种动作的概率，然后根据概率采取行动，所以每种动作都有可能被选中，只是可能性不同。而基于价值的方法输出则是所有动作的价值，我们会根据最高价值来选着动作，相比基于概率的方法，基于价值的决策部分更为铁定、毫不留情，就选价值最高的；而基于概率的，即使某个动作的概率最高，但是还是不一定会选到他。</p>
+<p>我们现在说的动作都是一个一个不连续的动作，而对于选取连续的动作，基于价值的方法是无能为力的。我们却能用一个概率分布在连续动作中选取特定动作，这也是基于概率的方法的优点之一。那么这两类使用的方法又有哪些呢?</p>
+<p>比如在基于概率这边，有 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-PG">Policy Gradients</a>，在基于价值这边有 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-q-learning">Q learning</a>、<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-sarsa">Sarsa</a> 等。而且我们还能结合这两类方法的优势之处，创造更牛逼的一种方法，叫做 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-AC">Actor-Critic</a>，actor 会基于概率做出动作，而 critic 会对做出的动作给出动作的价值，这样就在原有的 policy gradients 上加速了学习过程。</p>
+<h4 id="回合更新-和-单步更新"><a href="#回合更新-和-单步更新" class="headerlink" title="回合更新 和 单步更新"></a>回合更新 和 单步更新</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd3.png"></p>
+<p>强化学习还能用另外一种方式分类，回合更新和单步更新，想象强化学习就是在玩游戏，游戏回合有开始和结束。回合更新指的是游戏开始后，我们要等待游戏结束，然后再总结这一回合中的所有转折点，再更新我们的行为准则。而单步更新则是在游戏进行中每一步都在更新，不用等待游戏的结束，这样我们就能边玩边学习了。</p>
+<p>再来说说方法，Monte-carlo learning 和基础版的 policy gradients 等 都是回合更新制，Q learning、Sarsa、升级版的 policy gradients 等都是单步更新制。因为单步更新更有效率，所以现在大多方法都是基于单步更新。比如有的强化学习问题并不属于回合问题。</p>
+<h4 id="在线学习-和-离线学习"><a href="#在线学习-和-离线学习" class="headerlink" title="在线学习 和 离线学习"></a>在线学习 和 离线学习</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RLmtd4.png"></p>
+<p>这个视频的最后一种分类方式是 在线学习和离线学习。所谓在线学习，就是指我必须本人在场，并且一定是本人边玩边学习；而离线学习是你可以选择自己玩，也可以选择看着别人玩，通过看别人玩来学习别人的行为准则，离线学习同样是从过往的经验中学习，但是这些过往的经历没必要是自己的经历，任何人的经历都能被学习。或者我也不必要边玩边学习，我可以白天先存储下来玩耍时的记忆，然后晚上通过离线学习来学习白天的记忆。那么每种学习的方法又有哪些呢?</p>
+<p>最典型的在线学习就是 Sarsa 了，还有一种优化 Sarsa 的算法，叫做 Sarsa lambda，最典型的离线学习就是 Q learning，后来人也根据离线学习的属性，开发了更强大的算法，比如让计算机学会玩电动的 Deep-Q-Network。</p>
+<p>这就是我们从各种不同的角度来对比了强化学习中的多种算法。</p>
 <p><strong>原文地址：</strong><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/">强化学习 (Reinforcement Learning) | 莫烦Python (mofanpy.com)</a></p>
 <p><strong>学习资料：</strong></p>
 <ul>
