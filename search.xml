@@ -56,6 +56,9 @@
 <p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
 <p>解决方法：删除环境重新搭建环境就可以了</p>
 ]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
       <tags>
         <tag>强化学习</tag>
       </tags>
@@ -385,6 +388,9 @@
 </blockquote>
 <p>参考文章：<a href="https://www.cnblogs.com/ioufev/articles/10830028.html">ModbusTCP协议 - ioufev - 博客园 (cnblogs.com)</a></p>
 ]]></content>
+      <categories>
+        <category>protocol</category>
+      </categories>
       <tags>
         <tag>Modbus</tag>
         <tag>protocol</tag>
@@ -576,6 +582,9 @@
 <p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
 <p>我的：burpsuite抓包，看到有flag。</p>
 ]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
       <tags>
         <tag>XCTF</tag>
         <tag>Web</tag>
@@ -661,6 +670,9 @@
 </ul>
 </blockquote>
 ]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
       <tags>
         <tag>强化学习</tag>
       </tags>
@@ -903,6 +915,9 @@
 <h2 id="maze"><a href="#maze" class="headerlink" title="maze"></a>maze</h2><p>迷宫问题</p>
 <p><img src="https://www.pianshen.com/images/271/7d91ebf895b8ed648ed3ab80de463137.JPEG" alt="在这里插入图片描述"></p>
 ]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
       <tags>
         <tag>XCTF</tag>
         <tag>逆向</tag>
@@ -1024,6 +1039,9 @@
 </ul>
 </blockquote>
 ]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
       <tags>
         <tag>强化学习</tag>
       </tags>
@@ -1154,6 +1172,9 @@
 </ul>
 </blockquote>
 ]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
       <tags>
         <tag>强化学习</tag>
       </tags>
