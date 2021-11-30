@@ -64,6 +64,200 @@
       </tags>
   </entry>
   <entry>
+    <title>XCTF-Web基础篇</title>
+    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
+    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
+<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
+<p>方法三：通过Burpsuite抓包查看源代码</p>
+<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
+<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
+<p>[步骤]</p>
+<p>1.根据提示robots,可以直接想到robots.txt</p>
+<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
+<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
+<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
+<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
+<p>掌握有关备份文件的知识</p>
+<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
+<p><strong>[环境]</strong></p>
+<p>无</p>
+<p><strong>[工具]</strong></p>
+<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
+<p><strong>[步骤]</strong></p>
+<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
+<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
+<p>3.保存到本地打开，即可看到flag</p>
+<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
+<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关cookie的知识，了解cookie所在位置</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
+<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
+<p>3.点击查看数据包，在消息头内可发现flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
+<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
+<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
+<p>初步了解前端知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
+<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
+<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
+<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
+<p>了解弱口令，掌握爆破方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<ul>
+<li>burpsuite</li>
+<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
+</ul>
+<p><strong>[步骤]</strong></p>
+<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
+<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
+<p>2.设置爆破点为password</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
+<p>3.加载字典</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
+<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
+<p>5.点进去查看响应包，获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
+<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
+<p>php中有两种比较符号</p>
+<p>=== 会同时比较字符串的值和类型</p>
+<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
+<p><strong>[目地]</strong></p>
+<p>掌握php的弱类型比较</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
+<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
+<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
+<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
+<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
+<p>HTTP工作原理</p>
+<p><strong>[目的]</strong></p>
+<p>掌握常用http请求方式</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox和cmd</p>
+<p><strong>[步骤]</strong></p>
+<p>GET请求在url后加?a=1即可</p>
+<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
+<p>返回如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>或者用burpsuite实现GET、POST的抓包：</p>
+<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
+<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
+<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
+<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
+<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关X-Forwarded-For和Referer的知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、burpsuite</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
+<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
+<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
+<p>了解php一句话木马、如何使用webshell</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、hackbar</p>
+<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
+<p><strong>[步骤]</strong></p>
+<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
+<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
+<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
+<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
+<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
+<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
+<p><strong>[目地]</strong></p>
+<p>掌握命令拼接的方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
+<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
+<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
+<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
+<p>javascript的代码审计</p>
+<p><strong>[目地]</strong></p>
+<p>掌握简单的javascript函数</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
+<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
+<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
+
+<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
+
+<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
+<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
+<p>web请求头中的location作用</p>
+<p><strong>【实验目的】</strong></p>
+<p>掌握web响应包头部常见参数</p>
+<p><strong>【实验环境】</strong></p>
+<p>Windows</p>
+<p><strong>【实验工具】</strong></p>
+<p>firefox</p>
+<p><strong>【实验步骤】</strong></p>
+<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
+<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
+<p>我的：burpsuite抓包，看到有flag。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>XCTF</tag>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ModbusTCP协议学习</title>
     <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
@@ -394,200 +588,6 @@
       <tags>
         <tag>Modbus</tag>
         <tag>protocol</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>XCTF-Web基础篇</title>
-    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
-    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
-<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
-<p>方法三：通过Burpsuite抓包查看源代码</p>
-<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
-<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
-<p>[步骤]</p>
-<p>1.根据提示robots,可以直接想到robots.txt</p>
-<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
-<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
-<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
-<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
-<p>掌握有关备份文件的知识</p>
-<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
-<p><strong>[环境]</strong></p>
-<p>无</p>
-<p><strong>[工具]</strong></p>
-<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
-<p><strong>[步骤]</strong></p>
-<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
-<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
-<p>3.保存到本地打开，即可看到flag</p>
-<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
-<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关cookie的知识，了解cookie所在位置</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
-<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
-<p>3.点击查看数据包，在消息头内可发现flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
-<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
-<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
-<p>初步了解前端知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
-<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
-<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
-<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
-<p>了解弱口令，掌握爆破方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<ul>
-<li>burpsuite</li>
-<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
-</ul>
-<p><strong>[步骤]</strong></p>
-<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
-<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
-<p>2.设置爆破点为password</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
-<p>3.加载字典</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
-<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
-<p>5.点进去查看响应包，获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
-<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
-<p>php中有两种比较符号</p>
-<p>=== 会同时比较字符串的值和类型</p>
-<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
-<p><strong>[目地]</strong></p>
-<p>掌握php的弱类型比较</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
-<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
-<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
-<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
-<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
-<p>HTTP工作原理</p>
-<p><strong>[目的]</strong></p>
-<p>掌握常用http请求方式</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox和cmd</p>
-<p><strong>[步骤]</strong></p>
-<p>GET请求在url后加?a=1即可</p>
-<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
-<p>返回如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>或者用burpsuite实现GET、POST的抓包：</p>
-<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
-<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
-<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
-<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
-<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关X-Forwarded-For和Referer的知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、burpsuite</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
-<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
-<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
-<p>了解php一句话木马、如何使用webshell</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、hackbar</p>
-<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
-<p><strong>[步骤]</strong></p>
-<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
-<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
-<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
-<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
-<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
-<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
-<p><strong>[目地]</strong></p>
-<p>掌握命令拼接的方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
-<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
-<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
-<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
-<p>javascript的代码审计</p>
-<p><strong>[目地]</strong></p>
-<p>掌握简单的javascript函数</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
-<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
-<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
-
-<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
-
-<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
-<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
-<p>web请求头中的location作用</p>
-<p><strong>【实验目的】</strong></p>
-<p>掌握web响应包头部常见参数</p>
-<p><strong>【实验环境】</strong></p>
-<p>Windows</p>
-<p><strong>【实验工具】</strong></p>
-<p>firefox</p>
-<p><strong>【实验步骤】</strong></p>
-<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
-<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
-<p>我的：burpsuite抓包，看到有flag。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>XCTF</tag>
-        <tag>Web</tag>
       </tags>
   </entry>
   <entry>
@@ -924,6 +924,113 @@
       </tags>
   </entry>
   <entry>
+    <title>莫烦强化学习（DQN上）</title>
+    <url>/YingYingMonstre.github.io/2021/11/30/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88DQN%E4%B8%8A%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="什么是-DQN"><a href="#什么是-DQN" class="headerlink" title="什么是 DQN"></a>什么是 DQN</h3><p>今天我们会来说说强化学习中的一种强大武器，Deep Q Network 简称为 DQN。Google Deep mind 团队就是靠着这 DQN 使计算机玩电动玩得比我们还厉害。</p>
+<p><strong>注: 本文不会涉及数学推导。大家可以在很多其他地方找到优秀的数学推导文章。</strong></p>
+<h4 id="强化学习与神经网络"><a href="#强化学习与神经网络" class="headerlink" title="强化学习与神经网络"></a>强化学习与神经网络</h4><p><img src="https://static.mofanpy.com/results/ML-intro/DQN1.png"></p>
+<p>之前我们所谈论到的强化学习方法都是比较传统的方式，而如今，随着机器学习在日常生活中的各种应用，各种机器学习方法也在融汇、合并、升级。而我们今天所要探讨的强化学习则是这么一种融合了神经网络和 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-q-learning">Q learning</a> 的方法，名字叫做 Deep Q Network。这种新型结构是为什么被提出来呢？原来，传统的表格形式的强化学习有这样一个瓶颈。</p>
+<h4 id="神经网络的作用"><a href="#神经网络的作用" class="headerlink" title="神经网络的作用"></a>神经网络的作用</h4><p><img src="https://static.mofanpy.com/results/ML-intro/DQN2.png"></p>
+<p>我们使用表格来存储每一个状态 state，和在这个 state 每个行为 action 所拥有的 Q 值。而当今问题是在太复杂，状态可以多到比天上的星星还多(比如下围棋)。如果全用表格来存储它们，恐怕我们的计算机有再大的内存都不够，而且每次在这么大的表格中搜索对应的状态也是一件很耗时的事。不过，在机器学习中，有一种方法对这种事情很在行，那就是神经网络。我们可以将状态和动作当成神经网络的输入，然后经过神经网络分析后得到动作的 Q 值，这样我们就没必要在表格中记录 Q 值，而是直接使用神经网络生成 Q 值。还有一种形式的是这样，我们也能只输入状态值，输出所有的动作值，然后按照 Q learning 的原则，直接选择拥有最大值的动作当做下一步要做的动作。我们可以想象，神经网络接受外部的信息，相当于眼睛鼻子耳朵收集信息，然后通过大脑加工输出每种动作的值，最后通过强化学习的方式选择动作。</p>
+<h4 id="更新神经网络"><a href="#更新神经网络" class="headerlink" title="更新神经网络"></a>更新神经网络</h4><p><img src="https://static.mofanpy.com/results/ML-intro/DQN3.png"></p>
+<p>接下来我们基于第二种神经网络来分析，我们知道，神经网络是要被训练才能预测出准确的值。那在强化学习中，神经网络是如何被训练的呢？首先，我们需要 a1、a2 正确的Q值，这个 Q 值我们就用之前在 Q learning 中的 Q 现实来代替。同样我们还需要一个 Q 估计来实现神经网络的更新。所以神经网络的的参数就是老的 NN 参数加学习率 alpha 乘以 Q 现实和 Q 估计的差距。我们整理一下。</p>
+<p><img src="https://static.mofanpy.com/results/ML-intro/DQN4.png"></p>
+<p>我们通过 NN 预测出Q(s2, a1) 和 Q(s2,a2) 的值，这就是 Q 估计。然后我们选取 Q 估计中最大值的动作来换取环境中的奖励 reward。而 Q 现实中也包含从神经网络分析出来的两个 Q 估计值，不过这个 Q 估计是针对于下一步在 s’ 的估计。最后再通过刚刚所说的算法更新神经网络中的参数。但是这并不是 DQN 会玩电动的根本原因。还有两大因素支撑着 DQN 使得它变得无比强大。这两大因素就是 Experience replay 和 Fixed Q-targets。</p>
+<h4 id="DQN-两大利器"><a href="#DQN-两大利器" class="headerlink" title="DQN 两大利器"></a>DQN 两大利器</h4><p><img src="https://static.mofanpy.com/results/ML-intro/DQN5.png"></p>
+<p>简单来说，DQN 有一个记忆库用于学习之前的经历。在之前的简介影片中提到过，Q learning 是一种 off-policy 离线学习法，它能学习当前经历着的，也能学习过去经历过的，甚至是学习别人的经历。所以每次 DQN 更新的时候，我们都可以随机抽取一些之前的经历进行学习。随机抽取这种做法打乱了经历之间的相关性，也使得神经网络更新更有效率。Fixed Q-targets 也是一种打乱相关性的机理，如果使用 fixed Q-targets，我们就会在 DQN 中使用到两个结构相同但参数不同的神经网络，预测 Q 估计的神经网络具备最新的参数，而预测 Q 现实的神经网络使用的参数则是很久以前的。有了这两种提升手段，DQN 才能在一些游戏中超越人类。</p>
+<h3 id="DQN-算法更新"><a href="#DQN-算法更新" class="headerlink" title="DQN 算法更新"></a>DQN 算法更新</h3><h4 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h4><p>Deep Q Network 的简称叫 DQN，是将 Q learning 的优势 和 Neural networks 结合了。如果我们使用 tabular Q learning，对于每一个 state，action 我们都需要存放在一张 q_table 的表中。如果像显示生活中，情况可就比那个迷宫的状况复杂多了，我们有千千万万个 state，如果将这千万个 state 的值都放在表中，受限于我们计算机硬件，这样从表中获取数据，更新数据是没有效率的。这就是 DQN 产生的原因了。我们可以使用神经网络来 估算这个 state 的值，这样就不需要一张表了。</p>
+<p>这次的教程我们还是基于熟悉的迷宫环境，重点在实现 DQN 算法，之后我们再拿着做好的 DQN 算法去跑其他更有意思的环境。</p>
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="https://static.mofanpy.com/results/reinforcement-learning/maze%20dqn.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position: absolute; width: 100%; height: 100%; Left: 0; top: 0;" ></iframe></div>
+
+
+
+<h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-1-1.jpg"></p>
+<p>整个算法乍看起来很复杂，不过我们拆分一下，就变简单了。也就是个 Q learning 主框架上加了些装饰。</p>
+<p>这些装饰包括：</p>
+<ul>
+<li>记忆库 (用于重复学习)</li>
+<li>神经网络计算 Q 值</li>
+<li>暂时冻结 <code>q_target</code> 参数 (切断相关性)</li>
+</ul>
+<h4 id="算法的代码形式"><a href="#算法的代码形式" class="headerlink" title="算法的代码形式"></a>算法的代码形式</h4><p>接下来我们对应上面的算法，来实现主循环。首先 import 所需模块。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> maze_env <span class="keyword">import</span> Maze</span><br><span class="line"><span class="keyword">from</span> RL_brain <span class="keyword">import</span> DeepQNetwork</span><br></pre></td></tr></table></figure>
+
+<p>下面的代码，就是 DQN 于环境交互最重要的部分。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run_maze</span>():</span></span><br><span class="line">    step = <span class="number">0</span>    <span class="comment"># 用来控制什么时候学习</span></span><br><span class="line">    <span class="keyword">for</span> episode <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">        <span class="comment"># 初始化环境</span></span><br><span class="line">        observation = env.reset()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="comment"># 刷新环境</span></span><br><span class="line">            env.render()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># DQN 根据观测值选择行为</span></span><br><span class="line">            action = RL.choose_action(observation)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 环境根据行为给出下一个 state, reward, 是否终止</span></span><br><span class="line">            observation_, reward, done = env.step(action)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># DQN 存储记忆</span></span><br><span class="line">            RL.store_transition(observation, action, reward, observation_)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 控制学习起始时间和频率 (先累积一些记忆再开始学习)</span></span><br><span class="line">            <span class="keyword">if</span> (step &gt; <span class="number">200</span>) <span class="keyword">and</span> (step % <span class="number">5</span> == <span class="number">0</span>):</span><br><span class="line">                RL.learn()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 将下一个 state_ 变为 下次循环的 state</span></span><br><span class="line">            observation = observation_</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 如果终止, 就跳出循环</span></span><br><span class="line">            <span class="keyword">if</span> done:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            step += <span class="number">1</span>   <span class="comment"># 总步数</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># end of game</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;game over&#x27;</span>)</span><br><span class="line">    env.destroy()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    env = Maze()</span><br><span class="line">    RL = DeepQNetwork(env.n_actions, env.n_features,</span><br><span class="line">                      learning_rate=<span class="number">0.01</span>,</span><br><span class="line">                      reward_decay=<span class="number">0.9</span>,</span><br><span class="line">                      e_greedy=<span class="number">0.9</span>,</span><br><span class="line">                      replace_target_iter=<span class="number">200</span>,  <span class="comment"># 每 200 步替换一次 target_net 的参数</span></span><br><span class="line">                      memory_size=<span class="number">2000</span>, <span class="comment"># 记忆上限</span></span><br><span class="line">                      <span class="comment"># output_graph=True   # 是否输出 tensorboard 文件</span></span><br><span class="line">                      )</span><br><span class="line">    env.after(<span class="number">100</span>, run_maze)</span><br><span class="line">    env.mainloop()</span><br><span class="line">    RL.plot_cost()  <span class="comment"># 观看神经网络的误差曲线</span></span><br></pre></td></tr></table></figure>
+
+<p>下一节我们会来讲解 <code>DeepQNetwork</code> 这种算法具体要怎么编。</p>
+<h3 id="DQN-神经网络"><a href="#DQN-神经网络" class="headerlink" title="DQN 神经网络"></a>DQN 神经网络</h3><h4 id="要点-1"><a href="#要点-1" class="headerlink" title="要点"></a>要点</h4><p>接着上节内容，这节我们使用 Tensorflow (如果还不了解 Tensorflow，这里去往 <a href="https://mofanpy.com/tutorials/machine-learning/tensorflow">经典的 Tensorflow 视频教程</a>) 来搭建 DQN 当中的神经网络部分 (用来预测 Q 值)。</p>
+<h4 id="两个神经网络"><a href="#两个神经网络" class="headerlink" title="两个神经网络"></a>两个神经网络</h4><p>为了使用 Tensorflow 来实现 DQN，比较推荐的方式是搭建两个神经网络，<code>target_net</code> 用于预测 <code>q_target</code> 值，它不会及时更新参数。<code>eval_net</code> 用于预测 <code>q_eval</code>，这个神经网络拥有最新的神经网络参数。不过这两个神经网络结构是完全一样的，只是里面的参数不一样。在<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-DQN">这个短视频里</a>，能找到我们为什么要建立两个不同参数的神经网络。</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-2-1.png"></p>
+<h4 id="神经网络结构"><a href="#神经网络结构" class="headerlink" title="神经网络结构"></a>神经网络结构</h4><p>因为 DQN 的结构相比之前所讲的内容都不一样，所以我们不使用继承来实现这次的功能。这次我们创建一个 <code>DeepQNetwork</code> 的 class，以及他神经网络部分的功能。下次再说强化学习的更新部分。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="comment"># 建立神经网络</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_build_net</span>(<span class="params">self</span>):</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="创建两个网络"><a href="#创建两个网络" class="headerlink" title="创建两个网络"></a>创建两个网络</h4><p>两个神经网络是为了固定住一个神经网络 (<code>target_net</code>) 的参数，<code>target_net</code> 是 <code>eval_net</code> 的一个历史版本，拥有 <code>eval_net</code> 很久之前的一组参数，而且这组参数被固定一段时间，然后再被 <code>eval_net</code> 的新参数所替换。而 <code>eval_net</code> 是不断在被提升的，所以是一个可以被训练的网络 <code>trainable=True</code>。而 <code>target_net</code> 的 <code>trainable=False</code>。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_build_net</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="comment"># -------------- 创建 eval 神经网络, 及时提升参数 --------------</span></span><br><span class="line">        self.s = tf.placeholder(tf.float32, [<span class="literal">None</span>, self.n_features], name=<span class="string">&#x27;s&#x27;</span>)  <span class="comment"># 用来接收 observation</span></span><br><span class="line">        self.q_target = tf.placeholder(tf.float32, [<span class="literal">None</span>, self.n_actions], name=<span class="string">&#x27;Q_target&#x27;</span>) <span class="comment"># 用来接收 q_target 的值, 这个之后会通过计算得到</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;eval_net&#x27;</span>):</span><br><span class="line">            <span class="comment"># c_names(collections_names) 是在更新 target_net 参数时会用到</span></span><br><span class="line">            c_names, n_l1, w_initializer, b_initializer = \</span><br><span class="line">                [<span class="string">&#x27;eval_net_params&#x27;</span>, tf.GraphKeys.GLOBAL_VARIABLES], <span class="number">10</span>, \</span><br><span class="line">                tf.random_normal_initializer(<span class="number">0.</span>, <span class="number">0.3</span>), tf.constant_initializer(<span class="number">0.1</span>)  <span class="comment"># config of layers</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># eval_net 的第一层. collections 是在更新 target_net 参数时会用到</span></span><br><span class="line">            <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;l1&#x27;</span>):</span><br><span class="line">                w1 = tf.get_variable(<span class="string">&#x27;w1&#x27;</span>, [self.n_features, n_l1], initializer=w_initializer, collections=c_names)</span><br><span class="line">                b1 = tf.get_variable(<span class="string">&#x27;b1&#x27;</span>, [<span class="number">1</span>, n_l1], initializer=b_initializer, collections=c_names)</span><br><span class="line">                l1 = tf.nn.relu(tf.matmul(self.s, w1) + b1)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># eval_net 的第二层. collections 是在更新 target_net 参数时会用到</span></span><br><span class="line">            <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;l2&#x27;</span>):</span><br><span class="line">                w2 = tf.get_variable(<span class="string">&#x27;w2&#x27;</span>, [n_l1, self.n_actions], initializer=w_initializer, collections=c_names)</span><br><span class="line">                b2 = tf.get_variable(<span class="string">&#x27;b2&#x27;</span>, [<span class="number">1</span>, self.n_actions], initializer=b_initializer, collections=c_names)</span><br><span class="line">                self.q_eval = tf.matmul(l1, w2) + b2</span><br><span class="line"></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;loss&#x27;</span>): <span class="comment"># 求误差</span></span><br><span class="line">            self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, self.q_eval))</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;train&#x27;</span>):    <span class="comment"># 梯度下降</span></span><br><span class="line">            self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># ---------------- 创建 target 神经网络, 提供 target Q ---------------------</span></span><br><span class="line">        self.s_ = tf.placeholder(tf.float32, [<span class="literal">None</span>, self.n_features], name=<span class="string">&#x27;s_&#x27;</span>)    <span class="comment"># 接收下个 observation</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;target_net&#x27;</span>):</span><br><span class="line">            <span class="comment"># c_names(collections_names) 是在更新 target_net 参数时会用到</span></span><br><span class="line">            c_names = [<span class="string">&#x27;target_net_params&#x27;</span>, tf.GraphKeys.GLOBAL_VARIABLES]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># target_net 的第一层. collections 是在更新 target_net 参数时会用到</span></span><br><span class="line">            <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;l1&#x27;</span>):</span><br><span class="line">                w1 = tf.get_variable(<span class="string">&#x27;w1&#x27;</span>, [self.n_features, n_l1], initializer=w_initializer, collections=c_names)</span><br><span class="line">                b1 = tf.get_variable(<span class="string">&#x27;b1&#x27;</span>, [<span class="number">1</span>, n_l1], initializer=b_initializer, collections=c_names)</span><br><span class="line">                l1 = tf.nn.relu(tf.matmul(self.s_, w1) + b1)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># target_net 的第二层. collections 是在更新 target_net 参数时会用到</span></span><br><span class="line">            <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;l2&#x27;</span>):</span><br><span class="line">                w2 = tf.get_variable(<span class="string">&#x27;w2&#x27;</span>, [n_l1, self.n_actions], initializer=w_initializer, collections=c_names)</span><br><span class="line">                b2 = tf.get_variable(<span class="string">&#x27;b2&#x27;</span>, [<span class="number">1</span>, self.n_actions], initializer=b_initializer, collections=c_names)</span><br><span class="line">                self.q_next = tf.matmul(l1, w2) + b2</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="DQN-思维决策"><a href="#DQN-思维决策" class="headerlink" title="DQN 思维决策"></a>DQN 思维决策</h3><p>接着上节内容，我们来定义 <code>DeepQNetwork</code> 的决策和思考部分。</p>
+<h4 id="代码主结构"><a href="#代码主结构" class="headerlink" title="代码主结构"></a>代码主结构</h4><p>定义完上次的神经网络部分以后，这次我们来定义其他部分。包括：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="comment"># 上次的内容</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_build_net</span>(<span class="params">self</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 这次的内容:</span></span><br><span class="line">    <span class="comment"># 初始值</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 存储记忆</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">store_transition</span>(<span class="params">self, s, a, r, s_</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 选行为</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span>(<span class="params">self, observation</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 学习</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span>(<span class="params">self</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 看看学习效果 (可选)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">plot_cost</span>(<span class="params">self</span>):</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="初始值"><a href="#初始值" class="headerlink" title="初始值"></a>初始值</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">            self,</span></span></span><br><span class="line"><span class="function"><span class="params">            n_actions,</span></span></span><br><span class="line"><span class="function"><span class="params">            n_features,</span></span></span><br><span class="line"><span class="function"><span class="params">            learning_rate=<span class="number">0.01</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            reward_decay=<span class="number">0.9</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            e_greedy=<span class="number">0.9</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            replace_target_iter=<span class="number">300</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            memory_size=<span class="number">500</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            batch_size=<span class="number">32</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            e_greedy_increment=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            output_graph=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    </span>):</span></span><br><span class="line">        self.n_actions = n_actions</span><br><span class="line">        self.n_features = n_features</span><br><span class="line">        self.lr = learning_rate</span><br><span class="line">        self.gamma = reward_decay</span><br><span class="line">        self.epsilon_max = e_greedy     <span class="comment"># epsilon 的最大值</span></span><br><span class="line">        self.replace_target_iter = replace_target_iter  <span class="comment"># 更换 target_net 的步数</span></span><br><span class="line">        self.memory_size = memory_size  <span class="comment"># 记忆上限</span></span><br><span class="line">        self.batch_size = batch_size    <span class="comment"># 每次更新时从 memory 里面取多少记忆出来</span></span><br><span class="line">        self.epsilon_increment = e_greedy_increment <span class="comment"># epsilon 的增量</span></span><br><span class="line">        self.epsilon = <span class="number">0</span> <span class="keyword">if</span> e_greedy_increment <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> self.epsilon_max <span class="comment"># 是否开启探索模式, 并逐步减少探索次数</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 记录学习次数 (用于判断是否更换 target_net 参数)</span></span><br><span class="line">        self.learn_step_counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 初始化全 0 记忆 [s, a, r, s_]</span></span><br><span class="line">        self.memory = np.zeros((self.memory_size, n_features*<span class="number">2</span>+<span class="number">2</span>)) <span class="comment"># 和视频中不同, 因为 pandas 运算比较慢, 这里改为直接用 numpy</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 创建 [target_net, evaluate_net]</span></span><br><span class="line">        self._build_net()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 替换 target net 的参数</span></span><br><span class="line">        t_params = tf.get_collection(<span class="string">&#x27;target_net_params&#x27;</span>)  <span class="comment"># 提取 target_net 的参数</span></span><br><span class="line">        e_params = tf.get_collection(<span class="string">&#x27;eval_net_params&#x27;</span>)   <span class="comment"># 提取  eval_net 的参数</span></span><br><span class="line">        self.replace_target_op = [tf.assign(t, e) <span class="keyword">for</span> t, e <span class="keyword">in</span> <span class="built_in">zip</span>(t_params, e_params)] <span class="comment"># 更新 target_net 参数</span></span><br><span class="line"></span><br><span class="line">        self.sess = tf.Session()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 输出 tensorboard 文件</span></span><br><span class="line">        <span class="keyword">if</span> output_graph:</span><br><span class="line">            <span class="comment"># $ tensorboard --logdir=logs</span></span><br><span class="line">            tf.summary.FileWriter(<span class="string">&quot;logs/&quot;</span>, self.sess.graph)</span><br><span class="line"></span><br><span class="line">        self.sess.run(tf.global_variables_initializer())</span><br><span class="line">        self.cost_his = []  <span class="comment"># 记录所有 cost 变化, 用于最后 plot 出来观看</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="存储记忆"><a href="#存储记忆" class="headerlink" title="存储记忆"></a>存储记忆</h4><p>DQN 的精髓部分之一：记录下所有经历过的步，这些步可以进行反复的学习，所以是一种 off-policy 方法，你甚至可以自己玩，然后记录下自己玩的经历，让这个 DQN 学习你是如何通关的。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">store_transition</span>(<span class="params">self, s, a, r, s_</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">hasattr</span>(self, <span class="string">&#x27;memory_counter&#x27;</span>):</span><br><span class="line">            self.memory_counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 记录一条 [s, a, r, s_] 记录</span></span><br><span class="line">        transition = np.hstack((s, [a, r], s_))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 总 memory 大小是固定的, 如果超出总大小, 旧 memory 就被新 memory 替换</span></span><br><span class="line">        index = self.memory_counter % self.memory_size</span><br><span class="line">        self.memory[index, :] = transition <span class="comment"># 替换过程</span></span><br><span class="line"></span><br><span class="line">        self.memory_counter += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="选行为"><a href="#选行为" class="headerlink" title="选行为"></a>选行为</h4><p>和之前的 <code>QLearningTable</code>，<code>SarsaTable</code> 等一样，都需要一个选行为的功能。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">store_transition</span>(<span class="params">self, s, a, r, s_</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span>(<span class="params">self, observation</span>):</span></span><br><span class="line">        <span class="comment"># 统一 observation 的 shape (1, size_of_observation)</span></span><br><span class="line">        observation = observation[np.newaxis, :]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> np.random.uniform() &lt; self.epsilon:</span><br><span class="line">            <span class="comment"># 让 eval_net 神经网络生成所有 action 的值, 并选择值最大的 action</span></span><br><span class="line">            actions_value = self.sess.run(self.q_eval, feed_dict=&#123;self.s: observation&#125;)</span><br><span class="line">            action = np.argmax(actions_value)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            action = np.random.randint(<span class="number">0</span>, self.n_actions)   <span class="comment"># 随机选择</span></span><br><span class="line">        <span class="keyword">return</span> action</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h4><p>最重要的一步来了，就是在 <code>DeepQNetwork</code> 中，是如何学习，更新参数的。这里涉及了 <code>target_net</code> 和 <code>eval_net</code> 的交互使用。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">store_transition</span>(<span class="params">self, s, a, r, s_</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span>(<span class="params">self, observation</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_replace_target_params</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="comment"># 检查是否替换 target_net 参数</span></span><br><span class="line">        <span class="keyword">if</span> self.learn_step_counter % self.replace_target_iter == <span class="number">0</span>:</span><br><span class="line">            self.sess.run(self.replace_target_op)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;\ntarget_params_replaced\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 从 memory 中随机抽取 batch_size 这么多记忆</span></span><br><span class="line">        <span class="keyword">if</span> self.memory_counter &gt; self.memory_size:</span><br><span class="line">            sample_index = np.random.choice(self.memory_size, size=self.batch_size)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            sample_index = np.random.choice(self.memory_counter, size=self.batch_size)</span><br><span class="line">        batch_memory = self.memory[sample_index, :]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 获取 q_next (target_net 产生了 q) 和 q_eval(eval_net 产生的 q)</span></span><br><span class="line">        q_next, q_eval = self.sess.run(</span><br><span class="line">            [self.q_next, self.q_eval],</span><br><span class="line">            feed_dict=&#123;</span><br><span class="line">                self.s_: batch_memory[:, -self.n_features:],</span><br><span class="line">                self.s: batch_memory[:, :self.n_features]</span><br><span class="line">            &#125;)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 下面这几步十分重要. q_next, q_eval 包含所有 action 的值,</span></span><br><span class="line">        <span class="comment"># 而我们需要的只是已经选择好的 action 的值, 其他的并不需要.</span></span><br><span class="line">        <span class="comment"># 所以我们将其他的 action 值全变成 0, 将用到的 action 误差值 反向传递回去, 作为更新凭据.</span></span><br><span class="line">        <span class="comment"># 这是我们最终要达到的样子, 比如 q_target - q_eval = [1, 0, 0] - [-1, 0, 0] = [2, 0, 0]</span></span><br><span class="line">        <span class="comment"># q_eval = [-1, 0, 0] 表示这一个记忆中有我选用过 action 0, 而 action 0 带来的 Q(s, a0) = -1, 所以其他的 Q(s, a1) = Q(s, a2) = 0.</span></span><br><span class="line">        <span class="comment"># q_target = [1, 0, 0] 表示这个记忆中的 r+gamma*maxQ(s_) = 1, 而且不管在 s_ 上我们取了哪个 action,</span></span><br><span class="line">        <span class="comment"># 我们都需要对应上 q_eval 中的 action 位置, 所以就将 1 放在了 action 0 的位置.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 下面也是为了达到上面说的目的, 不过为了更方面让程序运算, 达到目的的过程有点不同.</span></span><br><span class="line">        <span class="comment"># 是将 q_eval 全部赋值给 q_target, 这时 q_target-q_eval 全为 0,</span></span><br><span class="line">        <span class="comment"># 不过 我们再根据 batch_memory 当中的 action 这个 column 来给 q_target 中的对应的 memory-action 位置来修改赋值.</span></span><br><span class="line">        <span class="comment"># 使新的赋值为 reward + gamma * maxQ(s_), 这样 q_target-q_eval 就可以变成我们所需的样子.</span></span><br><span class="line">        <span class="comment"># 具体在下面还有一个举例说明.</span></span><br><span class="line"></span><br><span class="line">        q_target = q_eval.copy()</span><br><span class="line">        batch_index = np.arange(self.batch_size, dtype=np.int32)</span><br><span class="line">        eval_act_index = batch_memory[:, self.n_features].astype(<span class="built_in">int</span>)</span><br><span class="line">        reward = batch_memory[:, self.n_features + <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        q_target[batch_index, eval_act_index] = reward + self.gamma * np.<span class="built_in">max</span>(q_next, axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        假如在这个 batch 中, 我们有2个提取的记忆, 根据每个记忆可以生产3个 action 的值:</span></span><br><span class="line"><span class="string">        q_eval =</span></span><br><span class="line"><span class="string">        [[1, 2, 3],</span></span><br><span class="line"><span class="string">         [4, 5, 6]]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        q_target = q_eval =</span></span><br><span class="line"><span class="string">        [[1, 2, 3],</span></span><br><span class="line"><span class="string">         [4, 5, 6]]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        然后根据 memory 当中的具体 action 位置来修改 q_target 对应 action 上的值:</span></span><br><span class="line"><span class="string">        比如在:</span></span><br><span class="line"><span class="string">            记忆 0 的 q_target 计算值是 -1, 而且我用了 action 0;</span></span><br><span class="line"><span class="string">            记忆 1 的 q_target 计算值是 -2, 而且我用了 action 2:</span></span><br><span class="line"><span class="string">        q_target =</span></span><br><span class="line"><span class="string">        [[-1, 2, 3],</span></span><br><span class="line"><span class="string">         [4, 5, -2]]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        所以 (q_target - q_eval) 就变成了:</span></span><br><span class="line"><span class="string">        [[(-1)-(1), 0, 0],</span></span><br><span class="line"><span class="string">         [0, 0, (-2)-(6)]]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        最后我们将这个 (q_target - q_eval) 当成误差, 反向传递会神经网络.</span></span><br><span class="line"><span class="string">        所有为 0 的 action 值是当时没有选择的 action, 之前有选择的 action 才有不为0的值.</span></span><br><span class="line"><span class="string">        我们只反向传递之前选择的 action 的值,</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 训练 eval_net</span></span><br><span class="line">        _, self.cost = self.sess.run([self._train_op, self.loss],</span><br><span class="line">                                     feed_dict=&#123;self.s: batch_memory[:, :self.n_features],</span><br><span class="line">                                                self.q_target: q_target&#125;)</span><br><span class="line">        self.cost_his.append(self.cost) <span class="comment"># 记录 cost 误差</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 逐渐增加 epsilon, 降低行为的随机性</span></span><br><span class="line">        self.epsilon = self.epsilon + self.epsilon_increment <span class="keyword">if</span> self.epsilon &lt; self.epsilon_max <span class="keyword">else</span> self.epsilon_max</span><br><span class="line">        self.learn_step_counter += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="看学习效果"><a href="#看学习效果" class="headerlink" title="看学习效果"></a>看学习效果</h4><p>为了看看学习效果，我们在最后输出学习过程中的 <code>cost</code> 变化曲线。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeepQNetwork</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">store_transition</span>(<span class="params">self, s, a, r, s_</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span>(<span class="params">self, observation</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_replace_target_params</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">plot_cost</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">        plt.plot(np.arange(<span class="built_in">len</span>(self.cost_his)), self.cost_his)</span><br><span class="line">        plt.ylabel(<span class="string">&#x27;Cost&#x27;</span>)</span><br><span class="line">        plt.xlabel(<span class="string">&#x27;training steps&#x27;</span>)</span><br><span class="line">        plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-3-1.png"></p>
+<p>可以看出曲线并不是平滑下降的，这是因为 DQN 中的 input 数据是一步步改变的，而且会根据学习情况，获取到不同的数据。所以这并不像一般的监督学习，DQN 的 cost 曲线就有所不同了。</p>
+<h4 id="修改版的-DQN"><a href="#修改版的-DQN" class="headerlink" title="修改版的 DQN"></a>修改版的 DQN</h4><p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-3-2.png"></p>
+<p>最后提供一种修改版的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5_Deep_Q_Network/DQN_modified.py">DQN 代码</a>，这是录制完视频以后做的，这是将 <code>q_target</code> 的计算也加在了 Tensorflow 的 graph 里面。这种结构还是有好处的，作为学习样本的话，计算结构全部在 tensorboard 上，就更好理解，代码结构也更好理解。</p>
+<p>我只在原本的 DQN 代码上改了一点点东西，大家应该可以很容易辨别。修改版的<a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5_Deep_Q_Network/DQN_modified.py">代码在这</a>。</p>
+<p>如果想一次性看到全部代码, 请去我的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/tree/master/contents/5_Deep_Q_Network">Github</a></p>
+<blockquote>
+<p><strong>原文地址：</strong><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/">强化学习 (Reinforcement Learning) | 莫烦Python (mofanpy.com)</a></p>
+<p><strong>学习资料：</strong></p>
+<ul>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning">强化学习教程</a></li>
+<li><a href="https://www.youtube.com/watch?v=G5BDgzxfLvA&list=PLXO45tsB95cLYyEsEylpPvTY-8ErPt2O_">强化学习模拟程序</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/DQN1">DQN Tensorflow Python 教程</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/torch/DQN">DQN PyTorch Python 教程</a></li>
+<li><a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/tree/master/contents/5_Deep_Q_Network">全部代码</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-DQN">什么是 DQN 短视频</a></li>
+<li>模拟视频效果<a href="https://www.youtube.com/playlist?list=PLXO45tsB95cLYyEsEylpPvTY-8ErPt2O_">Youtube</a>, <a href="http://list.youku.com/albumlist/show/id_27485743">Youku</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/ML-practice/RL-build-arm-from-scratch1">强化学习实战</a></li>
+<li>论文 <a href="https://arxiv.org/abs/1312.5602">Playing Atari with Deep Reinforcement Learning</a></li>
+</ul>
+</blockquote>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>莫烦强化学习（QLearning）</title>
     <url>/YingYingMonstre.github.io/2021/11/08/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88QLearning%EF%BC%89/</url>
     <content><![CDATA[<h3 id="什么是-Q-Learning"><a href="#什么是-Q-Learning" class="headerlink" title="什么是 Q Learning"></a>什么是 Q Learning</h3><p>今天我们会来说说强化学习中一个很有名的算法——Q-learning。</p>
@@ -1169,6 +1276,188 @@
 <li><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/tabular-sarsa1">Sarsa Python 教程</a></li>
 <li><a href="https://mofanpy.com/tutorials/machine-learning/ML-practice/RL-build-arm-from-scratch1">强化学习实战</a></li>
 <li>学习书籍 <a href="https://mofanpy.com/static/files/Reinforcement_learning_An_introduction.pdf">Reinforcement learning: An introduction</a></li>
+</ul>
+</blockquote>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>莫烦强化学习（DQN下）</title>
+    <url>/YingYingMonstre.github.io/2021/11/30/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88DQN%E4%B8%8B%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="OpenAI-gym-环境库"><a href="#OpenAI-gym-环境库" class="headerlink" title="OpenAI gym 环境库"></a>OpenAI gym 环境库</h3><h4 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h4><p>手动编环境是一件很耗时间的事情，所以如果有能力使用别人已经编好的环境，可以节约我们很多时间。OpenAI gym 就是这样一个模块，他提供了我们很多优秀的模拟环境。我们的各种 RL 算法都能使用这些环境。不过 OpenAI gym 暂时只支持 MacOS 和 Linux 系统。Windows 已经支持，但是听说还没有全面支持，大家时不时查看下官网，可能就有惊喜。实在等不及更新了，也行用 tkinter 来手动编写一下环境。这里有我制作的很好的 <a href="https://mofanpy.com/tutorials/python-basic/tkinter">tkinter 入门教程</a>，之前的 maze 环境也是用 tkinter 编出来的。大家可以仿照<a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5_Deep_Q_Network/maze_env.py">这个文件</a>编写就 ok 啦。或者还可以玩玩更厉害的，像 OpenAI 一样，使用 pyglet 模块来编写，我做了一个从环境开始编写的<a href="https://mofanpy.com/tutorials/machine-learning/ML-practice/RL-build-arm-from-scratch1">强化学习实战</a>。</p>
+<h4 id="安装-gym"><a href="#安装-gym" class="headerlink" title="安装 gym"></a>安装 gym</h4><p>在 MacOS 和 Linux 系统下，安装 gym 很方便，首先确定你是 python 2.7 或者 python 3.5 版本。然后在你的 terminal 中复制下面这些。但是 gym 暂时还不完全支持 Windows，不过有些虚拟环境已经的到了支持，想立杆子那个已经支持了。所以接下来要说的安装方法只有 MacOS 和 Linux 的。Windows 用户的安装方式应该也差不多，如果 Windows 用户遇到了问题，欢迎在留言区分享解决的方法。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> python 2.7, 复制下面</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip install gym</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> python 3.5, 复制下面</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip3 install gym</span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有报错，恭喜你，这样你就装好了 gym 的最基本款，可以开始玩以下游戏啦：</p>
+<ul>
+<li><a href="https://gym.openai.com/envs#algorithmic">algorithmic</a></li>
+<li><a href="https://gym.openai.com/envs#toy_text">toy_text</a></li>
+<li><a href="https://gym.openai.com/envs#classic_control">classic_control</a> (这个需要 pyglet 模块)</li>
+</ul>
+<p>如果在安装中遇到问题。可能是缺少了一些必要模块，可以使用下面语句来安装这些模块(安装时间可能有点久)：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> MacOS:</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> brew install cmake boost boost-python sdl2 swig wget</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Ubuntu 14.04:</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> apt-get install -y python-numpy python-dev cmake zlib1g-dev libjpeg-dev xvfb libav-tools xorg-dev python-opengl libboost-all-dev libsdl2-dev swig</span></span><br></pre></td></tr></table></figure>
+
+<p>如果想要玩 gym 提供的全套游戏，下面这几句就能满足你：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> python 2.7, 复制下面</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip install gym[all]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> python 3.5, 复制下面</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip3 install gym[all]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="CartPole-例子"><a href="#CartPole-例子" class="headerlink" title="CartPole 例子"></a>CartPole 例子</h4><div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="https://static.mofanpy.com/results/reinforcement-learning/cartpole%20dqn.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position: absolute; width: 100%; height: 100%; Left: 0; top: 0;" ></iframe></div>
+
+<p>之前我编写的 <code>maze_env</code> 基本上是按照 <code>gym</code> 环境格式写的，所以你换成 <code>gym</code> 格式会很简单。</p>
+<p>接下来我们对应上面的算法，来实现主循环。首先 import 所需模块。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> RL_brain <span class="keyword">import</span> DeepQNetwork</span><br><span class="line"></span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)   <span class="comment"># 定义使用 gym 库中的那一个环境</span></span><br><span class="line">env = env.unwrapped <span class="comment"># 不做这个会有很多限制</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(env.action_space) <span class="comment"># 查看这个环境中可用的 action 有多少个</span></span><br><span class="line"><span class="built_in">print</span>(env.observation_space)    <span class="comment"># 查看这个环境中可用的 state 的 observation 有多少个</span></span><br><span class="line"><span class="built_in">print</span>(env.observation_space.high)   <span class="comment"># 查看 observation 最高取值</span></span><br><span class="line"><span class="built_in">print</span>(env.observation_space.low)    <span class="comment"># 查看 observation 最低取值</span></span><br></pre></td></tr></table></figure>
+
+<p>与之前使用 tkinter 定义的环境有点不一样，我们可以不适用 <code>if __name__ == &quot;__main__&quot;</code> 的方式，下面是一种类似，却更简单的写法。之中我们会用到里面的 reward，但是 <code>env.step()</code> 说提供的 <code>reward</code> 不一定是最有效率的 <code>reward</code>，我们大可对这些进行修改，使 DQN 学得更有效率。你可以自己对比一下不修改 reward 和按我这样修改，他们学习过程的不同。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义使用 DQN 的算法</span></span><br><span class="line">RL = DeepQNetwork(n_actions=env.action_space.n,</span><br><span class="line">                  n_features=env.observation_space.shape[<span class="number">0</span>],</span><br><span class="line">                  learning_rate=<span class="number">0.01</span>, e_greedy=<span class="number">0.9</span>,</span><br><span class="line">                  replace_target_iter=<span class="number">100</span>, memory_size=<span class="number">2000</span>,</span><br><span class="line">                  e_greedy_increment=<span class="number">0.0008</span>,)</span><br><span class="line"></span><br><span class="line">total_steps = <span class="number">0</span> <span class="comment"># 记录步数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i_episode <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取回合 i_episode 第一个 observation</span></span><br><span class="line">    observation = env.reset()</span><br><span class="line">    ep_r = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        env.render()    <span class="comment"># 刷新环境</span></span><br><span class="line"></span><br><span class="line">        action = RL.choose_action(observation)  <span class="comment"># 选行为</span></span><br><span class="line"></span><br><span class="line">        observation_, reward, done, info = env.step(action) <span class="comment"># 获取下一个 state</span></span><br><span class="line"></span><br><span class="line">        x, x_dot, theta, theta_dot = observation_   <span class="comment"># 细分开, 为了修改原配的 reward</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># x 是车的水平位移, 所以 r1 是车越偏离中心, 分越少</span></span><br><span class="line">        <span class="comment"># theta 是棒子离垂直的角度, 角度越大, 越不垂直. 所以 r2 是棒越垂直, 分越高</span></span><br><span class="line"></span><br><span class="line">        x, x_dot, theta, theta_dot = observation_</span><br><span class="line">        r1 = (env.x_threshold - <span class="built_in">abs</span>(x))/env.x_threshold - <span class="number">0.8</span></span><br><span class="line">        r2 = (env.theta_threshold_radians - <span class="built_in">abs</span>(theta))/env.theta_threshold_radians - <span class="number">0.5</span></span><br><span class="line">        reward = r1 + r2   <span class="comment"># 总 reward 是 r1 和 r2 的结合, 既考虑位置, 也考虑角度, 这样 DQN 学习更有效率</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 保存这一组记忆</span></span><br><span class="line">        RL.store_transition(observation, action, reward, observation_)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> total_steps &gt; <span class="number">1000</span>:</span><br><span class="line">            RL.learn()  <span class="comment"># 学习</span></span><br><span class="line"></span><br><span class="line">        ep_r += reward</span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;episode: &#x27;</span>, i_episode,</span><br><span class="line">                  <span class="string">&#x27;ep_r: &#x27;</span>, <span class="built_in">round</span>(ep_r, <span class="number">2</span>),</span><br><span class="line">                  <span class="string">&#x27; epsilon: &#x27;</span>, <span class="built_in">round</span>(RL.epsilon, <span class="number">2</span>))</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        observation = observation_</span><br><span class="line">        total_steps += <span class="number">1</span></span><br><span class="line"><span class="comment"># 最后输出 cost 曲线</span></span><br><span class="line">RL.plot_cost()</span><br></pre></td></tr></table></figure>
+
+<p>这是更为典型的 RL cost 曲线：</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-4-1.png"></p>
+<h4 id="MountainCar-例子"><a href="#MountainCar-例子" class="headerlink" title="MountainCar 例子"></a>MountainCar 例子</h4><div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="https://static.mofanpy.com/results/reinforcement-learning/mountaincar%20dqn.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position: absolute; width: 100%; height: 100%; Left: 0; top: 0;" ></iframe></div>
+
+<p>代码基本和上述代码相同，就只是在 reward 上动了下手脚。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> RL_brain <span class="keyword">import</span> DeepQNetwork</span><br><span class="line"></span><br><span class="line">env = gym.make(<span class="string">&#x27;MountainCar-v0&#x27;</span>)</span><br><span class="line">env = env.unwrapped</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(env.action_space)</span><br><span class="line"><span class="built_in">print</span>(env.observation_space)</span><br><span class="line"><span class="built_in">print</span>(env.observation_space.high)</span><br><span class="line"><span class="built_in">print</span>(env.observation_space.low)</span><br><span class="line"></span><br><span class="line">RL = DeepQNetwork(n_actions=<span class="number">3</span>, n_features=<span class="number">2</span>, learning_rate=<span class="number">0.001</span>, e_greedy=<span class="number">0.9</span>,</span><br><span class="line">                  replace_target_iter=<span class="number">300</span>, memory_size=<span class="number">3000</span>,</span><br><span class="line">                  e_greedy_increment=<span class="number">0.0001</span>,)</span><br><span class="line"></span><br><span class="line">total_steps = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i_episode <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line"></span><br><span class="line">    observation = env.reset()</span><br><span class="line">    ep_r = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        env.render()</span><br><span class="line"></span><br><span class="line">        action = RL.choose_action(observation)</span><br><span class="line"></span><br><span class="line">        observation_, reward, done, info = env.step(action)</span><br><span class="line"></span><br><span class="line">        position, velocity = observation_</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 车开得越高 reward 越大</span></span><br><span class="line">        reward = <span class="built_in">abs</span>(position - (-<span class="number">0.5</span>))</span><br><span class="line"></span><br><span class="line">        RL.store_transition(observation, action, reward, observation_)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> total_steps &gt; <span class="number">1000</span>:</span><br><span class="line">            RL.learn()</span><br><span class="line"></span><br><span class="line">        ep_r += reward</span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            get = <span class="string">&#x27;| Get&#x27;</span> <span class="keyword">if</span> observation_[<span class="number">0</span>] &gt;= env.unwrapped.goal_position <span class="keyword">else</span> <span class="string">&#x27;| ----&#x27;</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Epi: &#x27;</span>, i_episode,</span><br><span class="line">                  get,</span><br><span class="line">                  <span class="string">&#x27;| Ep_r: &#x27;</span>, <span class="built_in">round</span>(ep_r, <span class="number">4</span>),</span><br><span class="line">                  <span class="string">&#x27;| Epsilon: &#x27;</span>, <span class="built_in">round</span>(RL.epsilon, <span class="number">2</span>))</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        observation = observation_</span><br><span class="line">        total_steps += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">RL.plot_cost()</span><br></pre></td></tr></table></figure>
+
+<p>出来的 cost 曲线是这样：</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-4-2.png"></p>
+<p>这两个都只是例子而已，具体的实施你也可以大动手脚，比如你的 reward 定义得更好，你的神经网络结构更好，使得他们学的更快。这些都是自己定义的。</p>
+<h3 id="Double-DQN"><a href="#Double-DQN" class="headerlink" title="Double DQN"></a>Double DQN</h3><h4 id="要点-1"><a href="#要点-1" class="headerlink" title="要点"></a>要点</h4><p><strong>本篇教程是基于 Deep Q network (DQN) 的选学教程。以下教程缩减了在 DQN 方面的介绍，着重强调 Double DQN 和 DQN 在代码上不同的地方。所以还没了解 DQN 的同学们，有关于 DQN 的知识，请从 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-DQN">这个视频</a> 和 <a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/DQN1">这个Python教程</a> 开始学习。</strong></p>
+<p>接下来我们说说为什么会有 Double DQN 这种算法。所以我们从 Double DQN 相对于 Natural DQN (传统 DQN) 的优势说起。</p>
+<p>一句话概括，DQN 基于 Q-learning, Q-Learning 中有 <code>Qmax</code>，<code>Qmax</code> 会导致 <code>Q现实</code> 当中的过估计 (overestimate)。而 Double DQN 就是用来解决过估计的。在实际问题中，如果你输出你的 DQN 的 Q 值，可能就会发现，Q 值都超级大。这就是出现了 overestimate。</p>
+<p>这次的 Double DQN 的算法基于的是 OpenAI Gym 中的 <code>Pendulum</code> 环境。如果还不了解如何使用 OpenAI 的话，这里有<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/gym">我的一个教程</a>。以下就是这次的结果，先睹为快。</p>
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="https://static.mofanpy.com/results/reinforcement-learning/Pendulum%20DQN.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position: absolute; width: 100%; height: 100%; Left: 0; top: 0;" ></iframe></div>
+
+
+
+<h4 id="Double-DQN-算法"><a href="#Double-DQN-算法" class="headerlink" title="Double DQN 算法"></a>Double DQN 算法</h4><p>我们知道 DQN 的神经网络部分可以看成一个 <code>最新的神经网络</code> + <code>老神经网络</code>，他们有相同的结构，但内部的参数更新却有时差。而它的 <code>Q现实</code> 部分是这样的：</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-5-1.png"></p>
+<p>因为我们的神经网络预测 <code>Qmax</code> 本来就有误差，每次也向着最大误差的 <code>Q现实</code> 改进神经网络，就是因为这个 <code>Qmax</code> 导致了 overestimate。所以 Double DQN 的想法就是引入另一个神经网络来打消一些最大误差的影响。而 DQN 中本来就有两个神经网络，我们何不利用一下这个地理优势呢。所以，我们用 <code>Q估计</code> 的神经网络估计 <code>Q现实</code> 中 <code>Qmax(s&#39;, a&#39;)</code> 的最大动作值。然后用这个被 <code>Q估计</code> 估计出来的动作来选择 <code>Q现实</code> 中的 <code>Q(s&#39;)</code>。总结一下：</p>
+<p>有两个神经网络：<code>Q_eval</code> (Q估计中的)，<code>Q_next</code> (Q现实中的)。</p>
+<p>原本的 <code>Q_next = max(Q_next(s&#39;, a_all))</code>。</p>
+<p>Double DQN 中的 <code>Q_next = Q_next(s&#39;, argmax(Q_eval(s&#39;, a_all)))</code>。也可以表达成下面那样。</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-5-2.png"></p>
+<h4 id="更新方法"><a href="#更新方法" class="headerlink" title="更新方法"></a>更新方法</h4><p>好了，有了理论，我们就来用 Python 实现它吧。</p>
+<p>这里的代码都是基于之前 DQN 教程中的代码 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.1_Double_DQN/RL_brain.py">(github)</a>，在 <code>RL_brain</code> 中，我们将 class 的名字改成 <code>DoubleDQN</code>，为了对比 Natural DQN，我们也保留原来大部分的 DQN 的代码。我们在 <code>__init__</code> 中加一个 <code>double_q</code> 参数来表示使用的是 Natural DQN 还是 Double DQN。为了对比的需要，我们的 <code>tf.Session()</code> 也单独传入。并移除原本在 DQN 代码中的这一句：</p>
+<p><code>self.sess.run(tf.global_variables_initializer())</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DoubleDQN</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">..., double_q=<span class="literal">True</span>, sess=<span class="literal">None</span></span>):</span></span><br><span class="line">        ...</span><br><span class="line">        self.double_q = double_q</span><br><span class="line">        <span class="keyword">if</span> sess <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.sess = tf.Session()</span><br><span class="line">            self.sess.run(tf.global_variables_initializer())</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.sess = sess</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<p>接着我们来修改 <code>learn()</code> 中的代码。我们对比 Double DQN 和 Natural DQN 在 tensorboard 中的图，发现他们的结构并没有不同，但是在计算 <code>q_target</code> 的时候，方法是不同的。</p>
+<p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-5-3.png"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DoubleDQN</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="comment"># 这一段和 DQN 一样:</span></span><br><span class="line">        <span class="keyword">if</span> self.learn_step_counter % self.replace_target_iter == <span class="number">0</span>:</span><br><span class="line">            self.sess.run(self.replace_target_op)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;\ntarget_params_replaced\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.memory_counter &gt; self.memory_size:</span><br><span class="line">            sample_index = np.random.choice(self.memory_size, size=self.batch_size)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            sample_index = np.random.choice(self.memory_counter, size=self.batch_size)</span><br><span class="line">        batch_memory = self.memory[sample_index, :]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 这一段和 DQN 不一样</span></span><br><span class="line">        q_next, q_eval4next = self.sess.run(</span><br><span class="line">            [self.q_next, self.q_eval],</span><br><span class="line">            feed_dict=&#123;self.s_: batch_memory[:, -self.n_features:],    <span class="comment"># next observation</span></span><br><span class="line">                       self.s: batch_memory[:, -self.n_features:]&#125;)    <span class="comment"># next observation</span></span><br><span class="line">        q_eval = self.sess.run(self.q_eval, &#123;self.s: batch_memory[:, :self.n_features]&#125;)</span><br><span class="line">        q_target = q_eval.copy()</span><br><span class="line">        batch_index = np.arange(self.batch_size, dtype=np.int32)</span><br><span class="line">        eval_act_index = batch_memory[:, self.n_features].astype(<span class="built_in">int</span>)</span><br><span class="line">        reward = batch_memory[:, self.n_features + <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.double_q:   <span class="comment"># 如果是 Double DQN</span></span><br><span class="line">            max_act4next = np.argmax(q_eval4next, axis=<span class="number">1</span>)        <span class="comment"># q_eval 得出的最高奖励动作</span></span><br><span class="line">            selected_q_next = q_next[batch_index, max_act4next]  <span class="comment"># Double DQN 选择 q_next 依据 q_eval 选出的动作</span></span><br><span class="line">        <span class="keyword">else</span>:       <span class="comment"># 如果是 Natural DQN</span></span><br><span class="line">            selected_q_next = np.<span class="built_in">max</span>(q_next, axis=<span class="number">1</span>)    <span class="comment"># natural DQN</span></span><br><span class="line"></span><br><span class="line">        q_target[batch_index, eval_act_index] = reward + self.gamma * selected_q_next</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 这下面和 DQN 一样:</span></span><br><span class="line">        _, self.cost = self.sess.run([self._train_op, self.loss],</span><br><span class="line">                                     feed_dict=&#123;self.s: batch_memory[:, :self.n_features],</span><br><span class="line">                                                self.q_target: q_target&#125;)</span><br><span class="line">        self.cost_his.append(self.cost)</span><br><span class="line">        self.epsilon = self.epsilon + self.epsilon_increment <span class="keyword">if</span> self.epsilon &lt; self.epsilon_max <span class="keyword">else</span> self.epsilon_max</span><br><span class="line">        self.learn_step_counter += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="记录-Q-值"><a href="#记录-Q-值" class="headerlink" title="记录 Q 值"></a>记录 Q 值</h4><p>为了记录下我们选择动作时的 Q 值，接下来我们就修改 <code>choose_action()</code> 功能，让它记录下每次选择的 Q 值。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DoubleDQN</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span>(<span class="params">self, observation</span>):</span></span><br><span class="line">        observation = observation[np.newaxis, :]</span><br><span class="line">        actions_value = self.sess.run(self.q_eval, feed_dict=&#123;self.s: observation&#125;)</span><br><span class="line">        action = np.argmax(actions_value)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">hasattr</span>(self, <span class="string">&#x27;q&#x27;</span>):  <span class="comment"># 记录选的 Qmax 值</span></span><br><span class="line">            self.q = []</span><br><span class="line">            self.running_q = <span class="number">0</span></span><br><span class="line">        self.running_q = self.running_q*<span class="number">0.99</span> + <span class="number">0.01</span> * np.<span class="built_in">max</span>(actions_value)</span><br><span class="line">        self.q.append(self.running_q)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> np.random.uniform() &gt; self.epsilon:  <span class="comment"># 随机选动作</span></span><br><span class="line">            action = np.random.randint(<span class="number">0</span>, self.n_actions)</span><br><span class="line">        <span class="keyword">return</span> action</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="对比结果"><a href="#对比结果" class="headerlink" title="对比结果"></a>对比结果</h4><p>接着我们就来对比 Natural DQN 和 Double DQN 带来的不同结果啦。<a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.1_Double_DQN/run_Pendulum.py">代码在这</a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> RL_brain <span class="keyword">import</span> DoubleDQN</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">env = gym.make(<span class="string">&#x27;Pendulum-v0&#x27;</span>)</span><br><span class="line">env.seed(<span class="number">1</span>) <span class="comment"># 可重复实验</span></span><br><span class="line">MEMORY_SIZE = <span class="number">3000</span></span><br><span class="line">ACTION_SPACE = <span class="number">11</span>    <span class="comment"># 将原本的连续动作分离成 11 个动作</span></span><br><span class="line"></span><br><span class="line">sess = tf.Session()</span><br><span class="line"><span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;Natural_DQN&#x27;</span>):</span><br><span class="line">    natural_DQN = DoubleDQN(</span><br><span class="line">        n_actions=ACTION_SPACE, n_features=<span class="number">3</span>, memory_size=MEMORY_SIZE,</span><br><span class="line">        e_greedy_increment=<span class="number">0.001</span>, double_q=<span class="literal">False</span>, sess=sess</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;Double_DQN&#x27;</span>):</span><br><span class="line">    double_DQN = DoubleDQN(</span><br><span class="line">        n_actions=ACTION_SPACE, n_features=<span class="number">3</span>, memory_size=MEMORY_SIZE,</span><br><span class="line">        e_greedy_increment=<span class="number">0.001</span>, double_q=<span class="literal">True</span>, sess=sess, output_graph=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">sess.run(tf.global_variables_initializer())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">RL</span>):</span></span><br><span class="line">    total_steps = <span class="number">0</span></span><br><span class="line">    observation = env.reset()</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="comment"># if total_steps - MEMORY_SIZE &gt; 8000: env.render()</span></span><br><span class="line"></span><br><span class="line">        action = RL.choose_action(observation)</span><br><span class="line"></span><br><span class="line">        f_action = (action-(ACTION_SPACE-<span class="number">1</span>)/<span class="number">2</span>)/((ACTION_SPACE-<span class="number">1</span>)/<span class="number">4</span>)   <span class="comment"># 在 [-2 ~ 2] 内离散化动作</span></span><br><span class="line"></span><br><span class="line">        observation_, reward, done, info = env.step(np.array([f_action]))</span><br><span class="line"></span><br><span class="line">        reward /= <span class="number">10</span>     <span class="comment"># normalize 到这个区间 (-1, 0). 立起来的时候 reward = 0.</span></span><br><span class="line">        <span class="comment"># 立起来以后的 Q target 会变成 0, 因为 Q_target = r + gamma * Qmax(s&#x27;, a&#x27;) = 0 + gamma * 0</span></span><br><span class="line">        <span class="comment"># 所以这个状态时的 Q 值大于 0 时, 就出现了 overestimate.</span></span><br><span class="line"></span><br><span class="line">        RL.store_transition(observation, action, reward, observation_)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> total_steps &gt; MEMORY_SIZE:   <span class="comment"># learning</span></span><br><span class="line">            RL.learn()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> total_steps - MEMORY_SIZE &gt; <span class="number">20000</span>:   <span class="comment"># stop game</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        observation = observation_</span><br><span class="line">        total_steps += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> RL.q <span class="comment"># 返回所有动作 Q 值</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># train 两个不同的 DQN</span></span><br><span class="line">q_natural = train(natural_DQN)</span><br><span class="line">q_double = train(double_DQN)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 出对比图</span></span><br><span class="line">plt.plot(np.array(q_natural), c=<span class="string">&#x27;r&#x27;</span>, label=<span class="string">&#x27;natural&#x27;</span>)</span><br><span class="line">plt.plot(np.array(q_double), c=<span class="string">&#x27;b&#x27;</span>, label=<span class="string">&#x27;double&#x27;</span>)</span><br><span class="line">plt.legend(loc=<span class="string">&#x27;best&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;Q eval&#x27;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;training steps&#x27;</span>)</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>所以这个出来的图是这样：</p>
+<p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-5-4.png"></p>
+<p>可以看出，Natural DQN 学得差不多后，在立起来时，大部分时间都是估计的 Q值要大于0，这时就出现了 overestimate，而 Double DQN 的 Q值就消除了一些 overestimate，将估计值保持在 0 左右。</p>
+<h3 id="Prioritized-Experience-Replay-DQN"><a href="#Prioritized-Experience-Replay-DQN" class="headerlink" title="Prioritized Experience Replay (DQN)"></a>Prioritized Experience Replay (DQN)</h3><h4 id="要点-2"><a href="#要点-2" class="headerlink" title="要点"></a>要点</h4><p>这一次还是使用 MountainCar 来进行实验，因为这次我们不需要重度改变他的 reward 了。所以只要是没有拿到小旗子，reward=-1，拿到小旗子时，我们定义它获得了 +10 的 reward。比起之前 DQN 中，这个 reward 定义更加准确。如果使用这种 reward 定义方式，可以想象 Natural DQN 会花很久的时间学习，因为记忆库中只有很少很少的 +10 reward 可以学习。正负样本不一样。而使用 Prioritized replay，就会重视这种少量的，但值得学习的样本。</p>
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="https://static.mofanpy.com/results/reinforcement-learning/mountaincar%20dqn.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position: absolute; width: 100%; height: 100%; Left: 0; top: 0;" ></iframe></div>
+
+
+
+<h4 id="Prioritized-replay-算法"><a href="#Prioritized-replay-算法" class="headerlink" title="Prioritized replay 算法"></a>Prioritized replay 算法</h4><p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-6-1.png"></p>
+<p>这一套算法重点就在我们 batch 抽样的时候并不是随机抽样，而是按照 Memory 中的样本优先级来抽。所以这能更有效地找到我们需要学习的样本。</p>
+<p>那么样本的优先级是怎么定的呢？原来我们可以用到 <code>TD-error</code>，也就是 <code>Q现实 - Q估计</code> 来规定优先学习的程度。如果 <code>TD-error</code> 越大，就代表我们的预测精度还有很多上升空间，那么这个样本就越需要被学习，也就是优先级 <code>p</code> 越高。</p>
+<p>有了 <code>TD-error</code> 就有了优先级 <code>p</code>，那我们如何有效地根据 <code>p</code> 来抽样呢？如果每次抽样都需要针对 <code>p</code> 对所有样本排序，这将会是一件非常消耗计算能力的事。好在我们还有其他方法，这种方法不会对得到的样本进行排序。这就是这篇 <a href="https://arxiv.org/abs/1511.05952">paper</a> 中提到的 <code>SumTree</code>。</p>
+<p>SumTree 是一种树形结构，每片树叶存储每个样本的优先级 <code>p</code>，每个树枝节点只有两个分叉，节点的值是两个分叉的合，所以 SumTree 的顶端就是所有 <code>p</code> 的合。正如下面<a href="https://jaromiru.com/2016/11/07/lets-make-a-dqn-double-learning-and-prioritized-experience-replay/">图片(来自Jaromír Janisch)</a>，最下面一层树叶存储样本的 <code>p</code>，叶子上一层最左边的 13 = 3 + 10，按这个规律相加，顶层的 root 就是全部 <code>p</code> 的合了。</p>
+<p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-6-2.png"></p>
+<p>抽样时，我们会将 <code>p</code> 的总合除以 batch size，分成 batch size 那么多区间，(n=sum(p)/batch_size)。如果将所有 node 的 priority 加起来是42的话，我们如果抽6个样本，这时的区间拥有的 priority 可能是这样。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[0-7), [7-14), [14-21), [21-28), [28-35), [35-42]</span><br></pre></td></tr></table></figure>
+
+<p>然后在每个区间里随机选取一个数。比如在第区间 <code>&lt;a href=&quot;https://github.com/jaara/AI-blog/blob/master/SumTree.py&quot; target=&#39;_blank&#39; &gt;21-28)</code> 里选到了24，就按照这个 24 从最顶上的42开始向下搜索。首先看到最顶上 <code>42</code> 下面有两个 child nodes，拿着手中的24对比左边的 child <code>29</code>，如果 左边的 child 比自己手中的值大，那我们就走左边这条路，接着再对比 <code>29</code> 下面的左边那个点 <code>13</code>，这时，手中的 24 比 <code>13</code> 大，那我们就走右边的路，并且将手中的值根据 <code>13</code> 修改一下，变成 24-13 = 11。接着拿着 11 和 <code>13</code> 左下角的 <code>12</code> 比，结果 <code>12</code> 比 11 大，那我们就选 12 当做这次选到的 priority，并且也选择 12 对应的数据。</p>
+<h4 id="SumTree-有效抽样"><a href="#SumTree-有效抽样" class="headerlink" title="SumTree 有效抽样"></a>SumTree 有效抽样</h4><p><strong>注意: 下面的代码和视频中有一点点不同, 下面的代码是根据评论中讨论的进行了修改, 多谢大家的评论.</strong></p>
+<p>首先要提的是，这个 SumTree 的算法是对于 Jaromír Janisch 写的 Sumtree 的修改版。Jaromír Janisch 的代码在更新 sumtree 的时候和抽样的时候多次用到了 recursive 递归结构，我使用的是 while 循环，测试要比递归结构运行快。在 class 中的功能也比它的代码少几个，我优化了一下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SumTree</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="comment"># 建立 tree 和 data,</span></span><br><span class="line">    <span class="comment"># 因为 SumTree 有特殊的数据结构,</span></span><br><span class="line">    <span class="comment"># 所以两者都能用一个一维 np.array 来存储</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, capacity</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 当有新 sample 时, 添加进 tree 和 data</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, p, data</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 当 sample 被 train, 有了新的 TD-error, 就在 tree 中更新</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">self, tree_idx, p</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 根据选取的 v 点抽取样本</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_leaf</span>(<span class="params">self, v</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取 sum(priorities)</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">totoal_p</span>(<span class="params">self</span>):</span></span><br></pre></td></tr></table></figure>
+
+<p>具体的抽要和更新值的规则和上面说的类似。具体的代码在这里呈现的话比较累赘，详细代码请去往我的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.2_Prioritized_Replay_DQN/RL_brain.py#L18-L86">Github对应的位置</a></p>
+<h4 id="Memory-类"><a href="#Memory-类" class="headerlink" title="Memory 类"></a>Memory 类</h4><p>这个 Memory 类也是基于 <a href="https://github.com/jaara/AI-blog/blob/master/Seaquest-DDQN-PER.py">Jaromír Janisch 所写的 Memory</a> 进行了修改和优化。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Memory</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="comment"># 建立 SumTree 和各种参数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, capacity</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 存储数据, 更新 SumTree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">store</span>(<span class="params">self, transition</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 抽取 sample</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, n</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># train 完被抽取的 samples 后更新在 tree 中的 sample 的 priority</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">batch_update</span>(<span class="params">self, tree_idx, abs_errors</span>):</span></span><br></pre></td></tr></table></figure>
+
+<p>具体的代码在这里呈现的话比较累赘，详细代码请去往我的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.2_Prioritized_Replay_DQN/RL_brain.py#L89-L129">Github对应的位置</a> 下面有很多朋友经常问的一个问题，这个 ISweight 到底怎么算。需要提到的一点是，代码中的计算方法是经过了简化的，将 paper 中的步骤合并了一些。比如 <code>prob = p / self.tree.total_p; ISWeights = np.power(prob/min_prob, -self.beta)</code></p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-6-5.png"></p>
+<p>下面是我的推导，如果有不正确还请指出。在paper 中，<code>ISWeight = (N*Pj)^(-beta) / maxi_wi</code> 里面的 <code>maxi_wi</code> 是为了 normalize ISWeight，所以我们先把他放在一边。所以单纯的 importance sampling 就是 <code>(N*Pj)^(-beta)</code>，那 <code>maxi_wi = maxi[(N*Pi)^(-beta)]</code>。</p>
+<p>如果将这两个式子合并，</p>
+<p><code>ISWeight = (N*Pj)^(-beta) / maxi[ (N*Pi)^(-beta) ]</code></p>
+<p>而且如果将 <code>maxi[ (N*Pi)^(-beta) ]</code> 中的 (-beta) 提出来，这就变成了 <code>mini[ (N*Pi) ] ^ (-beta)</code></p>
+<p>看出来了吧，有的东西可以抵消掉的。最后</p>
+<p><code>ISWeight = (Pj / mini[Pi])^(-beta)</code></p>
+<p>这样我们就有了代码中的样子。</p>
+<p>还有代码中的 <code>alpha</code> 是一个决定我们要使用多少 ISweight 的影响，如果 <code>alpha = 0</code>，我们就没使用到任何 Importance Sampling。</p>
+<h4 id="更新方法-1"><a href="#更新方法-1" class="headerlink" title="更新方法"></a>更新方法</h4><p>基于之前的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.1_Double_DQN/RL_brain.py">DQN 代码</a>，我们做出以下修改。我们将 class 的名字改成 <code>DQNPrioritiedReplay</code>，为了对比 Natural DQN，我们也保留原来大部分的 DQN 的代码。我们在 <code>__init__</code> 中加一个 <code>prioritized</code> 参数来表示 DQN 是否具备 prioritized 能力。为了对比的需要，我们的 <code>tf.Session()</code> 也单独传入。并移除原本在 DQN 代码中的这一句：</p>
+<p><code>self.sess.run(tf.global_variables_initializer())</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DQNPrioritiedReplay</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">..., prioritized=<span class="literal">True</span>, sess=<span class="literal">None</span></span>)</span></span><br><span class="line">        self.prioritized = prioritized</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> self.prioritized:</span><br><span class="line">            self.memory = Memory(capacity=memory_size)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.memory = np.zeros((self.memory_size, n_features*<span class="number">2</span>+<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> sess <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.sess = tf.Session()</span><br><span class="line">            self.sess.run(tf.global_variables_initializer())</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.sess = sess</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-6-3.png"></p>
+<p>搭建神经网络时，我们发现 DQN with Prioritized replay 只多了一个 <code>ISWeights</code>，这个正是<a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/4-6-prioritized-replay/#algorithm">刚刚算法中</a>提到的 <code>Importance-Sampling Weights</code>，用来恢复被 Prioritized replay 打乱的抽样概率分布。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DQNPrioritizedReplay</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_build_net</span>(<span class="params">self</span>)</span></span><br><span class="line"><span class="function">        ...</span></span><br><span class="line"><span class="function">        # <span class="title">self</span>.<span class="title">prioritized</span> 时 <span class="title">eval</span> <span class="title">net</span> 的 <span class="title">input</span> 多加了一个 <span class="title">ISWeights</span></span></span><br><span class="line">        self.s = tf.placeholder(tf.float32, [None, self.n_features], name=&#x27;s&#x27;)  # input</span><br><span class="line">        self.q_target = tf.placeholder(tf.float32, [<span class="literal">None</span>, self.n_actions], name=<span class="string">&#x27;Q_target&#x27;</span>)  <span class="comment"># for calculating loss</span></span><br><span class="line">        <span class="keyword">if</span> self.prioritized:</span><br><span class="line">            self.ISWeights = tf.placeholder(tf.float32, [<span class="literal">None</span>, <span class="number">1</span>], name=<span class="string">&#x27;IS_weights&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        <span class="comment"># 为了得到 abs 的 TD error 并用于修改这些 sample 的 priority, 我们修改如下</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;loss&#x27;</span>):</span><br><span class="line">            <span class="keyword">if</span> self.prioritized:</span><br><span class="line">                self.abs_errors = tf.reduce_sum(tf.<span class="built_in">abs</span>(self.q_target - self.q_eval), axis=<span class="number">1</span>)    <span class="comment"># for updating Sumtree</span></span><br><span class="line">                self.loss = tf.reduce_mean(self.ISWeights * tf.squared_difference(self.q_target, self.q_eval))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, self.q_eval))</span><br></pre></td></tr></table></figure>
+
+<p>因为和 Natural DQN 使用的 Memory 不一样，所以在存储 transition 的时候方式也略不相同。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DQNPrioritizedReplay</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">store_transition</span>(<span class="params">self, s, a, r, s_</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.prioritized:    <span class="comment"># prioritized replay</span></span><br><span class="line">            transition = np.hstack((s, [a, r], s_))</span><br><span class="line">            self.memory.store(transition)</span><br><span class="line">        <span class="keyword">else</span>:       <span class="comment"># random replay</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">hasattr</span>(self, <span class="string">&#x27;memory_counter&#x27;</span>):</span><br><span class="line">                self.memory_counter = <span class="number">0</span></span><br><span class="line">            transition = np.hstack((s, [a, r], s_))</span><br><span class="line">            index = self.memory_counter % self.memory_size</span><br><span class="line">            self.memory[index, :] = transition</span><br><span class="line">            self.memory_counter += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来是相对于 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5_Deep_Q_Network/RL_brain.py">Natural DQN 代码</a>，我们在 <code>learn()</code> 改变的部分也在如下展示。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DQNPrioritizedReplay</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span>(<span class="params">self</span>):</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="comment"># 相对于 DQN 代码, 改变的部分</span></span><br><span class="line">        <span class="keyword">if</span> self.prioritized:</span><br><span class="line">            tree_idx, batch_memory, ISWeights = self.memory.sample(self.batch_size)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            sample_index = np.random.choice(self.memory_size, size=self.batch_size)</span><br><span class="line">            batch_memory = self.memory[sample_index, :]</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.prioritized:</span><br><span class="line">            _, abs_errors, self.cost = self.sess.run([self._train_op, self.abs_errors, self.loss],</span><br><span class="line">                                         feed_dict=&#123;self.s: batch_memory[:, :self.n_features],</span><br><span class="line">                                                    self.q_target: q_target,</span><br><span class="line">                                                    self.ISWeights: ISWeights&#125;)</span><br><span class="line">            self.memory.batch_update(tree_idx, abs_errors)   <span class="comment"># update priority</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            _, self.cost = self.sess.run([self._train_op, self.loss],</span><br><span class="line">                                         feed_dict=&#123;self.s: batch_memory[:, :self.n_features],</span><br><span class="line">                                                    self.q_target: q_target&#125;)</span><br><span class="line"></span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="对比结果-1"><a href="#对比结果-1" class="headerlink" title="对比结果"></a>对比结果</h4><p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-6-4.png"></p>
+<p>运行我 Github 中的这个 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.2_Prioritized_Replay_DQN/run_MountainCar.py">MountainCar 脚本</a>，我们就不难发现，我们都从两种方法最初拿到第一个 <code>R=+10</code> 奖励的时候算起，看看经历过一次 <code>R=+10</code> 后，他们有没有好好利用这次的奖励，可以看出，有 Prioritized replay 的可以高效的利用这些不常拿到的奖励，并好好学习他们。所以 Prioritized replay 会更快结束每个 episode，很快就到达了小旗子。</p>
+<h3 id="Dueling-DQN"><a href="#Dueling-DQN" class="headerlink" title="Dueling DQN"></a>Dueling DQN</h3><h4 id="要点-3"><a href="#要点-3" class="headerlink" title="要点"></a>要点</h4><p>只要稍稍修改 DQN 中神经网络的结构，就能大幅提升学习效果，加速收敛。这种新方法叫做 Dueling DQN。用一句话来概括 Dueling DQN 就是。它将每个动作的 Q 拆分成了 state 的 Value 加上每个动作的 Advantage。</p>
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="https://static.mofanpy.com/results/reinforcement-learning/Pendulum%20DQN.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="position: absolute; width: 100%; height: 100%; Left: 0; top: 0;" ></iframe></div>
+
+
+
+<h4 id="Dueling-算法"><a href="#Dueling-算法" class="headerlink" title="Dueling 算法"></a>Dueling 算法</h4><p>上一个 Paper 中的经典解释图片，上者是一般的 DQN 的 Q值神经网络。下者就是 Dueling DQN 中的 Q值神经网络了。那具体是哪里不同了呢？</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-7-1.png"></p>
+<p>下面这个公式解释了不同之处。原来 DQN 神经网络直接输出的是每种动作的 Q值，而 Dueling DQN 每个动作的 Q值是由下面的公式确定的。</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-7-2.png"></p>
+<p>它分成了这个 state 的值，加上每个动作在这个 state 上的 advantage。因为有时候在某种 state，无论做什么动作，对下一个 state 都没有多大影响。比如 paper 中的这张图。</p>
+<p><img src="https://static.mofanpy.com/results/reinforcement-learning/4-7-3.png"></p>
+<p>这是开车的游戏，左边是 state value，发红的部分证明了 state value 和前面的路线有关，右边是 advantage，发红的部分说明了 advantage 很在乎旁边要靠近的车子，这时的动作会受更多 advantage 的影响。发红的地方左右了自己车子的移动原则。</p>
+<h4 id="更新方法-2"><a href="#更新方法-2" class="headerlink" title="更新方法"></a>更新方法</h4><p>下面的修改都是基于我之前写的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5_Deep_Q_Network/RL_brain.py">DQN 代码</a>。这次修改的部分比较少。我们把它们写在一块。如果想直接看全部代码，<a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/tree/master/contents/5.3_Dueling_DQN">请戳这里</a>。</p>
+<p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-7-4.png"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DuelingDQN</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">..., dueling=<span class="literal">True</span>, sess=<span class="literal">None</span></span>)</span></span><br><span class="line"><span class="function">        ...</span></span><br><span class="line">        self.dueling = dueling  # 会建立两个 DQN, 其中一个是 Dueling DQN</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> sess <span class="keyword">is</span> <span class="literal">None</span>:    <span class="comment"># 针对建立两个 DQN 的模式修改了 tf.Session() 的建立方式</span></span><br><span class="line">            self.sess = tf.Session()</span><br><span class="line">            self.sess.run(tf.global_variables_initializer())</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.sess = sess</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_build_net</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">build_layers</span>(<span class="params">s, c_names, n_l1, w_initializer, b_initializer</span>):</span></span><br><span class="line">            <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;l1&#x27;</span>):   <span class="comment"># 第一层, 两种 DQN 都一样</span></span><br><span class="line">                w1 = tf.get_variable(<span class="string">&#x27;w1&#x27;</span>, [self.n_features, n_l1], initializer=w_initializer, collections=c_names)</span><br><span class="line">                b1 = tf.get_variable(<span class="string">&#x27;b1&#x27;</span>, [<span class="number">1</span>, n_l1], initializer=b_initializer, collections=c_names)</span><br><span class="line">                l1 = tf.nn.relu(tf.matmul(s, w1) + b1)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> self.dueling:</span><br><span class="line">                <span class="comment"># Dueling DQN</span></span><br><span class="line">                <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;Value&#x27;</span>):    <span class="comment"># 专门分析 state 的 Value</span></span><br><span class="line">                    w2 = tf.get_variable(<span class="string">&#x27;w2&#x27;</span>, [n_l1, <span class="number">1</span>], initializer=w_initializer, collections=c_names)</span><br><span class="line">                    b2 = tf.get_variable(<span class="string">&#x27;b2&#x27;</span>, [<span class="number">1</span>, <span class="number">1</span>], initializer=b_initializer, collections=c_names)</span><br><span class="line">                    self.V = tf.matmul(l1, w2) + b2</span><br><span class="line"></span><br><span class="line">                <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;Advantage&#x27;</span>):    <span class="comment"># 专门分析每种动作的 Advantage</span></span><br><span class="line">                    w2 = tf.get_variable(<span class="string">&#x27;w2&#x27;</span>, [n_l1, self.n_actions], initializer=w_initializer, collections=c_names)</span><br><span class="line">                    b2 = tf.get_variable(<span class="string">&#x27;b2&#x27;</span>, [<span class="number">1</span>, self.n_actions], initializer=b_initializer, collections=c_names)</span><br><span class="line">                    self.A = tf.matmul(l1, w2) + b2</span><br><span class="line"></span><br><span class="line">                <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;Q&#x27;</span>):    <span class="comment"># 合并 V 和 A, 为了不让 A 直接学成了 Q, 我们减掉了 A 的均值</span></span><br><span class="line">                    out = self.V + (self.A - tf.reduce_mean(self.A, axis=<span class="number">1</span>, keep_dims=<span class="literal">True</span>))     <span class="comment"># Q = V(s) + A(s,a)</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;Q&#x27;</span>):    <span class="comment"># 普通的 DQN 第二层</span></span><br><span class="line">                    w2 = tf.get_variable(<span class="string">&#x27;w2&#x27;</span>, [n_l1, self.n_actions], initializer=w_initializer, collections=c_names)</span><br><span class="line">                    b2 = tf.get_variable(<span class="string">&#x27;b2&#x27;</span>, [<span class="number">1</span>, self.n_actions], initializer=b_initializer, collections=c_names)</span><br><span class="line">                    out = tf.matmul(l1, w2) + b2</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> out</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="对比结果-2"><a href="#对比结果-2" class="headerlink" title="对比结果"></a>对比结果</h4><p>对比的代码不在这里呈现，如果想观看对比的详细代码，请去往我的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/blob/master/contents/5.3_Dueling_DQN/run_Pendulum.py">Github</a>。</p>
+<p>这次我们看看累积奖励 reward，杆子立起来的时候奖励 = 0，其他时候都是负值，所以当累积奖励没有在降低时，说明杆子已经被成功立了很久了。</p>
+<p><img src="https://static.mofanpy.com/results-small/reinforcement-learning/4-7-5.png"></p>
+<p>我们发现当可用动作越高，学习难度就越大，不过 Dueling DQN 还是会比 Natural DQN 学习得更快、收敛效果更好。</p>
+<p>如果想一次性看到全部代码，请去我的 <a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/tree/master/contents/5_Deep_Q_Network">Github</a></p>
+<blockquote>
+<p><strong>原文地址：</strong><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/">强化学习 (Reinforcement Learning) | 莫烦Python (mofanpy.com)</a></p>
+<p><strong>学习资料：</strong></p>
+<ul>
+<li><a href="https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow/tree/master/contents/6_OpenAI_gym">全部代码</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-DQN">什么是 DQN 短视频</a></li>
+<li><a href="https://gym.openai.com/envs/">OpenAI gym 官网</a></li>
+<li>本节内容的模拟视频效果:<ul>
+<li>CartPole: <a href="https://www.youtube.com/watch?v=qlqqezju0xo">Youtube</a>, <a href="https://www.youtube.com/watch?v=qlqqezju0xo">Youtube</a></li>
+<li>Mountain Car: <a href="https://www.youtube.com/watch?v=r1mNIDN3zNM">Youtube</a>, <a href="https://www.youtube.com/watch?v=r1mNIDN3zNM">Youtube</a></li>
+</ul>
+</li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/ML-practice/RL-build-arm-from-scratch1">强化学习实战</a></li>
+<li>论文 <a href="https://arxiv.org/abs/1509.06461">Deep Reinforcement Learning with Double Q-learning</a></li>
+<li>论文 <a href="https://arxiv.org/abs/1511.05952">Prioritized Experience Replay</a></li>
+<li>论文 <a href="https://arxiv.org/abs/1511.06581">Dueling Network Architectures for Deep Reinforcement Learning</a></li>
 </ul>
 </blockquote>
 ]]></content>
