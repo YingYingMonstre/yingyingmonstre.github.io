@@ -15,7 +15,7 @@
 <ol>
 <li>环境相关</li>
 </ol>
-<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551%E3%80%82%E4%B8%BB%E8%A6%81%E6%98%AF%E4%B8%BA%E4%BA%86%E5%AE%89%E8%A3%85pytorch%E3%80%82">https://zhuanlan.zhihu.com/p/410961551。主要是为了安装pytorch。</a></p>
+<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
 <ol start="2">
 <li>下载gym</li>
 </ol>
@@ -61,200 +61,6 @@
       </categories>
       <tags>
         <tag>强化学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>XCTF-Web基础篇</title>
-    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
-    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
-<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
-<p>方法三：通过Burpsuite抓包查看源代码</p>
-<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
-<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
-<p>[步骤]</p>
-<p>1.根据提示robots,可以直接想到robots.txt</p>
-<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
-<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
-<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
-<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
-<p>掌握有关备份文件的知识</p>
-<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
-<p><strong>[环境]</strong></p>
-<p>无</p>
-<p><strong>[工具]</strong></p>
-<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
-<p><strong>[步骤]</strong></p>
-<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
-<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
-<p>3.保存到本地打开，即可看到flag</p>
-<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
-<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关cookie的知识，了解cookie所在位置</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
-<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
-<p>3.点击查看数据包，在消息头内可发现flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
-<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
-<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
-<p>初步了解前端知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
-<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
-<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
-<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
-<p>了解弱口令，掌握爆破方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<ul>
-<li>burpsuite</li>
-<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
-</ul>
-<p><strong>[步骤]</strong></p>
-<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
-<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
-<p>2.设置爆破点为password</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
-<p>3.加载字典</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
-<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
-<p>5.点进去查看响应包，获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
-<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
-<p>php中有两种比较符号</p>
-<p>=== 会同时比较字符串的值和类型</p>
-<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
-<p><strong>[目地]</strong></p>
-<p>掌握php的弱类型比较</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
-<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
-<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
-<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
-<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
-<p>HTTP工作原理</p>
-<p><strong>[目的]</strong></p>
-<p>掌握常用http请求方式</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox和cmd</p>
-<p><strong>[步骤]</strong></p>
-<p>GET请求在url后加?a=1即可</p>
-<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
-<p>返回如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>或者用burpsuite实现GET、POST的抓包：</p>
-<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
-<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
-<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
-<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
-<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关X-Forwarded-For和Referer的知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、burpsuite</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
-<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
-<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
-<p>了解php一句话木马、如何使用webshell</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、hackbar</p>
-<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
-<p><strong>[步骤]</strong></p>
-<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
-<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
-<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
-<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
-<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
-<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
-<p><strong>[目地]</strong></p>
-<p>掌握命令拼接的方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
-<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
-<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
-<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
-<p>javascript的代码审计</p>
-<p><strong>[目地]</strong></p>
-<p>掌握简单的javascript函数</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
-<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
-<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
-
-<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
-
-<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
-<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
-<p>web请求头中的location作用</p>
-<p><strong>【实验目的】</strong></p>
-<p>掌握web响应包头部常见参数</p>
-<p><strong>【实验环境】</strong></p>
-<p>Windows</p>
-<p><strong>【实验工具】</strong></p>
-<p>firefox</p>
-<p><strong>【实验步骤】</strong></p>
-<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
-<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
-<p>我的：burpsuite抓包，看到有flag。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>XCTF</tag>
-        <tag>Web</tag>
       </tags>
   </entry>
   <entry>
@@ -591,6 +397,200 @@
       </tags>
   </entry>
   <entry>
+    <title>XCTF-Web基础篇</title>
+    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
+    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
+<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
+<p>方法三：通过Burpsuite抓包查看源代码</p>
+<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
+<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
+<p>[步骤]</p>
+<p>1.根据提示robots,可以直接想到robots.txt</p>
+<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
+<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
+<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
+<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
+<p>掌握有关备份文件的知识</p>
+<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
+<p><strong>[环境]</strong></p>
+<p>无</p>
+<p><strong>[工具]</strong></p>
+<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
+<p><strong>[步骤]</strong></p>
+<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
+<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
+<p>3.保存到本地打开，即可看到flag</p>
+<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
+<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关cookie的知识，了解cookie所在位置</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
+<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
+<p>3.点击查看数据包，在消息头内可发现flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
+<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
+<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
+<p>初步了解前端知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
+<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
+<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
+<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
+<p>了解弱口令，掌握爆破方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<ul>
+<li>burpsuite</li>
+<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
+</ul>
+<p><strong>[步骤]</strong></p>
+<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
+<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
+<p>2.设置爆破点为password</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
+<p>3.加载字典</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
+<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
+<p>5.点进去查看响应包，获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
+<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
+<p>php中有两种比较符号</p>
+<p>=== 会同时比较字符串的值和类型</p>
+<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
+<p><strong>[目地]</strong></p>
+<p>掌握php的弱类型比较</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
+<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
+<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
+<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
+<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
+<p>HTTP工作原理</p>
+<p><strong>[目的]</strong></p>
+<p>掌握常用http请求方式</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox和cmd</p>
+<p><strong>[步骤]</strong></p>
+<p>GET请求在url后加?a=1即可</p>
+<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
+<p>返回如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>或者用burpsuite实现GET、POST的抓包：</p>
+<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
+<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
+<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
+<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
+<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
+<p><strong>[目的]</strong></p>
+<p>掌握有关X-Forwarded-For和Referer的知识</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、burpsuite</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
+<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
+<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
+<p>了解php一句话木马、如何使用webshell</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox、hackbar</p>
+<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
+<p><strong>[步骤]</strong></p>
+<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
+<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
+<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
+<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
+<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
+<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
+<p><strong>[目地]</strong></p>
+<p>掌握命令拼接的方法</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
+<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
+<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
+<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
+<p>javascript的代码审计</p>
+<p><strong>[目地]</strong></p>
+<p>掌握简单的javascript函数</p>
+<p><strong>[环境]</strong></p>
+<p>windows</p>
+<p><strong>[工具]</strong></p>
+<p>firefox</p>
+<p><strong>[步骤]</strong></p>
+<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
+<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
+<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
+
+<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
+
+<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
+<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
+<p>web请求头中的location作用</p>
+<p><strong>【实验目的】</strong></p>
+<p>掌握web响应包头部常见参数</p>
+<p><strong>【实验环境】</strong></p>
+<p>Windows</p>
+<p><strong>【实验工具】</strong></p>
+<p>firefox</p>
+<p><strong>【实验步骤】</strong></p>
+<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
+<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
+<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
+<p>我的：burpsuite抓包，看到有flag。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>XCTF</tag>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>莫烦强化学习（简介）</title>
     <url>/YingYingMonstre.github.io/2021/10/31/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88%E7%AE%80%E4%BB%8B%EF%BC%89/</url>
     <content><![CDATA[<h3 id="什么是强化学习"><a href="#什么是强化学习" class="headerlink" title="什么是强化学习"></a>什么是强化学习</h3><h4 id="从无到有"><a href="#从无到有" class="headerlink" title="从无到有"></a>从无到有</h4><p><img src="https://static.mofanpy.com/results/ML-intro/RL1.png"></p>
@@ -675,6 +675,95 @@
       </categories>
       <tags>
         <tag>强化学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PyTorch简介</title>
+    <url>/YingYingMonstre.github.io/2021/12/06/PyTorch%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<h3 id="科普-人工神经网络-VS-生物神经网络"><a href="#科普-人工神经网络-VS-生物神经网络" class="headerlink" title="科普: 人工神经网络 VS 生物神经网络"></a>科普: 人工神经网络 VS 生物神经网络</h3><h4 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann1.png"></p>
+<p>2-30年前，一想到神经网络，我们就会想到生物神经系统中数以万计的细胞联结，将感官和反射器联系在一起的系统。但是今天，你可能的第一反应却是…电脑和电脑程序当中的人工神经网络。昔日复杂的动神经网络系统居然神奇地放入了计算机？而且人类正在将这种人工神经网络系统推向更高的境界。今天的世界早已布满了人工神经网络的身影。</p>
+<p>比如 Google 的搜索引擎。股票价格预测、机器人学习、围棋、家庭助手，等等等等。从金融到仿生样样都能运用。看起来人工神经网络的确很强大。但，是不是有这么一个问题一直在你脑海中环绕，没有答案。“计算机领域的神经网络和我们自己身体里的神经网络究竟是一样的吗?” 科学家们通过长久的探索，想让计算机像人一样思考，所以研发了人工神经网络，究竟和我们的神经网络有多像？那我们就先来看看人的神经网络到底是什么。</p>
+<h4 id="你的神经网络系统"><a href="#你的神经网络系统" class="headerlink" title="你的神经网络系统"></a>你的神经网络系统</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann2.png"></p>
+<p>9百亿神经细胞组成了我们复杂的神经网络系统，这个数量甚至可以和宇宙中的星球数相比较。如果仅仅靠单个的神经元，是永远没有办法让我们像今天一样，完成各种任务，处理各种复杂的问题。那我们是如何靠这些神经元来解决问题的呢？首先需要知道的是我们的记忆是如何产生的。想象我们还是婴儿，</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/ann3.png"></p>
+<p>包着尿布的我们什么都不知道，神经元并没有形成系统和网络。可能只是一些分散的细胞而已，一端连着嘴巴的味觉感受器，一端连着手部的肌肉。小时候，世界上有一种神奇的东西叫做——糖果，当我们第一次品尝它的时候，美妙的感觉，让我们发现活着是多么有意义的事情。这时候神经元开始产生联结，记忆形成，但是形成的新联结怎么样变成记忆，仍然是科学界的一个迷。不过现在，我们的手和嘴产生了某种特定的搭配。每次发现有糖果的时候，某种生物信号就会从我们的嘴，通过之前形成的神经联结，传递到手上，让手的动作变得有意义，比如这样，然后爸妈就会再给我们一颗糖果啦~ 哈哈，吃糖的目的达成。现在我们来看看人工神经网络要怎样达到这个目的。</p>
+<h4 id="人工神经网络"><a href="#人工神经网络" class="headerlink" title="人工神经网络"></a>人工神经网络</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann4.png"></p>
+<p>首先，替代掉生物神经网络的，就是已经成体系的人工神经网络。所有神经元之间的连接都是固定不可更换的，这也就是说，在人工神经网络里，没有凭空产生新联结这回事。人工神经网络典型的一种学习方式就是，我已经知道吃到糖果时，手会如何动，但是我想让神经网络学着帮我做这件动动手的事情。所以我预先准备好非常多吃糖的学习数据，然后将这些数据一次次放入这套人工神经网络系统中，糖的信号会通过这套系统传递到手。然后通过对比这次信号传递后，手的动作是不是”讨糖”动作，来修改人工神经网络当中的神经元强度。这种修改在专业术语中叫做”误差反向传递”，也可以看作是再一次将传过来的信号传回去，看看这个负责传递信号神经元对于”讨糖”的动作到底有没有贡献，让它好好反思与改正，争取下次做出更好的贡献。这样看来，人工神经网络和生物神经网络的确不是一回事。</p>
+<h4 id="两者区别总结"><a href="#两者区别总结" class="headerlink" title="两者区别总结"></a>两者区别总结</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann5.png"></p>
+<p>人工神经网络靠的是正向和反向传播来更新神经元，从而形成一个好的神经系统，本质上，这是一个能让计算机处理和优化的数学模型。而生物神经网络是通过刺激，产生新的联结，让信号能够通过新的联结传递而形成反馈。虽然现在的计算机技术越来越高超，不过我们身体里的神经系统经过了数千万年的进化，还是独一无二的，迄今为止，再复杂、再庞大的人工神经网络系统也不能替代我们的小脑袋。我们应该感到自豪，也应该珍惜上天的这份礼物。</p>
+<h3 id="什么是神经网络-Neural-Network"><a href="#什么是神经网络-Neural-Network" class="headerlink" title="什么是神经网络 (Neural Network)"></a>什么是神经网络 (Neural Network)</h3><h4 id="内容简介"><a href="#内容简介" class="headerlink" title="内容简介"></a>内容简介</h4><p>这里提到的是人工神经网络，是存在于计算机里的神经系统。人工神经网络和自然神经网络的区别、神经网络是什么、它是怎么工作的、都会在影片里一一提到。</p>
+<h3 id="神经网络-梯度下降"><a href="#神经网络-梯度下降" class="headerlink" title="神经网络 梯度下降"></a>神经网络 梯度下降</h3><p>欢迎观看有趣的机器学习系列视频，神经网络是当今为止最流行的一种深度学习框架，它的基本原理也很简单，就是一种梯度下降机制。我们今天就来看看这神奇的优化模式吧。</p>
+<h4 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h4><p><img src="https://static.mofanpy.com/results/ML-intro/gd2.png"></p>
+<p>学习机器学习的同学们常会遇到这样的图像，我了个天，看上去好复杂，哈哈，不过还挺好看的。这些和我们说的梯度下降又有什么关系呢？原来这些图片展示出来了一个家族的历史，这个家族的名字就是——”optimization” (优化问题)。优化能力是人类历史上的重大突破，他解决了很多实际生活中的问题。从而渐渐演化成了一个庞大的家族。</p>
+<p>比如说牛顿法 (Newton’s method)、最小二乘法(Least Squares method)、梯度下降法 (Gradient Descent) 等等。而我们的神经网络就是属于梯度下降法这个分支中的一个。提到梯度下降，我们不得不说说大学里面学习过的求导求微分。因为这就是传说中”梯度下降”里面的”梯度” (gradient)啦。听到求导微分可别后怕，因为这个短视频只是让你有一个直观上的理解，并不会涉及太过复杂的东西。</p>
+<h4 id="梯度下降"><a href="#梯度下降" class="headerlink" title="梯度下降"></a>梯度下降</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/gd3.png"></p>
+<p>初学神经网络的时候，我们通常会遇到这样一个方程，叫做误差方程 (Cost Function)。用来计算预测出来的和我们实际中的值有多大差别。在预测数值的问题中，我们常用平方差 (Mean Squared Error) 来代替。我们简化一下这个方程，W是我们神经网络中的参数，x、y 都是我们的数据，因为 xy 都是实实在在的数据点，在这个假设情况中，是多少都无所谓，然后我们再厚颜无耻地像这样继续简化一下，(注意, 这个过程在在数学中并不正确, 不过我们只是为了看效果)，所以现在误差值曲线就成了这样。假设我们初始化的 W 在这个位置。而这个位置的斜率是这条线，这也就是梯度下降中的梯度啦。我们从图中可以看出，Cost 误差最小的时候正是这条 cost 曲线最低的地方，不过在蓝点的 W 却不知道这件事情，他目前所知道的就是梯度线为自己在这个位置指出的一个下降方向，我们就要朝着这个蓝色梯度的方向下降一点点。在做一条切线，发现我还能下降，那我就朝着梯度的方向继续下降，这时，再展示出现在的梯度，因为梯度线已经躺平了，我们已经指不出哪边是下降的方向了，所以这时我们就找到了 W 参数的最理想值。简而言之，就是找到梯度线躺平的点。可是神经网络的梯度下降可没这么简单。</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/gd4.png"></p>
+<p>神经网络中的 W 可不止一个，如果只有一个 W，我们就能画出之前那样的误差曲线，如果有两个 W 也简单，我们可以用一个3D 图来展示，可是超过3个 W，我们可就没办法很好的可视化出来啦。这可不是最要命的。在通常的神经网络中，误差曲线可没这么优雅。</p>
+<h4 id="全局-and-局部最优"><a href="#全局-and-局部最优" class="headerlink" title="全局 and 局部最优"></a>全局 and 局部最优</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/gd5.png"></p>
+<p>在简化版的误差曲线中，我们只要找到梯度线躺平的地方，就能能迅速找到误差最小时的 W。可是很多情况是这样的，误差曲线并不只有一个沟，而且梯度躺平的点也不止一个。不同的 W 初始化的位置，将会带来不同的下降区域。不同的下降区域，又会带来不同的 W 解。在这个图像当中，W 的全局最优解(Global minima)在这个位置，而其它的解都是局部最优(Local minima)。全局最优固然是最好，但是很多时候，你手中的都是一个局部最优解，这也是无可避免的。不过你可以不必担心，因为虽然不是全局最优，但是神经网络也能让你的局部最优足够优秀，以至于即使拿着一个局部最优也能出色的完成手中的任务。</p>
+<h3 id="科普-神经网络的黑盒不黑"><a href="#科普-神经网络的黑盒不黑" class="headerlink" title="科普: 神经网络的黑盒不黑"></a>科普: 神经网络的黑盒不黑</h3><p>今天我们来说说为了理解神经网络在做什么，对神经网络这个黑盒的正确打开方式。</p>
+<h4 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation1.png"></p>
+<p>当然，这可不是人类的神经网络，因为至今我们都还没彻底弄懂人类复杂神经网络的运行方式。今天只来说说计算机中的人工神经网络。我们都听说过，神经网络是一个黑盒。</p>
+<h4 id="黑盒"><a href="#黑盒" class="headerlink" title="黑盒"></a>黑盒</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation2.png"></p>
+<p>呀，咋一看，的确挺黑的。我们还知道，如果你丢一个东西进这个黑盒，他会给你丢出来另一个东西。具体在黑盒里偷偷摸摸做了什么，我们不得而知。但丢出来的东西和丢进去的东西有着某些联系。这是为什么呢？这个黑盒里究竟又发生了什么呢？</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation3.png"></p>
+<p>正好我手边有一个手电筒，我们打开黑盒好好照亮看看。一般来说，神经网络是一连串神经层所组成的把输入进行加工再输出的系统。中间的加工过程就是我们所谓的黑盒。想把黑盒打开，就是把神经网络给拆开。按正常的逻辑，我们能将神经网络分成三部分。</p>
+<h4 id="神经网络分区"><a href="#神经网络分区" class="headerlink" title="神经网络分区"></a>神经网络分区</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation4.png"></p>
+<p>输入端，黑盒，输出端。输入端是我们能理解的物体，一个宝宝，输出端也是一个我们能理解的物体，一个奶瓶。对于神经网络，传统的理解就是，中间的这两层神经层在对输入信息进行加工，好让自己的输出信息和奶瓶吻合。但是我们如果换一个角度来想想。此时，我们将左边的红线移动一下</p>
+<p>现在的输入端增加了一层，原本我们认定为黑盒的一部分被照亮，变成了一个已知部分。我们将最左边两层的神经层共同看成输入端。貌似怪怪的，你可能会问：可是这时的输入端不再是我们知道的”宝宝”了呀，为什么可以这样看？想得没错，它的确已经不是我们认识的宝宝啦，但是”宝宝”这个人类定义的形象通过了一层神经网络加工，变成了另外一种宝宝的形象，可能这种形象我们用肉眼看起来并不像宝宝，不过计算机却能理解，这是它所能识别的”宝宝”形象。在专业术语中，我们将宝宝当做特征(features)，将神经网络第一层加工后的宝宝叫做代表特征(feature representation)。如果再次移动红线，我们的黑盒就消失了，这时原本在黑盒里的所有神经层都被照亮。原本的代表特征再次被加工，变成了另一种代表特征，同样，再次加工形成的代表特征通常只有计算机自己看得懂，能够理解。所以，与其说黑盒是在加工处理，还不如说是在将一种代表特征转换成另一种代表特征，一次次特征之间的转换，也就是一次次的更有深度的理解。比如神经网络如果接收人类手写数字的图片。</p>
+<h4 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a>举例说明</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation5.png"></p>
+<p>然后我们将这个神经网络的输出层给拆掉，只留下前三层，那第3层输出的信息就是我们这些数字的3个最重要的代表特征，换句话说，就是用3个信息来代表整张手写数字图片的所有像素点。我们如果把这3个信息展示出来，我们就能很清楚的看到，计算机是如何用3个点来代表不同的数字内容，比如神经网络认为 1 和 0 是完全不同的，所以他们应该被放在空间里不同的地方。输出层就更好理解了，</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation6.png"></p>
+<p>有了用3个点表示的数字代表特征，我们就能整理整理，将落在相同区域的数字分为一类，如果落在了那些1所在的区域，我们就认定张手写图片就是1，如果是2的区域，就认定为2。这就是神经网络的黑盒并不黑的原因啦，只是因为有时候代表特征太多了，我们人类没有办法看懂他们代表的是什么，然而计算机却能看清楚它所学到的规律，所以我们才觉得神经网络就是个黑盒。这种代表特征的理解方式其实非常有用，以至于人们拿着它来研究更高级的神经网络玩法。比如迁移学习(Transfer Learning)。我们举一个例子。</p>
+<h4 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation7.png"></p>
+<p>对于一个有分类能力的神经网络，有时候我们只需要这套神经网络的理解能力，并拿这种能力去处理其他问题。所以我们保留它的代表特征转换能力。因为有了这种能力，就能将复杂的图片像素信息转换成更少量，但更精辟的信息，比如刚刚我们说将手写数字变成的3个点信息。然后我们需要干点坏事，将这个神经网络的输出层给拆掉。套上另外一个神经网络，用这种移植的方式再进行训练，让它处理不同的问题，比如，预测照片里事物的价值。现在看来，这黑盒里开个灯，其实还挺有用的嘛。当你看不懂神经网络的时候，这样想想，是不是更好理解啦。</p>
+<h3 id="Why-Pytorch"><a href="#Why-Pytorch" class="headerlink" title="Why Pytorch?"></a>Why Pytorch?</h3><h4 id="为什么用-PyTorch"><a href="#为什么用-PyTorch" class="headerlink" title="为什么用 PyTorch"></a>为什么用 PyTorch</h4><p><a href="http://pytorch.org/">PyTorch</a> 是 <a href="http://pytorch.org/">PyTorch</a> 在 Python 上的衍生。因为 <a href="http://pytorch.org/">PyTorch</a> 是一个使用 <a href="http://pytorch.org/">PyTorch</a> 语言的神经网络库，Torch 很好用，但是 Lua 又不是特别流行，所有开发团队将 Lua 的 Torch 移植到了更流行的语言 Python 上。是的 PyTorch 一出生就引来了剧烈的反响。为什么呢？</p>
+<p>很简单，我们就看看有谁在用 PyTorch 吧。</p>
+<p><img src="https://static.mofanpy.com/results-small/torch/1-1-1.png"></p>
+<p>可见，著名的 Facebook、twitter 等都在使用它，这就说明 PyTorch 的确是好用的，而且是值得推广。</p>
+<p>而且如果你知道 <a href="http://www.numpy.org/">Numpy</a>，PyTorch 说他就是在神经网络领域可以用来替换 numpy 的模块。</p>
+<h4 id="神经网络在做什么"><a href="#神经网络在做什么" class="headerlink" title="神经网络在做什么"></a>神经网络在做什么</h4><p>神经网络在学习拟合线条(回归)：</p>
+<p><img src="https://static.mofanpy.com/results/torch/1-1-2.gif"></p>
+<p>神经网络在学习区分数据(分类)：</p>
+<p><img src="https://static.mofanpy.com/results/torch/1-1-3.gif"></p>
+<h4 id="PyTorch-和-Tensorflow"><a href="#PyTorch-和-Tensorflow" class="headerlink" title="PyTorch 和 Tensorflow"></a>PyTorch 和 Tensorflow</h4><p>据 PyTorch 自己介绍，他们家的最大优点就是建立的神经网络是动态的，对比静态的 Tensorflow，他能更有效地处理一些问题，比如说 RNN 变化时间长度的输出。而我认为，各家有各家的优势和劣势，所以我们要以中立的态度。两者都是大公司，Tensorflow 自己说自己在分布式训练上下了很大的功夫，那我就默认 Tensorflow 在这一点上要超出 PyTorch，但是 Tensorflow 的静态计算图使得他在 RNN 上有一点点被动 (虽然它用其他途径解决了)，不过用 PyTorch 的时候，你会对这种动态的 RNN 有更好的理解。</p>
+<p>而且 Tensorflow 的高度工业化，它的底层代码…你是看不懂的。PyTorch 好那么一点点，如果你深入 API，你至少能比看 Tensorflow 多看懂一点点 PyTorch 的底层在干嘛。</p>
+<p>最后我的建议就是：</p>
+<ul>
+<li>如果你是学生，随便选一个学，或者稍稍偏向 PyTorch，因为写代码的时候应该更好理解。懂了一个模块，转换 Tensorflow 或者其他的模块都好说。</li>
+<li>如果是上班了，跟着你公司来，公司用什么，你就用什么，不要脱群。</li>
+</ul>
+<h4 id="Pytorch-安装"><a href="#Pytorch-安装" class="headerlink" title="Pytorch 安装"></a>Pytorch 安装</h4><p>对于MacBook，安装推荐参考：<a href="https://zhuanlan.zhihu.com/p/410961551">Mac M1安装tensorflow和pytorch</a></p>
+<h4 id="支持的系统"><a href="#支持的系统" class="headerlink" title="支持的系统"></a>支持的系统</h4><p>PyTorch 暂时只支持 MacOS、Linux。暂不支持 Windows！(可怜的 Windows 同学们.. 又被抛弃了)。不过说不定像 Tensorflow 一样，因为 Windows 用户的强烈要求，他们在某天就突然支持了。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>PyTorch 安装起来很简单，<a href="http://pytorch.org/">它自家网页</a>上就有很方便的选择方式 (网页升级改版后可能和下图有点不同)：</p>
+<p><img src="https://static.mofanpy.com/results-small/torch/1-2-1.png"></p>
+<p>所以根据你的情况选择适合你的安装方法，我已自己为例，我使用的是 MacOS，想用 pip 安装，我的 Python 是 3.5 版的，我没有 GPU 加速，那我就按上面的选：</p>
+<p>然后根据上面的提示，我只需要在我的 Terminal 当中输入以下指令就好了：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install http://download.pytorch.org/whl/torch-0.1.11.post5-cp35-cp35m-macosx_10_7_x86_64.whl</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip install torchvision</span></span><br></pre></td></tr></table></figure>
+
+<p>注意，我安装的是0.1.11版本的 torch，你需要去他们网站上看是否有新版本的。安装 PyTorch 会安装两个模块，一个是 torch，一个 torchvision。torch 是主模块，用来搭建神经网络的，torchvision 是辅模块，有数据库，还有一些已经训练好的神经网络等着你直接用，比如 (<a href="http://pytorch.org/docs/torchvision/models.html">VGG, AlexNet, ResNet</a>)。</p>
+<blockquote>
+<p><strong>原文地址：</strong><a href="https://mofanpy.com/tutorials/machine-learning/torch/">PyTorch | 莫烦Python (mofanpy.com)</a></p>
+<p><strong>学习资料：</strong></p>
+<ul>
+<li>Python 做神经网络 <a href="https://mofanpy.com/tutorials/machine-learning/tensorflow/">Tensorflow 教程</a></li>
+<li>Python 做神经网络 <a href="https://mofanpy.com/tutorials/machine-learning/torch/">Pytorch 教程</a></li>
+<li>有网友根据我的 Tensorflow 系列做了一个很好的<a href="http://www.jianshu.com/p/e112012a4b2d">文字笔记</a>, 推荐阅读.</li>
+<li>Tensorflow <a href="https://mofanpy.com/tutorials/machine-learning/tensorflow/">学习目录</a></li>
+<li>PyTorch <a href="https://mofanpy.com/tutorials/machine-learning/torch/">学习目录</a></li>
+<li>Theano <a href="https://mofanpy.com/tutorials/machine-learning/theano/">学习目录</a></li>
+<li>Keras <a href="https://mofanpy.com/tutorials/machine-learning/keras/">学习目录</a></li>
+<li><a href="https://mofanpy.com/tutorials/machine-learning/tensorflow/intro-NN">什么是神经网络 短视频</a></li>
+<li><a href="http://pytorch.org/">PyTorch 官网</a></li>
+</ul>
+</blockquote>
+]]></content>
+      <categories>
+        <category>PyTorch</category>
+      </categories>
+      <tags>
+        <tag>PyTorch</tag>
       </tags>
   </entry>
   <entry>

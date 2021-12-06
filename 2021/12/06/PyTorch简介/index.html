@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PyTorch简介 | 银河之家</title><meta name="keywords" content="PyTorch"><meta name="author" content="银河"><meta name="copyright" content="银河"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="科普: 人工神经网络 VS 生物神经网络历史 2-30年前，一想到神经网络，我们就会想到生物神经系统中数以万计的细胞联结，将感官和反射器联系在一起的系统。但是今天，你可能的第一反应却是…电脑和电脑程序当中的人工神经网络。昔日复杂的动神经网络系统居然神奇地放入了计算机？而且人类正在将这种人工神经网络系统推向更高的境界。今天的世界早已布满了人工神经网络的身影。 比如 Google 的搜索引擎。股票价格">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PyTorch简介">
+<meta property="og:url" content="https://yingyingmonstre.github.io/2021/12/06/PyTorch%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="银河之家">
+<meta property="og:description" content="科普: 人工神经网络 VS 生物神经网络历史 2-30年前，一想到神经网络，我们就会想到生物神经系统中数以万计的细胞联结，将感官和反射器联系在一起的系统。但是今天，你可能的第一反应却是…电脑和电脑程序当中的人工神经网络。昔日复杂的动神经网络系统居然神奇地放入了计算机？而且人类正在将这种人工神经网络系统推向更高的境界。今天的世界早已布满了人工神经网络的身影。 比如 Google 的搜索引擎。股票价格">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ftva1.sinaimg.cn%2Flarge%2F006tNbRwgy1g9qk7x6noxj31400g4jsd.jpg&refer=http%3A%2F%2Ftva1.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641393896&t=2c5167116c4f1c9fa1474342824c9969">
+<meta property="article:published_time" content="2021-12-06T15:00:00.000Z">
+<meta property="article:modified_time" content="2021-12-06T14:45:34.833Z">
+<meta property="article:author" content="银河">
+<meta property="article:tag" content="PyTorch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ftva1.sinaimg.cn%2Flarge%2F006tNbRwgy1g9qk7x6noxj31400g4jsd.jpg&refer=http%3A%2F%2Ftva1.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641393896&t=2c5167116c4f1c9fa1474342824c9969"><link rel="shortcut icon" href="/YingYingMonstre.github.io/img/favicon.png"><link rel="canonical" href="https://yingyingmonstre.github.io/2021/12/06/PyTorch%E7%AE%80%E4%BB%8B/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/YingYingMonstre.github.io/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/YingYingMonstre.github.io/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-06 22:45:34'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="../css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="../../css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="../../../../css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/YingYingMonstre.github.io/atom.xml" title="银河之家" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/YingYingMonstre.github.io/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/YingYingMonstre.github.io/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/YingYingMonstre.github.io/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/YingYingMonstre.github.io/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ftva1.sinaimg.cn%2Flarge%2F006tNbRwgy1g9qk7x6noxj31400g4jsd.jpg&amp;refer=http%3A%2F%2Ftva1.sinaimg.cn&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=jpeg?sec=1641393896&amp;t=2c5167116c4f1c9fa1474342824c9969')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/YingYingMonstre.github.io/">银河之家</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/YingYingMonstre.github.io/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">PyTorch简介</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-06T15:00:00.000Z" title="发表于 2021-12-06 23:00:00">2021-12-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-06T14:45:34.833Z" title="更新于 2021-12-06 22:45:34">2021-12-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/YingYingMonstre.github.io/categories/PyTorch/">PyTorch</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="科普-人工神经网络-VS-生物神经网络"><a href="#科普-人工神经网络-VS-生物神经网络" class="headerlink" title="科普: 人工神经网络 VS 生物神经网络"></a>科普: 人工神经网络 VS 生物神经网络</h3><h4 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann1.png"></p>
+<p>2-30年前，一想到神经网络，我们就会想到生物神经系统中数以万计的细胞联结，将感官和反射器联系在一起的系统。但是今天，你可能的第一反应却是…电脑和电脑程序当中的人工神经网络。昔日复杂的动神经网络系统居然神奇地放入了计算机？而且人类正在将这种人工神经网络系统推向更高的境界。今天的世界早已布满了人工神经网络的身影。</p>
+<p>比如 Google 的搜索引擎。股票价格预测、机器人学习、围棋、家庭助手，等等等等。从金融到仿生样样都能运用。看起来人工神经网络的确很强大。但，是不是有这么一个问题一直在你脑海中环绕，没有答案。“计算机领域的神经网络和我们自己身体里的神经网络究竟是一样的吗?” 科学家们通过长久的探索，想让计算机像人一样思考，所以研发了人工神经网络，究竟和我们的神经网络有多像？那我们就先来看看人的神经网络到底是什么。</p>
+<h4 id="你的神经网络系统"><a href="#你的神经网络系统" class="headerlink" title="你的神经网络系统"></a>你的神经网络系统</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann2.png"></p>
+<p>9百亿神经细胞组成了我们复杂的神经网络系统，这个数量甚至可以和宇宙中的星球数相比较。如果仅仅靠单个的神经元，是永远没有办法让我们像今天一样，完成各种任务，处理各种复杂的问题。那我们是如何靠这些神经元来解决问题的呢？首先需要知道的是我们的记忆是如何产生的。想象我们还是婴儿，</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/ann3.png"></p>
+<p>包着尿布的我们什么都不知道，神经元并没有形成系统和网络。可能只是一些分散的细胞而已，一端连着嘴巴的味觉感受器，一端连着手部的肌肉。小时候，世界上有一种神奇的东西叫做——糖果，当我们第一次品尝它的时候，美妙的感觉，让我们发现活着是多么有意义的事情。这时候神经元开始产生联结，记忆形成，但是形成的新联结怎么样变成记忆，仍然是科学界的一个迷。不过现在，我们的手和嘴产生了某种特定的搭配。每次发现有糖果的时候，某种生物信号就会从我们的嘴，通过之前形成的神经联结，传递到手上，让手的动作变得有意义，比如这样，然后爸妈就会再给我们一颗糖果啦~ 哈哈，吃糖的目的达成。现在我们来看看人工神经网络要怎样达到这个目的。</p>
+<h4 id="人工神经网络"><a href="#人工神经网络" class="headerlink" title="人工神经网络"></a>人工神经网络</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann4.png"></p>
+<p>首先，替代掉生物神经网络的，就是已经成体系的人工神经网络。所有神经元之间的连接都是固定不可更换的，这也就是说，在人工神经网络里，没有凭空产生新联结这回事。人工神经网络典型的一种学习方式就是，我已经知道吃到糖果时，手会如何动，但是我想让神经网络学着帮我做这件动动手的事情。所以我预先准备好非常多吃糖的学习数据，然后将这些数据一次次放入这套人工神经网络系统中，糖的信号会通过这套系统传递到手。然后通过对比这次信号传递后，手的动作是不是”讨糖”动作，来修改人工神经网络当中的神经元强度。这种修改在专业术语中叫做”误差反向传递”，也可以看作是再一次将传过来的信号传回去，看看这个负责传递信号神经元对于”讨糖”的动作到底有没有贡献，让它好好反思与改正，争取下次做出更好的贡献。这样看来，人工神经网络和生物神经网络的确不是一回事。</p>
+<h4 id="两者区别总结"><a href="#两者区别总结" class="headerlink" title="两者区别总结"></a>两者区别总结</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/ann5.png"></p>
+<p>人工神经网络靠的是正向和反向传播来更新神经元，从而形成一个好的神经系统，本质上，这是一个能让计算机处理和优化的数学模型。而生物神经网络是通过刺激，产生新的联结，让信号能够通过新的联结传递而形成反馈。虽然现在的计算机技术越来越高超，不过我们身体里的神经系统经过了数千万年的进化，还是独一无二的，迄今为止，再复杂、再庞大的人工神经网络系统也不能替代我们的小脑袋。我们应该感到自豪，也应该珍惜上天的这份礼物。</p>
+<h3 id="什么是神经网络-Neural-Network"><a href="#什么是神经网络-Neural-Network" class="headerlink" title="什么是神经网络 (Neural Network)"></a>什么是神经网络 (Neural Network)</h3><h4 id="内容简介"><a href="#内容简介" class="headerlink" title="内容简介"></a>内容简介</h4><p>这里提到的是人工神经网络，是存在于计算机里的神经系统。人工神经网络和自然神经网络的区别、神经网络是什么、它是怎么工作的、都会在影片里一一提到。</p>
+<h3 id="神经网络-梯度下降"><a href="#神经网络-梯度下降" class="headerlink" title="神经网络 梯度下降"></a>神经网络 梯度下降</h3><p>欢迎观看有趣的机器学习系列视频，神经网络是当今为止最流行的一种深度学习框架，它的基本原理也很简单，就是一种梯度下降机制。我们今天就来看看这神奇的优化模式吧。</p>
+<h4 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h4><p><img src="https://static.mofanpy.com/results/ML-intro/gd2.png"></p>
+<p>学习机器学习的同学们常会遇到这样的图像，我了个天，看上去好复杂，哈哈，不过还挺好看的。这些和我们说的梯度下降又有什么关系呢？原来这些图片展示出来了一个家族的历史，这个家族的名字就是——”optimization” (优化问题)。优化能力是人类历史上的重大突破，他解决了很多实际生活中的问题。从而渐渐演化成了一个庞大的家族。</p>
+<p>比如说牛顿法 (Newton’s method)、最小二乘法(Least Squares method)、梯度下降法 (Gradient Descent) 等等。而我们的神经网络就是属于梯度下降法这个分支中的一个。提到梯度下降，我们不得不说说大学里面学习过的求导求微分。因为这就是传说中”梯度下降”里面的”梯度” (gradient)啦。听到求导微分可别后怕，因为这个短视频只是让你有一个直观上的理解，并不会涉及太过复杂的东西。</p>
+<h4 id="梯度下降"><a href="#梯度下降" class="headerlink" title="梯度下降"></a>梯度下降</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/gd3.png"></p>
+<p>初学神经网络的时候，我们通常会遇到这样一个方程，叫做误差方程 (Cost Function)。用来计算预测出来的和我们实际中的值有多大差别。在预测数值的问题中，我们常用平方差 (Mean Squared Error) 来代替。我们简化一下这个方程，W是我们神经网络中的参数，x、y 都是我们的数据，因为 xy 都是实实在在的数据点，在这个假设情况中，是多少都无所谓，然后我们再厚颜无耻地像这样继续简化一下，(注意, 这个过程在在数学中并不正确, 不过我们只是为了看效果)，所以现在误差值曲线就成了这样。假设我们初始化的 W 在这个位置。而这个位置的斜率是这条线，这也就是梯度下降中的梯度啦。我们从图中可以看出，Cost 误差最小的时候正是这条 cost 曲线最低的地方，不过在蓝点的 W 却不知道这件事情，他目前所知道的就是梯度线为自己在这个位置指出的一个下降方向，我们就要朝着这个蓝色梯度的方向下降一点点。在做一条切线，发现我还能下降，那我就朝着梯度的方向继续下降，这时，再展示出现在的梯度，因为梯度线已经躺平了，我们已经指不出哪边是下降的方向了，所以这时我们就找到了 W 参数的最理想值。简而言之，就是找到梯度线躺平的点。可是神经网络的梯度下降可没这么简单。</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/gd4.png"></p>
+<p>神经网络中的 W 可不止一个，如果只有一个 W，我们就能画出之前那样的误差曲线，如果有两个 W 也简单，我们可以用一个3D 图来展示，可是超过3个 W，我们可就没办法很好的可视化出来啦。这可不是最要命的。在通常的神经网络中，误差曲线可没这么优雅。</p>
+<h4 id="全局-and-局部最优"><a href="#全局-and-局部最优" class="headerlink" title="全局 and 局部最优"></a>全局 and 局部最优</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/gd5.png"></p>
+<p>在简化版的误差曲线中，我们只要找到梯度线躺平的地方，就能能迅速找到误差最小时的 W。可是很多情况是这样的，误差曲线并不只有一个沟，而且梯度躺平的点也不止一个。不同的 W 初始化的位置，将会带来不同的下降区域。不同的下降区域，又会带来不同的 W 解。在这个图像当中，W 的全局最优解(Global minima)在这个位置，而其它的解都是局部最优(Local minima)。全局最优固然是最好，但是很多时候，你手中的都是一个局部最优解，这也是无可避免的。不过你可以不必担心，因为虽然不是全局最优，但是神经网络也能让你的局部最优足够优秀，以至于即使拿着一个局部最优也能出色的完成手中的任务。</p>
+<h3 id="科普-神经网络的黑盒不黑"><a href="#科普-神经网络的黑盒不黑" class="headerlink" title="科普: 神经网络的黑盒不黑"></a>科普: 神经网络的黑盒不黑</h3><p>今天我们来说说为了理解神经网络在做什么，对神经网络这个黑盒的正确打开方式。</p>
+<h4 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation1.png"></p>
+<p>当然，这可不是人类的神经网络，因为至今我们都还没彻底弄懂人类复杂神经网络的运行方式。今天只来说说计算机中的人工神经网络。我们都听说过，神经网络是一个黑盒。</p>
+<h4 id="黑盒"><a href="#黑盒" class="headerlink" title="黑盒"></a>黑盒</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation2.png"></p>
+<p>呀，咋一看，的确挺黑的。我们还知道，如果你丢一个东西进这个黑盒，他会给你丢出来另一个东西。具体在黑盒里偷偷摸摸做了什么，我们不得而知。但丢出来的东西和丢进去的东西有着某些联系。这是为什么呢？这个黑盒里究竟又发生了什么呢？</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation3.png"></p>
+<p>正好我手边有一个手电筒，我们打开黑盒好好照亮看看。一般来说，神经网络是一连串神经层所组成的把输入进行加工再输出的系统。中间的加工过程就是我们所谓的黑盒。想把黑盒打开，就是把神经网络给拆开。按正常的逻辑，我们能将神经网络分成三部分。</p>
+<h4 id="神经网络分区"><a href="#神经网络分区" class="headerlink" title="神经网络分区"></a>神经网络分区</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation4.png"></p>
+<p>输入端，黑盒，输出端。输入端是我们能理解的物体，一个宝宝，输出端也是一个我们能理解的物体，一个奶瓶。对于神经网络，传统的理解就是，中间的这两层神经层在对输入信息进行加工，好让自己的输出信息和奶瓶吻合。但是我们如果换一个角度来想想。此时，我们将左边的红线移动一下</p>
+<p>现在的输入端增加了一层，原本我们认定为黑盒的一部分被照亮，变成了一个已知部分。我们将最左边两层的神经层共同看成输入端。貌似怪怪的，你可能会问：可是这时的输入端不再是我们知道的”宝宝”了呀，为什么可以这样看？想得没错，它的确已经不是我们认识的宝宝啦，但是”宝宝”这个人类定义的形象通过了一层神经网络加工，变成了另外一种宝宝的形象，可能这种形象我们用肉眼看起来并不像宝宝，不过计算机却能理解，这是它所能识别的”宝宝”形象。在专业术语中，我们将宝宝当做特征(features)，将神经网络第一层加工后的宝宝叫做代表特征(feature representation)。如果再次移动红线，我们的黑盒就消失了，这时原本在黑盒里的所有神经层都被照亮。原本的代表特征再次被加工，变成了另一种代表特征，同样，再次加工形成的代表特征通常只有计算机自己看得懂，能够理解。所以，与其说黑盒是在加工处理，还不如说是在将一种代表特征转换成另一种代表特征，一次次特征之间的转换，也就是一次次的更有深度的理解。比如神经网络如果接收人类手写数字的图片。</p>
+<h4 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a>举例说明</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation5.png"></p>
+<p>然后我们将这个神经网络的输出层给拆掉，只留下前三层，那第3层输出的信息就是我们这些数字的3个最重要的代表特征，换句话说，就是用3个信息来代表整张手写数字图片的所有像素点。我们如果把这3个信息展示出来，我们就能很清楚的看到，计算机是如何用3个点来代表不同的数字内容，比如神经网络认为 1 和 0 是完全不同的，所以他们应该被放在空间里不同的地方。输出层就更好理解了，</p>
+<p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation6.png"></p>
+<p>有了用3个点表示的数字代表特征，我们就能整理整理，将落在相同区域的数字分为一类，如果落在了那些1所在的区域，我们就认定张手写图片就是1，如果是2的区域，就认定为2。这就是神经网络的黑盒并不黑的原因啦，只是因为有时候代表特征太多了，我们人类没有办法看懂他们代表的是什么，然而计算机却能看清楚它所学到的规律，所以我们才觉得神经网络就是个黑盒。这种代表特征的理解方式其实非常有用，以至于人们拿着它来研究更高级的神经网络玩法。比如迁移学习(Transfer Learning)。我们举一个例子。</p>
+<h4 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h4><p><img src="https://static.mofanpy.com/results-small/ML-intro/feature_representation7.png"></p>
+<p>对于一个有分类能力的神经网络，有时候我们只需要这套神经网络的理解能力，并拿这种能力去处理其他问题。所以我们保留它的代表特征转换能力。因为有了这种能力，就能将复杂的图片像素信息转换成更少量，但更精辟的信息，比如刚刚我们说将手写数字变成的3个点信息。然后我们需要干点坏事，将这个神经网络的输出层给拆掉。套上另外一个神经网络，用这种移植的方式再进行训练，让它处理不同的问题，比如，预测照片里事物的价值。现在看来，这黑盒里开个灯，其实还挺有用的嘛。当你看不懂神经网络的时候，这样想想，是不是更好理解啦。</p>
+<h3 id="Why-Pytorch"><a href="#Why-Pytorch" class="headerlink" title="Why Pytorch?"></a>Why Pytorch?</h3><h4 id="为什么用-PyTorch"><a href="#为什么用-PyTorch" class="headerlink" title="为什么用 PyTorch"></a>为什么用 PyTorch</h4><p><a target="_blank" rel="noopener" href="http://pytorch.org/">PyTorch</a> 是 <a target="_blank" rel="noopener" href="http://pytorch.org/">PyTorch</a> 在 Python 上的衍生。因为 <a target="_blank" rel="noopener" href="http://pytorch.org/">PyTorch</a> 是一个使用 <a target="_blank" rel="noopener" href="http://pytorch.org/">PyTorch</a> 语言的神经网络库，Torch 很好用，但是 Lua 又不是特别流行，所有开发团队将 Lua 的 Torch 移植到了更流行的语言 Python 上。是的 PyTorch 一出生就引来了剧烈的反响。为什么呢？</p>
+<p>很简单，我们就看看有谁在用 PyTorch 吧。</p>
+<p><img src="https://static.mofanpy.com/results-small/torch/1-1-1.png"></p>
+<p>可见，著名的 Facebook、twitter 等都在使用它，这就说明 PyTorch 的确是好用的，而且是值得推广。</p>
+<p>而且如果你知道 <a target="_blank" rel="noopener" href="http://www.numpy.org/">Numpy</a>，PyTorch 说他就是在神经网络领域可以用来替换 numpy 的模块。</p>
+<h4 id="神经网络在做什么"><a href="#神经网络在做什么" class="headerlink" title="神经网络在做什么"></a>神经网络在做什么</h4><p>神经网络在学习拟合线条(回归)：</p>
+<p><img src="https://static.mofanpy.com/results/torch/1-1-2.gif"></p>
+<p>神经网络在学习区分数据(分类)：</p>
+<p><img src="https://static.mofanpy.com/results/torch/1-1-3.gif"></p>
+<h4 id="PyTorch-和-Tensorflow"><a href="#PyTorch-和-Tensorflow" class="headerlink" title="PyTorch 和 Tensorflow"></a>PyTorch 和 Tensorflow</h4><p>据 PyTorch 自己介绍，他们家的最大优点就是建立的神经网络是动态的，对比静态的 Tensorflow，他能更有效地处理一些问题，比如说 RNN 变化时间长度的输出。而我认为，各家有各家的优势和劣势，所以我们要以中立的态度。两者都是大公司，Tensorflow 自己说自己在分布式训练上下了很大的功夫，那我就默认 Tensorflow 在这一点上要超出 PyTorch，但是 Tensorflow 的静态计算图使得他在 RNN 上有一点点被动 (虽然它用其他途径解决了)，不过用 PyTorch 的时候，你会对这种动态的 RNN 有更好的理解。</p>
+<p>而且 Tensorflow 的高度工业化，它的底层代码…你是看不懂的。PyTorch 好那么一点点，如果你深入 API，你至少能比看 Tensorflow 多看懂一点点 PyTorch 的底层在干嘛。</p>
+<p>最后我的建议就是：</p>
+<ul>
+<li>如果你是学生，随便选一个学，或者稍稍偏向 PyTorch，因为写代码的时候应该更好理解。懂了一个模块，转换 Tensorflow 或者其他的模块都好说。</li>
+<li>如果是上班了，跟着你公司来，公司用什么，你就用什么，不要脱群。</li>
+</ul>
+<h4 id="Pytorch-安装"><a href="#Pytorch-安装" class="headerlink" title="Pytorch 安装"></a>Pytorch 安装</h4><p>对于MacBook，安装推荐参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/410961551">Mac M1安装tensorflow和pytorch</a></p>
+<h4 id="支持的系统"><a href="#支持的系统" class="headerlink" title="支持的系统"></a>支持的系统</h4><p>PyTorch 暂时只支持 MacOS、Linux。暂不支持 Windows！(可怜的 Windows 同学们.. 又被抛弃了)。不过说不定像 Tensorflow 一样，因为 Windows 用户的强烈要求，他们在某天就突然支持了。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>PyTorch 安装起来很简单，<a target="_blank" rel="noopener" href="http://pytorch.org/">它自家网页</a>上就有很方便的选择方式 (网页升级改版后可能和下图有点不同)：</p>
+<p><img src="https://static.mofanpy.com/results-small/torch/1-2-1.png"></p>
+<p>所以根据你的情况选择适合你的安装方法，我已自己为例，我使用的是 MacOS，想用 pip 安装，我的 Python 是 3.5 版的，我没有 GPU 加速，那我就按上面的选：</p>
+<p>然后根据上面的提示，我只需要在我的 Terminal 当中输入以下指令就好了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install http://download.pytorch.org/whl/torch-0.1.11.post5-cp35-cp35m-macosx_10_7_x86_64.whl</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip install torchvision</span></span><br></pre></td></tr></table></figure>
+
+<p>注意，我安装的是0.1.11版本的 torch，你需要去他们网站上看是否有新版本的。安装 PyTorch 会安装两个模块，一个是 torch，一个 torchvision。torch 是主模块，用来搭建神经网络的，torchvision 是辅模块，有数据库，还有一些已经训练好的神经网络等着你直接用，比如 (<a target="_blank" rel="noopener" href="http://pytorch.org/docs/torchvision/models.html">VGG, AlexNet, ResNet</a>)。</p>
+<blockquote>
+<p><strong>原文地址：</strong><a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/torch/">PyTorch | 莫烦Python (mofanpy.com)</a></p>
+<p><strong>学习资料：</strong></p>
+<ul>
+<li>Python 做神经网络 <a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/tensorflow/">Tensorflow 教程</a></li>
+<li>Python 做神经网络 <a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/torch/">Pytorch 教程</a></li>
+<li>有网友根据我的 Tensorflow 系列做了一个很好的<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/e112012a4b2d">文字笔记</a>, 推荐阅读.</li>
+<li>Tensorflow <a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/tensorflow/">学习目录</a></li>
+<li>PyTorch <a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/torch/">学习目录</a></li>
+<li>Theano <a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/theano/">学习目录</a></li>
+<li>Keras <a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/keras/">学习目录</a></li>
+<li><a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/machine-learning/tensorflow/intro-NN">什么是神经网络 短视频</a></li>
+<li><a target="_blank" rel="noopener" href="http://pytorch.org/">PyTorch 官网</a></li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">银河</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yingyingmonstre.github.io/2021/12/06/PyTorch%E7%AE%80%E4%BB%8B/">https://yingyingmonstre.github.io/2021/12/06/PyTorch%E7%AE%80%E4%BB%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://YingYingMonstre.github.io" target="_blank">银河之家</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/YingYingMonstre.github.io/tags/PyTorch/">PyTorch</a></div><div class="post_share"><div class="social-share" data-image="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ftva1.sinaimg.cn%2Flarge%2F006tNbRwgy1g9qk7x6noxj31400g4jsd.jpg&amp;refer=http%3A%2F%2Ftva1.sinaimg.cn&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=jpeg?sec=1641393896&amp;t=2c5167116c4f1c9fa1474342824c9969" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/YingYingMonstre.github.io/2021/11/30/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88DQN%E4%B8%8B%EF%BC%89/"><img class="next-cover" src="https://img2.baidu.com/it/u=1440641241,1743687496&amp;fm=26&amp;fmt=auto" onerror="onerror=null;src='/YingYingMonstre.github.io/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">莫烦强化学习（DQN下）</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/YingYingMonstre.github.io/img/avatar.jpg" onerror="this.onerror=null;this.src='/YingYingMonstre.github.io/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">银河</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/YingYingMonstre.github.io/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div><div class="card-info-data-item is-center"><a href="/YingYingMonstre.github.io/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div><div class="card-info-data-item is-center"><a href="/YingYingMonstre.github.io/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/YingYingMonstre"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%91%E6%99%AE-%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-VS-%E7%94%9F%E7%89%A9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-number">1.</span> <span class="toc-text">科普: 人工神经网络 VS 生物神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2"><span class="toc-number">1.1.</span> <span class="toc-text">历史</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%A0%E7%9A%84%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.2.</span> <span class="toc-text">你的神经网络系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-number">1.3.</span> <span class="toc-text">人工神经网络</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%A4%E8%80%85%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.</span> <span class="toc-text">两者区别总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-Neural-Network"><span class="toc-number">2.</span> <span class="toc-text">什么是神经网络 (Neural Network)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AE%B9%E7%AE%80%E4%BB%8B"><span class="toc-number">2.1.</span> <span class="toc-text">内容简介</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D"><span class="toc-number">3.</span> <span class="toc-text">神经网络 梯度下降</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Optimization"><span class="toc-number">3.1.</span> <span class="toc-text">Optimization</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D"><span class="toc-number">3.2.</span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E5%B1%80-and-%E5%B1%80%E9%83%A8%E6%9C%80%E4%BC%98"><span class="toc-number">3.3.</span> <span class="toc-text">全局 and 局部最优</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%91%E6%99%AE-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E9%BB%91%E7%9B%92%E4%B8%8D%E9%BB%91"><span class="toc-number">4.</span> <span class="toc-text">科普: 神经网络的黑盒不黑</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-number">4.1.</span> <span class="toc-text">神经网络</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%BB%91%E7%9B%92"><span class="toc-number">4.2.</span> <span class="toc-text">黑盒</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%88%86%E5%8C%BA"><span class="toc-number">4.3.</span> <span class="toc-text">神经网络分区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="toc-number">4.4.</span> <span class="toc-text">举例说明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0"><span class="toc-number">4.5.</span> <span class="toc-text">迁移学习</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-Pytorch"><span class="toc-number">5.</span> <span class="toc-text">Why Pytorch?</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-PyTorch"><span class="toc-number">5.1.</span> <span class="toc-text">为什么用 PyTorch</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%9C%A8%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">5.2.</span> <span class="toc-text">神经网络在做什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PyTorch-%E5%92%8C-Tensorflow"><span class="toc-number">5.3.</span> <span class="toc-text">PyTorch 和 Tensorflow</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Pytorch-%E5%AE%89%E8%A3%85"><span class="toc-number">5.4.</span> <span class="toc-text">Pytorch 安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%AF%E6%8C%81%E7%9A%84%E7%B3%BB%E7%BB%9F"><span class="toc-number">5.5.</span> <span class="toc-text">支持的系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">5.6.</span> <span class="toc-text">安装</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/YingYingMonstre.github.io/2021/12/06/PyTorch%E7%AE%80%E4%BB%8B/" title="PyTorch简介"><img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ftva1.sinaimg.cn%2Flarge%2F006tNbRwgy1g9qk7x6noxj31400g4jsd.jpg&amp;refer=http%3A%2F%2Ftva1.sinaimg.cn&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=jpeg?sec=1641393896&amp;t=2c5167116c4f1c9fa1474342824c9969" onerror="this.onerror=null;this.src='/YingYingMonstre.github.io/img/404.jpg'" alt="PyTorch简介"/></a><div class="content"><a class="title" href="/YingYingMonstre.github.io/2021/12/06/PyTorch%E7%AE%80%E4%BB%8B/" title="PyTorch简介">PyTorch简介</a><time datetime="2021-12-06T15:00:00.000Z" title="发表于 2021-12-06 23:00:00">2021-12-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/YingYingMonstre.github.io/2021/11/30/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88DQN%E4%B8%8B%EF%BC%89/" title="莫烦强化学习（DQN下）"><img src="https://img2.baidu.com/it/u=1440641241,1743687496&amp;fm=26&amp;fmt=auto" onerror="this.onerror=null;this.src='/YingYingMonstre.github.io/img/404.jpg'" alt="莫烦强化学习（DQN下）"/></a><div class="content"><a class="title" href="/YingYingMonstre.github.io/2021/11/30/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88DQN%E4%B8%8B%EF%BC%89/" title="莫烦强化学习（DQN下）">莫烦强化学习（DQN下）</a><time datetime="2021-11-30T14:20:00.000Z" title="发表于 2021-11-30 22:20:00">2021-11-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/YingYingMonstre.github.io/2021/11/30/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88DQN%E4%B8%8A%EF%BC%89/" title="莫烦强化学习（DQN上）"><img src="https://img2.baidu.com/it/u=1440641241,1743687496&amp;fm=26&amp;fmt=auto" onerror="this.onerror=null;this.src='/YingYingMonstre.github.io/img/404.jpg'" alt="莫烦强化学习（DQN上）"/></a><div class="content"><a class="title" href="/YingYingMonstre.github.io/2021/11/30/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88DQN%E4%B8%8A%EF%BC%89/" title="莫烦强化学习（DQN上）">莫烦强化学习（DQN上）</a><time datetime="2021-11-30T13:30:00.000Z" title="发表于 2021-11-30 21:30:00">2021-11-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/YingYingMonstre.github.io/2021/11/10/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88Sarsa%EF%BC%89/" title="莫烦强化学习（Sarsa）"><img src="https://img2.baidu.com/it/u=1440641241,1743687496&amp;fm=26&amp;fmt=auto" onerror="this.onerror=null;this.src='/YingYingMonstre.github.io/img/404.jpg'" alt="莫烦强化学习（Sarsa）"/></a><div class="content"><a class="title" href="/YingYingMonstre.github.io/2021/11/10/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88Sarsa%EF%BC%89/" title="莫烦强化学习（Sarsa）">莫烦强化学习（Sarsa）</a><time datetime="2021-11-10T15:30:00.000Z" title="发表于 2021-11-10 23:30:00">2021-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/YingYingMonstre.github.io/2021/11/08/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88QLearning%EF%BC%89/" title="莫烦强化学习（QLearning）"><img src="https://img2.baidu.com/it/u=1440641241,1743687496&amp;fm=26&amp;fmt=auto" onerror="this.onerror=null;this.src='/YingYingMonstre.github.io/img/404.jpg'" alt="莫烦强化学习（QLearning）"/></a><div class="content"><a class="title" href="/YingYingMonstre.github.io/2021/11/08/%E8%8E%AB%E7%83%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88QLearning%EF%BC%89/" title="莫烦强化学习（QLearning）">莫烦强化学习（QLearning）</a><time datetime="2021-11-08T15:00:00.000Z" title="发表于 2021-11-08 23:00:00">2021-11-08</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> 银河</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/YingYingMonstre.github.io/js/utils.js"></script><script src="/YingYingMonstre.github.io/js/main.js"></script><script src="/YingYingMonstre.github.io/js/search/local-search.js"></script><div class="js-pjax"></div><script src="js/custom.js"></script><script src="../js/custom.js"></script><script src="../../js/custom.js"></script><script src="../../../../js/custom.js"></script></div></body></html>
