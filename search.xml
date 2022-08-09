@@ -51,6 +51,107 @@
       </tags>
   </entry>
   <entry>
+    <title>Gym环境创建</title>
+    <url>/YingYingMonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
+    <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
+<h1 id="Subclassing-gym-Env"><a href="#Subclassing-gym-Env" class="headerlink" title="Subclassing gym.Env"></a>Subclassing gym.Env</h1><p>在学习创建自己的环境前应该查看Gym的<a href="https://www.gymlibrary.ml/content/api/">API文档</a>。将关注一个看起来像这样的gym-examples的子集：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym-examples/</span><br><span class="line">  README.md</span><br><span class="line">  setup.py</span><br><span class="line">  gym_examples/</span><br><span class="line">    __init__.py</span><br><span class="line">    envs/</span><br><span class="line">      __init__.py</span><br><span class="line">      grid_world.py</span><br><span class="line">    wrappers/</span><br><span class="line">      __init__.py</span><br><span class="line">      relative_position.py</span><br></pre></td></tr></table></figure>
+
+<p>通过实现一个简单的游戏<code>GridWorldEnv</code>来说明gym.Env子类的过程。在<code>gym-examples/gym_examples/envs/grid_world.py</code>中编写代码。环境由一个二维方形网格组成（大小由参数size决定）。Agent在每个timestep可以垂直或水平地移动。Agent的目标是导航到episode开始时随机放置的目标。</p>
+<ul>
+<li>Observations提供了agent和目标的位置。</li>
+<li>四个动作分别为上、下、左、右。</li>
+<li>Agent到达目标位置则发出done信号。</li>
+<li>奖励是二元且稀疏的，意味着除了到达目标时为1，其他情况都为0。</li>
+</ul>
+<p>分块看其源码。</p>
+<h1 id="Declaration-and-Initialization"><a href="#Declaration-and-Initialization" class="headerlink" title="Declaration and Initialization"></a>Declaration and Initialization</h1><p><code>__init__</code>主要作用是初始化一些参数。如在<code>GridWorldEnv</code>中规定了方格的大小、设置了用于渲染的变量、观测空间和动作空间。在初始化函数中设置<code>self.seed()</code>的参数<code>seed=</code>为整数可以使随机数固定、初始化结果一致，如果为空的话就是随机选取种子。</p>
+<h1 id="Constructing-Observations-From-Environment-States"><a href="#Constructing-Observations-From-Environment-States" class="headerlink" title="Constructing Observations From Environment States"></a>Constructing Observations From Environment States</h1><p>由于需要在<code>reset</code>和<code>step</code>中计算观测结果，因此使用（private）方法<code>_get_obs</code>将环境状态转换为观测结果通常很方便。但是这不是强制性的，也可以在<code>reset</code>和<code>step</code>中分别计算观测结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_obs</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;agent&quot;</span>: self._agent_location, <span class="string">&quot;target&quot;</span>: self._target_location&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于<code>reset</code>和<code>step</code>返回的辅助信息，也可以实现类似的方法。例如提供agent和目标的曼哈顿距离：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_info</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;distance&quot;</span>: np.linalg.norm(self._agent_location - self._target_location, <span class="built_in">ord</span>=<span class="number">1</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h1><p>调用<code>reset</code>来启动新的episode。可以假设在调用reset之前不会调用step方法。只要发出done信号，就应该调用reset。用户可以将种子关键字传递给 reset 以将环境使用的任何随机数生成器初始化为确定性状态。推荐使用环境基类<code>gym.Env</code>提供的随机数生成器<code>self.np_random</code>。如果只使用这个RNG，就不需要太担心seeding，但要使用<code>super.reset(seed=seed)</code>来确保gym.Env正确的seeding RNG。</p>
+<h1 id="Step"><a href="#Step" class="headerlink" title="Step"></a>Step</h1><p><code>step</code>方法通常包括环境的大部分逻辑。它接受一个动作，在应用该动作后计算环境状态并返回四元组(observation, reward, done, info)。</p>
+<h1 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h1><p>渲染，绘图函数，在图形界面上做出反应。</p>
+<h1 id="Close"><a href="#Close" class="headerlink" title="Close"></a>Close</h1><p>关闭环境使用的所有打开的资源。很多情况下不比去实现该方法。</p>
+<h1 id="Registering-Envs"><a href="#Registering-Envs" class="headerlink" title="Registering Envs"></a>Registering Envs</h1><p>为了让Gym检测到自定义环境，必须按如下方式注册。环境在<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs/__init__.py</code>中获得gym中所有注册的环境信息，在其中加入代码对自定义环境进行注册。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 例子</span></span><br><span class="line"><span class="comment"># user</span></span><br><span class="line"><span class="comment"># ---------</span></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&#x27;GridWorld-v1&#x27;</span>,</span><br><span class="line">    entry_point=<span class="string">&#x27;gym.envs.user:GridEnv1&#x27;</span>,</span><br><span class="line">    max_episode_steps=<span class="number">200</span>,</span><br><span class="line">    reward_threshold=<span class="number">100.0</span>,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>环境ID由三个部分组成，其中两个是可选的：一个可选的namespace（这里忽略掉了）、一个强制名称（GridWorld）、一个可选但推荐的版本（v1）。在环境创建期间应使用适当的ID。</p>
+<p>关键参数<code>max_episode_steps=200</code>将确保通过<code>gym.make</code>实例化的GridWorld环境将被包装在TimeLimit包装器中。如果agent已达到目标或在当前episode中已执行200步，则将产生done信号。</p>
+<p>除了id和entrypoint，还可以pass以下的关键字来注册：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Name</th>
+<th align="center">Type</th>
+<th align="center">Default</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">reward_threshold</td>
+<td align="center">float</td>
+<td align="center">None</td>
+<td align="center">任务被认为已解决前的奖励阈值</td>
+</tr>
+<tr>
+<td align="center">nondeterministic</td>
+<td align="center">bool</td>
+<td align="center">False</td>
+<td align="center">即使在seeding之后这个环境是否也是非确定性的</td>
+</tr>
+<tr>
+<td align="center">max_episode_steps</td>
+<td align="center">int</td>
+<td align="center">None</td>
+<td align="center">一个episode可以包含的最大步骤数。如果不是None则添加TimeLimit包装器</td>
+</tr>
+<tr>
+<td align="center">order_enforce</td>
+<td align="center">bool</td>
+<td align="center">True</td>
+<td align="center">是否将环境包装在OrderEnforcing包装器中</td>
+</tr>
+<tr>
+<td align="center">autoreset</td>
+<td align="center">bool</td>
+<td align="center">False</td>
+<td align="center">是否将环境包装在AutoResetWrapper</td>
+</tr>
+<tr>
+<td align="center">kwargs</td>
+<td align="center">dict</td>
+<td align="center">{}</td>
+<td align="center">传给环境类的默认k wa r g</td>
+</tr>
+</tbody></table>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="编写环境"><a href="#编写环境" class="headerlink" title="编写环境"></a>编写环境</h2><p>路径为<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs</code>。在envs中创建了一个文件夹<code>gym_test</code>，里面包含<code>__init__.py</code>和<code>env_guess_number.py</code>。其中后者描述具体环境，主要包括在init初始化函数中初始化一些参数、step输入action并返回四元组、reset重置，具体代码为：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> gym <span class="keyword">import</span> spaces</span><br><span class="line"><span class="keyword">from</span> gym.utils <span class="keyword">import</span> seeding</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">guess_number</span>(<span class="params">gym.Env</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Hotter Colder</span></span><br><span class="line"><span class="string">        The goal of hotter colder is to guess closer to a randomly selected guess_number</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        After each step the agent receives an observation of:</span></span><br><span class="line"><span class="string">        0 - No guess yet submitted (only after reset)</span></span><br><span class="line"><span class="string">        1 - Guess is lower than the target</span></span><br><span class="line"><span class="string">        2 - Guess is equal to the target</span></span><br><span class="line"><span class="string">        3 - Guess is higher than the target</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        The rewards is calculated as:</span></span><br><span class="line"><span class="string">        (min(action, self.guess_number) + self.range) / (max(action, self.guess_number) + self.range)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Ideally an agent will be able to recognise the &#x27;scent&#x27; of a higher reward and</span></span><br><span class="line"><span class="string">        increase the rate in which is guesses in that direction until the reward reaches</span></span><br><span class="line"><span class="string">        its maximum</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.<span class="built_in">range</span> = <span class="number">1000</span>  <span class="comment"># +/- value the randomly select guess_number can be between</span></span><br><span class="line">        self.bounds = <span class="number">2000</span>  <span class="comment"># Action space bounds</span></span><br><span class="line"></span><br><span class="line">        self.action_space = spaces.Box(low=np.array([-self.bounds]), high=np.array([self.bounds]), dtype=np.<span class="built_in">int</span>)</span><br><span class="line">        self.observation_space = spaces.Discrete(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">        self.guess_number = <span class="number">0</span></span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.guess_max = <span class="number">200</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        self.seed()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">seed</span>(<span class="params">self, seed=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.np_random, seed = seeding.np_random(seed)</span><br><span class="line">        <span class="keyword">return</span> [seed]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, action</span>):</span></span><br><span class="line">        <span class="comment"># assert self.action_space.contains(action)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> action &lt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action == self.guess_number:</span><br><span class="line">            self.observation = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action &gt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 两个值越接近，奖励越接近1</span></span><br><span class="line">        reward = ((<span class="built_in">min</span>(action, self.guess_number) + self.bounds) / (<span class="built_in">max</span>(action, self.guess_number) + self.bounds)) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        self.guess_count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 200个episode</span></span><br><span class="line">        done = self.guess_count &gt;= self.guess_max</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.observation, reward, done, &#123;<span class="string">&quot;guess_number&quot;</span>: self.guess_number, <span class="string">&quot;guesses&quot;</span>: self.guess_count&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.guess_number = <span class="built_in">int</span>(self.np_random.uniform(-self.<span class="built_in">range</span>, self.<span class="built_in">range</span>))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;guess number = &quot;</span>, self.guess_number)</span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> self.observation</span><br></pre></td></tr></table></figure>
+
+<p>完成基本环境设置后需要在<code>gym_test/__init__.py</code>中设置环境实例初始化的调用：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.envs.gym_test.env_guess_number <span class="keyword">import</span> guess_number</span><br></pre></td></tr></table></figure>
+
+<h2 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h2><p>在<code>envs/__init__.py</code>中加入：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">···</span><br><span class="line"><span class="comment"># User test</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line"></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&quot;GuessNumber-v0&quot;</span>,</span><br><span class="line">    entry_point=<span class="string">&quot;gym.envs.gym_test:guess_number&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Classic</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line">···</span><br></pre></td></tr></table></figure>
+
+<h2 id="gym测试"><a href="#gym测试" class="headerlink" title="gym测试"></a>gym测试</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;GuessNumber-v0&quot;</span>)</span><br><span class="line">obs = env.reset()</span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    action = env.action_space.sample()</span><br><span class="line">    <span class="built_in">print</span>(action)</span><br><span class="line">    obs, reward, done, info = env.step(action)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://www.gymlibrary.ml/content/environment_creation/">Gym Documentation</a></p>
+<p><a href="https://blog.csdn.net/RenJie_L/article/details/123500345">构建自己的gym训练环境 巨详细</a></p>
+<p><a href="https://blog.csdn.net/sinat_39620217/article/details/115519622">gym搭建自己的环境</a></p>
+<p><a href="https://lossyou.com/post/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84gym%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83">搭建自己的gym强化学习环境</a></p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>gym</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ModbusTCP协议学习</title>
     <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
@@ -378,197 +479,88 @@
       </tags>
   </entry>
   <entry>
-    <title>XCTF-Web基础篇</title>
-    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-Web%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
-    <content><![CDATA[<h2 id="view-source"><a href="#view-source" class="headerlink" title="view_source"></a>view_source</h2><p>方法一：不能用右键审查元素，则按F12打开开发者工具查看，找到flag</p>
-<p>方法二：在url中通过view-source:的方法来访问源码，在url中提交view-source:+url</p>
-<p>方法三：通过Burpsuite抓包查看源代码</p>
-<h2 id="robots"><a href="#robots" class="headerlink" title="robots"></a>robots</h2><p>[原理]</p>
-<p>robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。</p>
-<p>[步骤]</p>
-<p>1.根据提示robots,可以直接想到robots.txt</p>
-<p>2.或通过扫目录也可以扫到: <code>python dirsearch.py -u http://10.10.10.175:32793/ -e *</code>（这个脚本在cmd中可以用，git bash不行）</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/robots/1.png" alt="img"></p>
-<p>3.访问<code>http://111.198.29.45:33982/robots.txt</code>发现<code>f1ag_1s_h3re.php</code></p>
-<p>4.访问<code>http://111.198.29.45:33982/f1ag_1s_h3re.php</code>得到flag</p>
-<h2 id="backup"><a href="#backup" class="headerlink" title="backup"></a>backup</h2><p><strong>[目标]</strong></p>
-<p>掌握有关备份文件的知识</p>
-<p>常见的备份文件后缀名有: <code>.git .svn .swp .svn .~ .bak .bash_history</code></p>
-<p><strong>[环境]</strong></p>
-<p>无</p>
-<p><strong>[工具]</strong></p>
-<p>扫目录脚本dirsearch(项目地址：<code>https://github.com/maurosoria/dirsearch</code>(<code>https://github.com/maurosoria/dirsearch</code>))</p>
-<p><strong>[步骤]</strong></p>
-<p>1.可以手动猜测,也可以使用扫目录脚本/软件,扫一下,这里使用的是github上的脚本dirsearch,命令行下: <code>py python3 dirsearch.py -u http://10.10.10.175:32770 -e *</code></p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/backup/1.png" alt="img"></p>
-<p>2.看到存在备份文件index.php.bak访问 <code>http://10.10.10.175:32770/index.php.bak</code></p>
-<p>3.保存到本地打开，即可看到flag</p>
-<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>[原理]</p>
-<p> Cookie是当主机访问Web服务器时，由 Web 服务器创建的，将信息存储在用户计算机上的文件。一般网络用户习惯用其复数形式 Cookies，指某些网站为了辨别用户身份、进行 Session 跟踪而存储在用户本地终端上的数据，而这些数据通常会经过加密处理。</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关cookie的知识，了解cookie所在位置</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.浏览器按下F12键打开开发者工具，刷新后，在存储一栏，可看到名为look-here的cookie的值为cookie.php</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/1.png" alt="img"></p>
-<p>2.访问<code>http://111.198.29.45:47911/cookie.php</code>，提示查看http响应包，在网络一栏，可看到访问cookie.php的数据包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/2.png" alt="img"></p>
-<p>3.点击查看数据包，在消息头内可发现flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/cookie/3.png" alt="img"></p>
-<p>用dirsearch可以找到cookie.php文件，再用burpsuite抓包也可行。</p>
-<h2 id="disabled-button"><a href="#disabled-button" class="headerlink" title="disabled_button"></a>disabled_button</h2><p><strong>[目标]</strong></p>
-<p>初步了解前端知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开开发者工具（得用火狐浏览器），在查看器窗口审查元素，发现存在disabled=””字段，</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/1.png" alt="img"></p>
-<p>2.将<code>disabled=&quot;&quot;</code>删除后，按钮可按，按下后得到flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/2.png" alt="img"></p>
-<p>3.或审计from表单代码，使用hackbar（不能用，现在收费了），用post方式传递auth=flag，同样可以获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/disabled_button/3.png" alt="img"></p>
-<h2 id="weak-auth"><a href="#weak-auth" class="headerlink" title="weak_auth"></a>weak_auth</h2><p><strong>[目标]</strong></p>
-<p>了解弱口令，掌握爆破方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
+    <title>OpenAI的Gym</title>
+    <url>/YingYingMonstre.github.io/2022/08/09/gym/</url>
+    <content><![CDATA[<h1 id="什么是Gym"><a href="#什么是Gym" class="headerlink" title="什么是Gym"></a>什么是Gym</h1><p>Gym是一个用于强化学习(Reinforcement Learning, RL)的标准API，以及各种参考环境的集合。</p>
+<h1 id="Gym的优点"><a href="#Gym的优点" class="headerlink" title="Gym的优点"></a>Gym的优点</h1><p>Gym的接口简单、python化、能够表示一般的RL问题。</p>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;LunarLander-v2&quot;</span>)</span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">   env.render()</span><br><span class="line">   action = policy(observation)  <span class="comment"># User-defined policy function</span></span><br><span class="line">   observation, reward, done, info = env.step(action)</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> done:</span><br><span class="line">      observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
+
+<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><h2 id="Initializing-Environment"><a href="#Initializing-Environment" class="headerlink" title="Initializing Environment"></a>Initializing Environment</h2><p>在Gym中初始化环境(Initializing Environment)很简单，可以通过：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Interacting-with-the-Environment"><a href="#Interacting-with-the-Environment" class="headerlink" title="Interacting with the Environment"></a>Interacting with the Environment</h2><p>Gym实现了经典的“Agent-Environment循环”：</p>
+<img src="/YingYingMonstre.github.io/2022/08/09/gym/1.AE_loop.png" class="" title="AE_loop.png">
+
+<p>Agent与环境的行动-观察的exchange称为一个timestep。RL的目标是以某种特定的方式manipulate环境。</p>
+<p>给了一个示例，运行<code>LunarLander-v2</code>环境的一个实例1000个timestep，每一个step都渲染环境：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;LunarLander-v2&#x27;</span>)</span><br><span class="line">env.action_space.seed(<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">250</span>):</span><br><span class="line">    observation, reward, done, info = env.step(env.action_space.sample())</span><br><span class="line">    env.render()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> done:</span><br><span class="line">        observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
+
+<p>每个环境会提供<code>env.action_space</code>属性明确valid actions的格式。类似的，valid observations的格式由<code>env.observation_space</code>明确。上述例子中，使用<code>env.action_space.sample()</code>对随机动作进行采样。这里环境和动作空间的seed是独立的，以确保可重复的样本。</p>
+<h2 id="Standard-methods"><a href="#Standard-methods" class="headerlink" title="Standard methods"></a>Standard methods</h2><h3 id="Stepping"><a href="#Stepping" class="headerlink" title="Stepping"></a>Stepping</h3><p><code>gym.Env.step(self, action: ActType) → Union[Tuple[ObsType, float, bool, bool, dict], Tuple[ObsType, float, bool, dict]]</code></p>
+<p>运行一个动态环境的timestep。当episode结束时，使用<code>reset()</code>来重置环境的状态。接收一个动作，返回一个元祖(observation, reward, terminated, truncated, info)或(observation, reward, done, info)。后者已被弃用，未来会被删掉。</p>
+<p>参数：</p>
+<p><strong>action</strong>（ActType）- 由Agent提供的一个动作</p>
+<p>返回：</p>
 <ul>
-<li>burpsuite</li>
-<li>字典<code>&lt;https://github.com/rootphantomer/Blasting_dictionary/blob/master/%E5%B8%B8%E7%94%A8%E5%AF%86%E7%A0%81.txt&gt;</code></li>
+<li><strong>observation</strong>（object）- <code> observation_space</code>的一个元素。例如可能是一个包含某些对象的位置或速度的numpy数组。</li>
+<li><strong>reward</strong>（float）- 采取行动后返回的奖励。</li>
+<li><strong>terminated</strong>（bool）- 是否达到终止状态（根据任务的MDP定义）。在到达这种状态后进一步的step()调用可能会返回为定义的结果。</li>
+<li><strong>truncated</strong>（bool）- 是否满足MDP范围之外的截断条件。通常是一个时间限制，但也可以用于指示agent在物理上超出范围。可用于在达到终止状态之前提前结束episode。</li>
+<li><strong>info</strong>（dictionary）- 包含辅助诊断信息（有助于调试、学习和记录）。例如可能包含：描述agent性能状态的指标、对观察隐藏的变量、组合起来产生总奖励的单个奖励项。</li>
+<li><strong>done</strong>（bool）- 如果episode结束则返回的布尔值，在这种情况下进一步调用<code>step()</code>将返回未定义的结果。可能会因为不同的原因发出done信号：环境下的任务已解决、超出某个时间限制、物理模拟已经入无效状态。</li>
 </ul>
-<p><strong>[步骤]</strong></p>
-<p>1.随便输入下用户名和密码,提示要用admin用户登入,然后跳转到了check.php,查看下源代码提示要用字典。</p>
-<p>2.用burpsuite截下登录的数据包,把数据包发送到intruder爆破</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/1.png" alt="img"></p>
-<p>2.设置爆破点为password</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/2.png" alt="img"></p>
-<p>3.加载字典</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/3.png" alt="img"></p>
-<p>4.开始攻击，查看响应包列表，发现密码为123456时，响应包的长度和别的不一样.</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/4.png" alt="img"></p>
-<p>5.点进去查看响应包，获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/weak_auth/5.png" alt="img"></p>
-<h2 id="simple-php"><a href="#simple-php" class="headerlink" title="simple_php"></a>simple_php</h2><p><strong>[原理]</strong></p>
-<p>php中有两种比较符号</p>
-<p>=== 会同时比较字符串的值和类型</p>
-<p>== 会先将字符串换成相同类型（先类型转换），再作比较，属于弱类型比较</p>
-<p><strong>[目地]</strong></p>
-<p>掌握php的弱类型比较</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。</p>
-<p>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/1.png" alt="img"></p>
-<p>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。==（数字和字符混合的字符串转换为整数后只保留数字）==</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_php/2.png" alt="img"></p>
-<p> php类型比较表<a href="https://www.php.net/manual/zh/types.comparisons.php%E3%80%82">https://www.php.net/manual/zh/types.comparisons.php。</a></p>
-<h2 id="get-post"><a href="#get-post" class="headerlink" title="get_post"></a>get_post</h2><p><strong>[原理]</strong></p>
-<p>HTTP工作原理</p>
-<p><strong>[目的]</strong></p>
-<p>掌握常用http请求方式</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox和cmd</p>
-<p><strong>[步骤]</strong></p>
-<p>GET请求在url后加?a=1即可</p>
-<p>POST请求需要用curl POST -d “b=2” <a href="http://111.200.241.244:65197/?a=1">http://111.200.241.244:65197/?a=1</a></p>
-<p>返回如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl: (6) Could not resolve host: POST</span><br><span class="line">﻿&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;POST&amp;GET&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link href&#x3D;&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;bootstrap&#x2F;3.0.3&#x2F;css&#x2F;bootstrap.min.css&quot; rel&#x3D;&quot;stylesheet&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请用GET方式提交一个名为a,值为1的变量&lt;&#x2F;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;请再以POST方式随便提交一个名为b,值为2的变量&lt;&#x2F;h1&gt;&lt;h1&gt;cyberpeace&#123;51117d20e10dd8646f8d2eed10942e46&#125;&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="Resetting"><a href="#Resetting" class="headerlink" title="Resetting"></a>Resetting</h3><p><code>gym.Env.reset(self, *, seed: Optional[int] = None, return_info: bool = False, options: Optional[dict] = None) → Union[ObsType, Tuple[ObsType, dict]]</code></p>
+<p>将环境重置为初始状态并返回初始observation。如果种子是整数或环境未初始化随机数生成器（Random Number Generator，RNG），此方法可以重置环境的RNG。如果环境已有一个RNG并用seed=None调用了<code>reset()</code>，则不应重置RNG。此外，<code>reset()</code>应该（在典型用例中）在初始化后立即使用整数种子调用，然后再不重复。</p>
+<p>参数：</p>
+<p><strong>seed</strong>（optional int）- 初始化环境的PRNG。如果环境还没有PRNG并且传递的<code>seed=None</code>（默认选项），将从一些source of entropy中随机选择一个种子（例如时间戳或/dev/urandom）。但是如果环境已经有PRNG并传递<code>seed=None</code>则不会重置PRNG。如果pass整数，即使PRNG存在也会重置。通常在环境初始化后立即pass个整数，然后再不传递。</p>
+<p><strong>return_info</strong>（bool）- 如果为真，则返回附加信息以及初始观察。此info应类似于step()中返回的信息。</p>
+<p><strong>options</strong>（optional dict）- 指定如何重置环境的附加信息（可选，取决于特定环境）。</p>
+<p>返回：</p>
+<ul>
+<li><strong>observation</strong>（object）- 初始状态的观察。这将是<code>observation_space</code>的一个元素（通常是一个numpy数组），类似于step()返回的观察值。</li>
+<li><strong>info</strong>（optional dictionary）- 仅当<code>return_info=True</code>被传递时才会返回。它包含补充观察的辅助信息。该字典应类似于step()返回的信息。</li>
+</ul>
+<h3 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.render(self: <span class="built_in">object</span>, *args: <span class="type">Tuple</span>[<span class="type">Any</span>], **kwargs: <span class="type">Dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>]) → <span class="type">Optional</span>[<span class="type">Union</span>[RenderFrame, <span class="type">List</span>[RenderFrame]]]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
 
-<p>或者用burpsuite实现GET、POST的抓包：</p>
-<p>GET的实现：在GET / HTTP/1.1中加入?a=1得到GET /?a=1 HTTP/1.1</p>
-<p>POST的实现：GET / HTTP/1.1改为POST /?a=1 HTTP/1.1，在最下面（正文）加b=2，报文头加上Content-Type: application/x-www-form-urlencoded。</p>
-<h2 id="xff-referer"><a href="#xff-referer" class="headerlink" title="xff_referer"></a>xff_referer</h2><p>[原理]</p>
-<p>X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项</p>
-<p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的</p>
-<p><strong>[目的]</strong></p>
-<p>掌握有关X-Forwarded-For和Referer的知识</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、burpsuite</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开firefox和burp，使用burp对firefox进行代理拦截，在请求头添加<code>X-Forwarded-For: 123.123.123.123</code>，然后放包</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/1.png" alt="img"></p>
-<p>2.接着继续在请求头内添加<code>Referer: https://www.google.com</code>，可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/xff_referer/2.png" alt="img"></p>
-<h2 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h2><p><strong>[目标]</strong></p>
-<p>了解php一句话木马、如何使用webshell</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox、hackbar</p>
-<p>蚁剑下载地址<code>https://github.com/AntSwordProject/antSword/releases</code>(<code>https://github.com/AntSwordProject/antSword/releases</code>)</p>
-<p><strong>[步骤]</strong></p>
-<p>1.直接提示给了php一句话，可以用菜刀或蚁剑连接,此处用蚁剑链接:</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/1.png" alt="img"></p>
-<p>2.连接后在网站目录下发现了flag.txt文件，查看文件可获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/2.png" alt="img"></p>
-<p>3.也可以使用hackbar，使用post方式传递shell=system(‘cat flag.txt’); 获得flag</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/webshell/3.png" alt="img"></p>
-<h2 id="command-execution"><a href="#command-execution" class="headerlink" title="command_execution"></a>command_execution</h2><p><strong>[原理]</strong></p>
-<p>| 的作用为将前一个命令的结果传递给后一个命令作为输入</p>
-<p>&amp;&amp;的作用是前一条命令执行成功时，才执行后一条命令</p>
-<p><strong>[目地]</strong></p>
-<p>掌握命令拼接的方法</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开浏览器，在文本框内输入127.0.0.1 |  find / -name “flag.txt” （将 | 替换成 &amp; 或 &amp;&amp; 都可以）,查找flag所在位置，如图所示。</p>
-<p>127.0.0.1 | ls ../../../可以找到一个home文件夹，里面有flag.txt文件。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/1.png" alt="img"></p>
-<p>2.在文本框内输入 127.0.0.1 |  cat /home/flag.txt 可得到flag，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/command_execution/2.png" alt="img"></p>
-<h2 id="simple-js"><a href="#simple-js" class="headerlink" title="simple_js"></a>simple_js</h2><p><strong>[原理]</strong></p>
-<p>javascript的代码审计</p>
-<p><strong>[目地]</strong></p>
-<p>掌握简单的javascript函数</p>
-<p><strong>[环境]</strong></p>
-<p>windows</p>
-<p><strong>[工具]</strong></p>
-<p>firefox</p>
-<p><strong>[步骤]</strong></p>
-<p>1.打开页面，查看源代码，可以发现js代码，如图所示。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple_js/1.png" alt="img"></p>
-<p>2.进行代码审计，发现不论输入什么都会跳到假密码，真密码位于 fromCharCode 。</p>
-<p>3.先将字符串用python处理一下，得到数组[55,56,54,79,115,69,114,116,107,49,50]，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s=<span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line"><span class="built_in">print</span> (s)</span><br></pre></td></tr></table></figure>
+<h2 id="Additional-Environment-API"><a href="#Additional-Environment-API" class="headerlink" title="Additional Environment API"></a>Additional Environment API</h2><h3 id="Attributes"><a href="#Attributes" class="headerlink" title="Attributes"></a>Attributes</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.action_space: Space[ActType]</span><br></pre></td></tr></table></figure>
 
-<p>4.将得到的数字分别进行ascii处理，可得到字符串786OsErtk12，exp如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">a = [55,56,54,79,115,69,114,116,107,49,50]</span></span><br><span class="line"><span class="string">c = &quot;&quot;</span></span><br><span class="line"><span class="string">for i in a:</span></span><br><span class="line"><span class="string">    b = chr(i)</span></span><br><span class="line"><span class="string">    c = c + b</span></span><br><span class="line"><span class="string">print(c)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">string = <span class="string">&quot;\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31&quot;</span> \</span><br><span class="line">         <span class="string">&quot;\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30&quot;</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line">label = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> string:</span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&quot;,&quot;</span>:</span><br><span class="line">        label += <span class="built_in">chr</span>(count)</span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count = count * <span class="number">10</span> + <span class="built_in">int</span>(i)</span><br><span class="line"></span><br><span class="line">label += <span class="built_in">chr</span>(count)</span><br><span class="line"><span class="built_in">print</span>(label)</span><br></pre></td></tr></table></figure>
+<p>该属性给出了有效动作的格式。它是Gym提供的数据类型Space。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.observation_space: Space[ObsType]</span><br></pre></td></tr></table></figure>
 
-<p>5.规范flag格式，可得到Cyberpeace{786OsErtk12}</p>
-<h2 id="baby-web"><a href="#baby-web" class="headerlink" title="baby_web"></a>baby_web</h2><p><strong>【实验原理】</strong></p>
-<p>web请求头中的location作用</p>
-<p><strong>【实验目的】</strong></p>
-<p>掌握web响应包头部常见参数</p>
-<p><strong>【实验环境】</strong></p>
-<p>Windows</p>
-<p><strong>【实验工具】</strong></p>
-<p>firefox</p>
-<p><strong>【实验步骤】</strong></p>
-<p>1.根据提示，在url中输入index.php,发现打开的仍然还是1.php</p>
-<p>2.打开火狐浏览器的开发者模式，选择网络模块，再次请求index.php,查看返回包，可以看到location参数被设置了1.php，并且得到flag。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/baby_web/1.png" alt="img"></p>
-<p>我的：burpsuite抓包，看到有flag。</p>
+<p>该属性给出了有效observation的格式。可以使用属性检查box bounds。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.reward_range = (-inf, inf)</span><br></pre></td></tr></table></figure>
+
+<p>该属性对应最小、最大奖励的元组，默认从负无穷到正无穷，可以自行设定范围。</p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.close(self)</span><br></pre></td></tr></table></figure>
+
+<p>在子类中override close函数以执行必要的清理。</p>
+<p>当垃圾收集或程序退出时，环境会自动执行close()函数。</p>
+<h2 id="Checking-API-Conformity"><a href="#Checking-API-Conformity" class="headerlink" title="Checking API-Conformity"></a>Checking API-Conformity</h2><p>如果已经实现了自定义环境并希望进行健全性检查以确保符合API，可以运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.utils.env_checker <span class="keyword">import</span> check_env</span><br><span class="line">check_env(env)</span><br></pre></td></tr></table></figure>
+<p>如果环境不遵循Gym API，此函数将引发异常。如果犯了错误或未遵循最佳practice将引发异常（例如observation_space看起来像图片但dtype不正确），则会产生warnings。可以通过传递<code>warn=False</code>来关闭警告。默认情况下check_env不会检查渲染方法，可以通过<code>skip_render_check=False</code>来更改。</p>
+<blockquote>
+<p>在环境中运行check_env后不应重复使用已检查的实例，因为它可能已经关闭。</p>
+</blockquote>
+<h2 id="Spaces"><a href="#Spaces" class="headerlink" title="Spaces"></a>Spaces</h2><p> Spaces通常用于指定有效动作和observation的格式。每个环境都应该有属性<code>action_space</code>和<code>observation_space</code>，它们都应该是继承自Space类的实例。Gym中有多种可用的空间类型：</p>
+<ul>
+<li><code>Box</code>:描述一个n维的连续空间。这是一个有界空间，可以在其中定义上下界，这些上下限描述observation可以采用的有效值。</li>
+<li><code>Discrete</code>:描述一个离散空间，其中{0, 1, ···, n-1}是observation或action可以采取的有效值。可以使用可选参数将值转换为{a, a+1, ···, a+n-1}。</li>
+<li><code>Dict</code>:表示simple spaces的一个字典。</li>
+<li><code>Tuple</code>:表示simple spaces的一个元组。</li>
+<li><code>MultiBinary</code>:创建一个n-shape的二元空间。参数n可以是一个数字或数字列表。</li>
+<li><code>MultiDiscrete</code>:由一系列离散动作空间组成，每个元素中具有不同数量的动作。</li>
+</ul>
+<h2 id="Wrappers（略）"><a href="#Wrappers（略）" class="headerlink" title="Wrappers（略）"></a>Wrappers（略）</h2><p>包装器是一种无需直接更改底层代码即可修改现有环境的便捷方式。使用包装器可以避免大量样板代码，并使环境更加模块化。包装器也可以链接起来以组合它们的效果。大多数通过<code>gym.make</code>生成的环境已经被默认包装了。</p>
+<p>为了包装一个环境，必须首先初始化一个基础环境。然后可以将此环境与（可能是可选的）参数一起传递给包装器的构造函数。</p>
+<h2 id="Playing-within-an-environment（略）"><a href="#Playing-within-an-environment（略）" class="headerlink" title="Playing within an environment（略）"></a>Playing within an environment（略）</h2><p>还可以使用<code>gym.utils.play</code>中的播放功能使用键盘播放环境。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.gymlibrary.ml/">Gym Documentation</a></p>
 ]]></content>
       <categories>
-        <category>CTF</category>
+        <category>强化学习</category>
       </categories>
       <tags>
-        <tag>XCTF</tag>
-        <tag>Web</tag>
+        <tag>gym</tag>
       </tags>
   </entry>
   <entry>
@@ -690,253 +682,6 @@
       </tags>
   </entry>
   <entry>
-    <title>XCTF-逆向基础篇</title>
-    <url>/YingYingMonstre.github.io/2021/09/26/XCTF-%E9%80%86%E5%90%91%E5%9F%BA%E7%A1%80%E7%AF%87/</url>
-    <content><![CDATA[<h2 id="insanity"><a href="#insanity" class="headerlink" title="insanity"></a>insanity</h2><p><strong>[工具]</strong></p>
-<p>exeinfo pe, IDA </p>
-<p><strong>[分析过程]</strong></p>
-<p>0x01.查壳和程序的详细信息</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/1.png" alt="img"></p>
-<p>发现这不是PE文件,是ELF文件，将程序在Linux环境下运行</p>
-<p>0x02,查看程序的详细信息</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/2.png" alt="img"></p>
-<p>发现是32位的程序</p>
-<p>0x03.IDA </p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/3.png" alt="img"></p>
-<p>F5查看伪函数</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/4.png" alt="img"></p>
-<p>发现一个关键的字符串，&amp;strs,发现是取这个字符串输出，然后，跟进strs</p>
-<p>(shift + f12 字符串窗口)</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/insanity/5.png" alt="img"></p>
-<p>发现有一个明显的提示：This_is_a_flag</p>
-<p>猜测9447{This_is_a_flag}是最后的falg</p>
-<p>或者直接用记事本打开，仔细找也能找到。</p>
-<h2 id="python-trade"><a href="#python-trade" class="headerlink" title="python-trade"></a>python-trade</h2><p><strong>[工具]</strong></p>
-<p>在线python反编译</p>
-<p><strong>[分析过程]</strong></p>
-<p>0x01.下载附件</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/python-trade/1.png" alt="img"></p>
-<blockquote>
-<p>pyc文件是py文件编译后生成的字节码文件</p>
-</blockquote>
-<p>0x02.在线Python反编译</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/python-trade/2.png" alt="img"></p>
-<p>这是生成的py文件</p>
-<p>然后，对这个文件的运算逻辑进行逆向</p>
-<p>0x03.写EXP</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line">correct = <span class="string">&quot;XlNkVmtUI1MgXWBZXCFeKY+AaXNt&quot;</span></span><br><span class="line">s = base64.b64decode(correct)</span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">    flag += <span class="built_in">chr</span>((i-<span class="number">16</span>) ^ <span class="number">32</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/python-trade/3.png" alt="img"></p>
-<p>先对字符串进行b64decode,然后，再进行xor运算得到最后的flag:nctf{d3c0mpil1n9_PyC}</p>
-<p>0x04.运行脚本</p>
-<p>nctf{d3c0mpil1n9_PyC}</p>
-<h2 id="re1"><a href="#re1" class="headerlink" title="re1"></a>re1</h2><p><strong>[工具]</strong></p>
-<p>exeinfo pe, IDA </p>
-<p><strong>[分析过程]</strong></p>
-<p>参考</p>
-<p>0x01.运行程序</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/1.png" alt="img"></p>
-<p>可以看到需要输入正确的flag</p>
-<p>那么现在，我们需要判断程序是多少位的，有没有加壳</p>
-<p>0x02.exeinfope查详细信息</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/2.png" alt="img"></p>
-<p>可以看到程序是32位的，是Microsoft Visual c++编译的，并且没有加壳</p>
-<p>注：查壳工具还有PEID，EID，但是推荐EID或者exeinfope，因为，PEID查壳的时候有时候不准确</p>
-<p>那么，我们可以用静态分析神器 IDA 打开，进一步分析了</p>
-<p>0x03.</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/3.png" alt="img"></p>
-<p>然后，查找主函数main,可以看到右侧的是反汇编的汇编代码，这时候，我们可以直接分析汇编语言，但是，汇编语言看起来太多，费劲。这个时候就可以是有IDA是最强大的功能F5了，它能够直接将汇编代码生成C语言代码，虽然和这个程序的源码不完全一样，但是逻辑关系是一样的</p>
-<p>F5查看伪代码</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/4.png" alt="img"></p>
-<p>这是整个main函数的运算逻辑</p>
-<p>可以看到一个关键的字符串，print(aFlag)，那么证明这就是输入正确flag，然后，会输出aFlag证明你的flag正确，然后，继续往上分析，可以看到v3的值，是由strcmp()决定的，比较v5和输入的字符串，如果一样就会进入后面的if判断，所以,我们继续往上分析，看看哪里又涉及v5，可以看到开头的_mm_storeu_si128(），对其进行分析发现它类似于memset(),将xmmword_413E34的值赋值给v5，所以，我们可以得到正确的flag应该在xmmword_413E34中，然后，我们双击413E34进行跟进</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/5.png" alt="img"></p>
-<p>可以看到一堆十六进制的数</p>
-<p>这时，我们使用IDA的另一个功能 R ，能够将十六进制的数转换为字符串。</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/re1/6.png" alt="img"></p>
-<p>这就是我们最后的flag了</p>
-<p>注：这里要跟大家普及一个知识了，及大端与小端</p>
-<p>假设一个十六进制数0x12345678</p>
-<p>大端的存储方式是：12,34,56,78，然后读取的时候也是从前往后读</p>
-<p>小端的存储方式是：78,56,34,12，然后读取的时候是从后往前读取</p>
-<p>所以，最后的flag应该是：DUTCTF{We1c0met0DUTCTF}</p>
-<p>0x04.运行程序输入正确的flag</p>
-<p>方法二：记事本打开，也能找到。</p>
-<p>方法三：OD–》插件–》中文搜索引擎–》ASCII也能搜到。</p>
-<h2 id="game"><a href="#game" class="headerlink" title="game"></a>game</h2><p>我的做法（暴力破解）：先用exeinfo pe查壳，发现是32位未加壳。用OD打开，用插件里的中文搜索ASCII，能找到done flag is的字符串。然后找到关键CALL（00B301BB和00B30359），修改跳转（从%d那里直接改为CALL xxxx跳到done那里）。运行到那里之后就可以得到flag了。</p>
-<p>直接玩游戏：从1输到8。</p>
-<p>爆破方法二：找到F5后伪代码最后那部分判断的代码（空格切换到图形视图，对着最后的那部分再空格切换回来），patch修改，正好有8个JNZ，改5个为jz，然后Edit–》Patch program–》Apply patches to input file，点OK，再回去运行就可以得到了。</p>
-<p>IDA分析代码逻辑：先是判断是输入的是否是1-8，然后进入后面的if判断然后进行循环，这个时候应该就是程序的亮暗的显示，然后，如果byte_532E28每一位都是1，那么，就会进入sub_457AB4,然后我们猜测这里应该就是最后的flag的地方。然后跟进 sub_457AB4。（注：这里说明一下，如果IDA不能正确的获得自定义函数的名字，那么IDA会用sub__加上自定义函数的起始地址来定义函数的名字）</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/game/8.png" alt="img"></p>
-<p>这里只截取了后面的部分，发现函数进行了两次xor运算，xor的逆运算也是xor，那么我们就可以根据这个运算来写脚本得到最后的flag。</p>
-<p>这里看到v2和v59这就证明了这是两个数组的运算，所以我们应该将上面的字符串分成两个数组，分别从v2和v59开始</p>
-<p>0x05.写EXP</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/game/9.png" alt="img"></p>
-<p>这里先是通过循环，将a和b数组的值进行xor运算，然后再将数组a的值与0x13xor运算</p>
-<p>chr()：是将十六进制转换为字符串</p>
-<p>0x05.运行脚本</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/game/10.png" alt="img"></p>
-<p>得到最后的flag: zsctf{T9is_tOpic_1s_v5ry_int7resting_b6t_others_are_n0t}。</p>
-<p>广度优先搜索法：未证。</p>
-<h2 id="Hello，CTF"><a href="#Hello，CTF" class="headerlink" title="Hello，CTF"></a>Hello，CTF</h2><p>查壳，32位、无壳。</p>
-<p>IDA从main开始分析，F5查看伪代码。首先，可以看到先是将字符串复制到v13的位置。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strcpy(&amp;v13, &quot;437261636b4d654a757374466f7246756e&quot;);</span><br></pre></td></tr></table></figure>
-
-<p>然后，后面对输入进行了判断，输入的字符串不能大于17接着，将字符串以十六进制输出，然后，再将得到的十六进制字符添加到v10最后，进行比较，看输入的字符串是否和v10的字符串相等，如果相等，则得到真确的flag。最后将字符串转换为十六进制。</p>
-<h2 id="open-source"><a href="#open-source" class="headerlink" title="open-source"></a>open-source</h2><p>代码审计：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">first = <span class="number">0xcafe</span></span><br><span class="line">flag = first * <span class="number">31337</span> + (second % <span class="number">17</span>) * <span class="number">11</span> + <span class="built_in">len</span>(<span class="string">&quot;h4cky0u&quot;</span>) - <span class="number">1615810207</span></span><br></pre></td></tr></table></figure>
-
-<p>关键在于second的取值。观察代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> second = atoi(argv[<span class="number">2</span>]);</span><br><span class="line">    <span class="keyword">if</span> (second % <span class="number">5</span> == <span class="number">3</span> || second % <span class="number">17</span> != <span class="number">8</span>) &#123;</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">&quot;ha, you won&#x27;t get it!\n&quot;</span>);</span><br><span class="line">    	<span class="built_in">exit</span>(<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里想到要get it就要将if里的逻辑取反，即second % 5 != 3 &amp;&amp; second % 17 == 8。</p>
-<p>故(second % 17) * 11=8*11=88。得到flag=12648430–化为16进制–》c0ffee。</p>
-<h2 id="simple-unpack"><a href="#simple-unpack" class="headerlink" title="simple_unpack"></a>simple_unpack</h2><p><strong>[工具]</strong></p>
-<p>exeinfo pe, IDA, upx </p>
-<p><strong>[分析过程]</strong></p>
-<p>0x01.查壳和程序的详细信息</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/1.png" alt="img"></p>
-<p>发现有upx壳。</p>
-<p>注：windows下的文件是PE文件，Linux/Unix下的文件是ELF文件</p>
-<p>0x02.UPX 脱壳</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/2.png" alt="img"></p>
-<p>upx -d 即可对upx壳进行脱壳</p>
-<p>0x03.载入IDA</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/3.png" alt="img"></p>
-<p>还是从main函数开始分析，结果我们再右侧发现了意外惊喜</p>
-<p>运行程序，输入我们看到的flag:flag{Upx_1s_n0t_a_d3liv3r_c0mp4ny}</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/simple-unpack/4.png" alt="img"></p>
-<h2 id="logmein"><a href="#logmein" class="headerlink" title="logmein"></a>logmein</h2><p><strong>[工具]</strong></p>
-<p>exeinfo pe, IDA </p>
-<p><strong>[分析过程]</strong></p>
-<p>0x01.查壳和查看程序的详细信息</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/1.png" alt="img"></p>
-<p>发现程序是一个ELF文件，将其放入Linux环境中进行分析</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/2.png" alt="img"></p>
-<p>发现程序是64位的，使用静态分析工具IDA进行分析</p>
-<p>0x02.IDA</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/3.png" alt="img"></p>
-<p>从main函数开始分析，使用F5查看伪代码</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/4.png" alt="img"></p>
-<p>发现main函数的整个运算逻辑</p>
-<p>先是，将指定字符串复制到v8</p>
-<p>s是用户输入的字符串，先进行比较长度，如果长度比v8小，则进入sub_4007c0函数</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/5.png" alt="img"></p>
-<p>可以看出输出字符串Incorrect password,然后，退出</p>
-<p>如果长度大于或等与v8则进入下面的循环</p>
-<p>看到判断如果输入的字符串和经过运算后的后字符串不等，则进入sub_4007c0,输出Incorrect password,</p>
-<p>如果想得，则进入sub_4007f0函数</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/logmein/6.png" alt="img"></p>
-<p>证明输入的字符串就是flag</p>
-<p>接下来写脚本</p>
-<p>0x03.Write EXP</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">v7 &#x3D; &quot;harambe&quot;</span><br><span class="line">v6 &#x3D; 7</span><br><span class="line">v8 &#x3D; &quot;:\&quot;AL_RT^L*.?+6&#x2F;46&quot;</span><br><span class="line">flag &#x3D; &quot;&quot;</span><br><span class="line">for i in range(0, len(v8)):</span><br><span class="line">    flag +&#x3D; chr(ord((v7[i % 7])) ^ ord(v8[i]))</span><br><span class="line">print(flag)</span><br></pre></td></tr></table></figure>
-
-<p>由于程序是小段的存储方式，所以，ebmarah就得变成harambe（C语言数据在内存中是小端存储，一开始v7是一个数据，so）</p>
-<p>ord():是将字符串转换为ascii格式，为了方便运算</p>
-<p>chr():是将ascii转换为字符串</p>
-<p>运行脚本得到最后的flag:RC3-2016-XORISGUD</p>
-<p>（直接用C语言更方便些）</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">#define BYTE unsigned char</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">void main() &#123;</span><br><span class="line">	int i;</span><br><span class="line">	int v6 &#x3D; 7;</span><br><span class="line">	__int64 v7 &#x3D; 28537194573619560LL;</span><br><span class="line">	char v8[18] &#x3D; &quot;:\&quot;AL_RT^L*.?+6&#x2F;46&quot;;</span><br><span class="line">	char s[18] &#x3D; &quot;&quot;;</span><br><span class="line">	for ( i &#x3D; 0; i &lt; strlen(v8); ++i ) &#123;</span><br><span class="line">		s[i] +&#x3D; (char)(*((BYTE*)&amp;v7 + i % v6) ^ v8[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;%s\n&quot;,s);</span><br><span class="line"></span><br><span class="line">	system(&quot;pause&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="no-strings-attached"><a href="#no-strings-attached" class="headerlink" title="no-strings-attached"></a>no-strings-attached</h2><p><strong>[工具]</strong></p>
-<p>exeinfo pe, IDA, GDB</p>
-<p><strong>[分析过程]</strong></p>
-<p>0x01.查壳和查看程序的详细信息</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/1.png" alt="img"></p>
-<p>说明程序是ELF文件，32位</p>
-<p>0x02.使用静态分析工具IDA进行分析</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/2.png" alt="img"></p>
-<p>然后对main函数使用F5查看伪代码</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/3.png" alt="img"></p>
-<p>然后，对每个函数进行跟进，最后发现authenricate(),符合获得flag的函数，对其进行跟进</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/4.png" alt="img"></p>
-<p>然后我们发现一个特殊的函数decrypt,根据字面的意思是加密，那么我们可以大概的猜测是一个对dword_8048A90所对应的字符串进行加密，</p>
-<p>加密得到的就应该是我们需要的flag，后面的判断应该就是将字符串输出。</p>
-<p>这里我们有两种思维方式:</p>
-<p>第一种就是跟进decrypt然后分析它的运算逻辑，然后，自己写脚本，得到最后的flag</p>
-<p>第二种就涉及逆向的另一种调试方式，及动态调试，这里我就用动态调试了，之前的一直是静态调试</p>
-<p>0x03.GDB动态调试</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/5.png" alt="img"></p>
-<p>gdb ./no_strings_attached 将文件加载到GDB中</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/6.png" alt="img"></p>
-<p>既然是动态调试，那么如果让它一直不停，那我不就相当于运行了嘛，所以，我们就需要下断点，断点就是让程序运行到断点处就停止</p>
-<p>之前通过IDA，我们知道关键函数是decrypt,所以我们把断点设置在decrypt处，b在GDB中就是下断点的意思，及在decrypt处下断点</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/7.png" alt="img"></p>
-<p>r就是运行的意思，这里运行到了我们之前下的断点处，停止。</p>
-<p>我们要的是经过decrypt函数，生成的字符串，所以我们这里就需要运行一步，GDB中用n来表示运行一步</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/8.png" alt="img"></p>
-<p>然后我们就需要去查看内存了，去查找最后生成的字符串</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/9.png" alt="img"></p>
-<p>通过IDA生成的汇编指令，我们可以看出进过decrypt函数后，生成的字符串保存在EAX寄存器中，所以，我们在GDB就去查看eax寄存器的值</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/10.png" alt="img"></p>
-<p>x:就是用来查看内存中数值的，后面的200代表查看多少个，wx代表是以word字节查看看，$eax代表的eax寄存器中的值</p>
-<p>在这里我们看到0x00000000，这就证明这个字符串结束了，因为，在C中，代表字符串结尾的就是”\0”,那么前面的就是经过decrypt函数生成的falg</p>
-<p>那我们就需要将这些转换为字符串的形式</p>
-<p>0x04.Write EXP</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/11.png" alt="img"></p>
-<p>首先将寄存器中的值提取出来，然后利用Python的decode函数，通过”hex”的方式转化为字符串，然后输出</p>
-<p>0x05.运行脚本</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/no-strings-attached/12.png" alt="img"></p>
-<p>得到最后的flag: 9447{you_are_an_international_mystery}</p>
-<p>IDA分析就分析它的decrypt函数：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">s &#x3D; [0x3a, 0x36, 0x37, 0x3b, 0x80, 0x7a, 0x71, 0x78,</span><br><span class="line">     0x63, 0x66, 0x73, 0x67, 0x62, 0x65, 0x73, 0x60,</span><br><span class="line">     0x6b, 0x71, 0x78, 0x6a, 0x73, 0x70, 0x64, 0x78,</span><br><span class="line">     0x6e, 0x70, 0x70, 0x64, 0x70, 0x64, 0x6e, 0x7b,</span><br><span class="line">     0x76, 0x78, 0x6a, 0x73, 0x7b, 0x80]</span><br><span class="line">v6 &#x3D; len(s)</span><br><span class="line">a2 &#x3D; [1, 2, 3, 4, 5]</span><br><span class="line">v7 &#x3D; len(a2)</span><br><span class="line">v2 &#x3D; v6</span><br><span class="line">dest &#x3D; s</span><br><span class="line">v4 &#x3D; 0</span><br><span class="line">while v4 &lt; v6:</span><br><span class="line">        dest[v4] -&#x3D; a2[v4 % 5]</span><br><span class="line">        v4 +&#x3D; 1</span><br><span class="line"></span><br><span class="line">flag &#x3D; &#39;&#39;</span><br><span class="line">for j in dest:</span><br><span class="line">    flag +&#x3D; chr(j)</span><br><span class="line">print(flag)</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="getit"><a href="#getit" class="headerlink" title="getit"></a>getit</h2><p><strong>[工具]</strong></p>
-<p>exeinfo pe, IDA, GDB  </p>
-<p><strong>[分析过程]</strong></p>
-<p>0x01.查壳和程序的详细信息</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/1.png" alt="img"></p>
-<p>可以看出这是一个ELF文件，64位</p>
-<p>0x02.IDA</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/2.png" alt="img"></p>
-<p>对main函数进行F5查看伪代码</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/3.png" alt="img"></p>
-<p>可以看到先判断v5是否大于s存储字符串的长度，然后通过运算，最后将得到的flag写入文件。</p>
-<p>但是有意思的地方在flag.txt文件所在的位置是/tmp目录，这个目录是Linux下的临时文件夹，程序运行完，生成flag的txt文件被清理了，所以我们找不到文件</p>
-<p>我们这时候通过IDA查看汇编代码，按空格键可以生成所有的汇编文件</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/4.png" alt="img"></p>
-<p>然后我们向下追踪，追踪到for循环的位置，因为，flag是在这里存入文件的，所以，我们可以在内存中找到正要存储的字符串</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/5.png" alt="img"></p>
-<p>我们将鼠标指向strlen(),在下面可以看到汇编所在的地址，然后我们根据大概的地址去看汇编代码</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/6.png" alt="img"></p>
-<p>可以看到这是调用strlen()函数的汇编指令</p>
-<p>我们通过上一个图片，可以知道经过for()的判断条件后，还要进行一步fseek函数，所以，根据汇编代码，可以确定jnb loc_4008B5就是fseek()函数，那么，mov eax,[rbp+var_3C]肯定就是最后要得到的flag了</p>
-<p>0x04.GDB</p>
-<p>这里我们用linux下的动态调试工具gdb进行动态调试，这里介绍一下，对gdb进行强化的两个工具peda和pwndbg，这两个工具可以强化视觉效果，可以更加清楚的显示堆栈，内存，寄存机的情况</p>
-<p>先加载程序</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/7.png" alt="img"></p>
-<p>然后，用b 下断点</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/8.png" alt="img"></p>
-<p>然后，运行 R</p>
-<p><img src="https://adworld.xctf.org.cn/media/task/writeup/cn/getit/9.png" alt="img"></p>
-<p>这里我们可以看出，程序停止在0x400832的位置，然后，要被移动的字符串在RDX的位置</p>
-<p>注：</p>
-<p>这里介绍一下一下RDX，RDX存的是i/0指针，0x6010e0,这个位置存的字符串是最后的flag:SharifCTF{b70c59275fcfa8aebf2d5911223c6589}</p>
-<p>以为这里涉及的是程序读写函数，所以涉及的就是i/o指针</p>
-<p>所以我们能得到最后的flag: SharifCTF{b70c59275fcfa8aebf2d5911223c6589}</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">s &#x3D; &quot;c61b68366edeb7bdce3c6820314b7498&quot;</span><br><span class="line">v3 &#x3D; 0</span><br><span class="line">v5 &#x3D; 0</span><br><span class="line">t &#x3D; &quot;&quot;</span><br><span class="line"></span><br><span class="line">while v5 &lt; len(s):</span><br><span class="line">    if v5 &amp; 1:</span><br><span class="line">        v3 &#x3D; 1</span><br><span class="line">    else:</span><br><span class="line">        v3 &#x3D; -1</span><br><span class="line">    t +&#x3D; chr(ord(s[v5]) + v3)</span><br><span class="line">    v5 +&#x3D; 1</span><br><span class="line"></span><br><span class="line">print(t)</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="csaw2013reversing2"><a href="#csaw2013reversing2" class="headerlink" title="csaw2013reversing2"></a>csaw2013reversing2</h2><p><a href="https://blog.csdn.net/weixin_43784056/article/details/103655968">XCTF-csaw2013reversing2_臭nana的博客-CSDN博客</a></p>
-<p>默认if条件不成立，跳过了sub_401000的解码，输出一堆乱码。</p>
-<h2 id="maze"><a href="#maze" class="headerlink" title="maze"></a>maze</h2><p>迷宫问题</p>
-<p><img src="https://www.pianshen.com/images/271/7d91ebf895b8ed648ed3ab80de463137.JPEG" alt="在这里插入图片描述"></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>XCTF</tag>
-        <tag>Reverse</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Boofuzz源码分析</title>
     <url>/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<h3 id="Boofuzz样例"><a href="#Boofuzz样例" class="headerlink" title="Boofuzz样例"></a>Boofuzz样例</h3><p>以一个TFTP Fuzzer为例，大概看一下Boofuzz的用法。</p>
@@ -947,7 +692,7 @@
 
 <p>Fuzzer的创建包含三层，Session -&gt; Target -&gt; Connection</p>
 <h3 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h3><p>顾名思义，Connection对象是网络连接的代表，Boofuzz支持各种基于socket的连接，从源码部分就可以看到，常用的还是TCP和UDP，这里还支持网络协议栈中2层和3层的原生Socket。</p>
-<img src="Boofuzz源码分析/connection.png" alt="/External Library" style="zoom:50%;" />
+<img src="/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connection.png" class="">
 
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">SocketConnection</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    host,</span></span></span><br><span class="line"><span class="function"><span class="params">    port=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    proto=<span class="string">&quot;tcp&quot;</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    bind=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    send_timeout=<span class="number">5.0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    recv_timeout=<span class="number">5.0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    ethernet_proto=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    l2_dst=<span class="string">b&quot;\xFF&quot;</span> * <span class="number">6</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    udp_broadcast=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    server=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    sslcontext=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    server_hostname=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>):</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    warnings.warn(</span><br><span class="line">        <span class="string">&quot;SocketConnection is deprecated and will be removed in a future version of Boofuzz. &quot;</span></span><br><span class="line">        <span class="string">&quot;Use the classes derived from BaseSocketConnection instead.&quot;</span>,</span><br><span class="line">        FutureWarning,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> proto <span class="keyword">not</span> <span class="keyword">in</span> _PROTOCOLS:</span><br><span class="line">        <span class="keyword">raise</span> exception.SullyRuntimeError(<span class="string">&quot;INVALID PROTOCOL SPECIFIED: %s&quot;</span> % proto)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> proto <span class="keyword">in</span> _PROTOCOLS_PORT_REQUIRED <span class="keyword">and</span> port <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;__init__() argument port required for protocol &#123;0&#125;&quot;</span>.<span class="built_in">format</span>(proto))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> proto == <span class="string">&quot;udp&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> udp_socket_connection.UDPSocketConnection(</span><br><span class="line">            host, port, send_timeout, recv_timeout, server, bind, udp_broadcast</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;tcp&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> tcp_socket_connection.TCPSocketConnection(host, port, send_timeout, recv_timeout, server)</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;ssl&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> ssl_socket_connection.SSLSocketConnection(</span><br><span class="line">            host, port, send_timeout, recv_timeout, server, sslcontext, server_hostname</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;raw-l2&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> raw_l2_socket_connection.RawL2SocketConnection(host, send_timeout, recv_timeout)</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;raw-l3&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> ethernet_proto <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            ethernet_proto = raw_l3_socket_connection.ETH_P_IP</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> raw_l3_socket_connection.RawL3SocketConnection(host, send_timeout, recv_timeout, ethernet_proto, l2_dst)</span><br></pre></td></tr></table></figure>
 
@@ -1321,7 +1066,7 @@
         <category>Fuzzing</category>
       </categories>
       <tags>
-        <tag>Fuzzer</tag>
+        <tag>Fuzzing</tag>
       </tags>
   </entry>
 </search>
