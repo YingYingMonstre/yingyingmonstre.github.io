@@ -1,56 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>MacBook Air M1安装gym问题汇总</title>
-    <url>/YingYingMonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
-<p><strong>0. 关于本机</strong></p>
-<ul>
-<li>macOS Monterey版本12.0.1</li>
-<li>MacBook Air（M1，2020）</li>
-<li>芯片 Apple M1</li>
-</ul>
-<p><strong>1. 环境相关</strong></p>
-<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
-<p><strong>2. 下载gym</strong></p>
-<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
-<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
-<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
-<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
-<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
-<p>解决方法：brew install swig</p>
-<p><strong>5. zsh: command not found: brew</strong></p>
-<p>问题状况：在第4步输入brew install swig后报错。</p>
-<p>解决方法：mac安装homebrew，</p>
-<p>用以下命令安装，序列号选择中科大（1）的</p>
-<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
-<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
-<p><strong>6. from . import multiarray等</strong></p>
-<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
-
-<p>解决方法：重新安装了numpy之后就可以用了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>7. zsh:killed</strong></p>
-<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
-<p>解决方法：删除环境重新搭建环境就可以了</p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>强化学习</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ModbusTCP协议学习</title>
     <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
@@ -378,6 +328,56 @@
       </tags>
   </entry>
   <entry>
+    <title>MacBook Air M1安装gym问题汇总</title>
+    <url>/YingYingMonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
+<p><strong>0. 关于本机</strong></p>
+<ul>
+<li>macOS Monterey版本12.0.1</li>
+<li>MacBook Air（M1，2020）</li>
+<li>芯片 Apple M1</li>
+</ul>
+<p><strong>1. 环境相关</strong></p>
+<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
+<p><strong>2. 下载gym</strong></p>
+<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
+<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
+<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
+<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
+<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
+<p>解决方法：brew install swig</p>
+<p><strong>5. zsh: command not found: brew</strong></p>
+<p>问题状况：在第4步输入brew install swig后报错。</p>
+<p>解决方法：mac安装homebrew，</p>
+<p>用以下命令安装，序列号选择中科大（1）的</p>
+<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
+<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
+<p><strong>6. from . import multiarray等</strong></p>
+<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
+
+<p>解决方法：重新安装了numpy之后就可以用了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>7. zsh:killed</strong></p>
+<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
+<p>解决方法：删除环境重新搭建环境就可以了</p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>OpenAI的Gym</title>
     <url>/YingYingMonstre.github.io/2022/08/09/gym/</url>
     <content><![CDATA[<h1 id="什么是Gym"><a href="#什么是Gym" class="headerlink" title="什么是Gym"></a>什么是Gym</h1><p>Gym是一个用于强化学习(Reinforcement Learning, RL)的标准API，以及各种参考环境的集合。</p>
@@ -454,6 +454,107 @@
 <p>为了包装一个环境，必须首先初始化一个基础环境。然后可以将此环境与（可能是可选的）参数一起传递给包装器的构造函数。</p>
 <h2 id="Playing-within-an-environment（略）"><a href="#Playing-within-an-environment（略）" class="headerlink" title="Playing within an environment（略）"></a>Playing within an environment（略）</h2><p>还可以使用<code>gym.utils.play</code>中的播放功能使用键盘播放环境。</p>
 <h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.gymlibrary.ml/">Gym Documentation</a></p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>gym</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Gym环境创建</title>
+    <url>/YingYingMonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
+    <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
+<h1 id="Subclassing-gym-Env"><a href="#Subclassing-gym-Env" class="headerlink" title="Subclassing gym.Env"></a>Subclassing gym.Env</h1><p>在学习创建自己的环境前应该查看Gym的<a href="https://www.gymlibrary.ml/content/api/">API文档</a>。将关注一个看起来像这样的gym-examples的子集：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym-examples/</span><br><span class="line">  README.md</span><br><span class="line">  setup.py</span><br><span class="line">  gym_examples/</span><br><span class="line">    __init__.py</span><br><span class="line">    envs/</span><br><span class="line">      __init__.py</span><br><span class="line">      grid_world.py</span><br><span class="line">    wrappers/</span><br><span class="line">      __init__.py</span><br><span class="line">      relative_position.py</span><br></pre></td></tr></table></figure>
+
+<p>通过实现一个简单的游戏<code>GridWorldEnv</code>来说明gym.Env子类的过程。在<code>gym-examples/gym_examples/envs/grid_world.py</code>中编写代码。环境由一个二维方形网格组成（大小由参数size决定）。Agent在每个timestep可以垂直或水平地移动。Agent的目标是导航到episode开始时随机放置的目标。</p>
+<ul>
+<li>Observations提供了agent和目标的位置。</li>
+<li>四个动作分别为上、下、左、右。</li>
+<li>Agent到达目标位置则发出done信号。</li>
+<li>奖励是二元且稀疏的，意味着除了到达目标时为1，其他情况都为0。</li>
+</ul>
+<p>分块看其源码。</p>
+<h1 id="Declaration-and-Initialization"><a href="#Declaration-and-Initialization" class="headerlink" title="Declaration and Initialization"></a>Declaration and Initialization</h1><p><code>__init__</code>主要作用是初始化一些参数。如在<code>GridWorldEnv</code>中规定了方格的大小、设置了用于渲染的变量、观测空间和动作空间。在初始化函数中设置<code>self.seed()</code>的参数<code>seed=</code>为整数可以使随机数固定、初始化结果一致，如果为空的话就是随机选取种子。</p>
+<h1 id="Constructing-Observations-From-Environment-States"><a href="#Constructing-Observations-From-Environment-States" class="headerlink" title="Constructing Observations From Environment States"></a>Constructing Observations From Environment States</h1><p>由于需要在<code>reset</code>和<code>step</code>中计算观测结果，因此使用（private）方法<code>_get_obs</code>将环境状态转换为观测结果通常很方便。但是这不是强制性的，也可以在<code>reset</code>和<code>step</code>中分别计算观测结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_obs</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;agent&quot;</span>: self._agent_location, <span class="string">&quot;target&quot;</span>: self._target_location&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于<code>reset</code>和<code>step</code>返回的辅助信息，也可以实现类似的方法。例如提供agent和目标的曼哈顿距离：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_info</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;distance&quot;</span>: np.linalg.norm(self._agent_location - self._target_location, <span class="built_in">ord</span>=<span class="number">1</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h1><p>调用<code>reset</code>来启动新的episode。可以假设在调用reset之前不会调用step方法。只要发出done信号，就应该调用reset。用户可以将种子关键字传递给 reset 以将环境使用的任何随机数生成器初始化为确定性状态。推荐使用环境基类<code>gym.Env</code>提供的随机数生成器<code>self.np_random</code>。如果只使用这个RNG，就不需要太担心seeding，但要使用<code>super.reset(seed=seed)</code>来确保gym.Env正确的seeding RNG。</p>
+<h1 id="Step"><a href="#Step" class="headerlink" title="Step"></a>Step</h1><p><code>step</code>方法通常包括环境的大部分逻辑。它接受一个动作，在应用该动作后计算环境状态并返回四元组(observation, reward, done, info)。</p>
+<h1 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h1><p>渲染，绘图函数，在图形界面上做出反应。</p>
+<h1 id="Close"><a href="#Close" class="headerlink" title="Close"></a>Close</h1><p>关闭环境使用的所有打开的资源。很多情况下不比去实现该方法。</p>
+<h1 id="Registering-Envs"><a href="#Registering-Envs" class="headerlink" title="Registering Envs"></a>Registering Envs</h1><p>为了让Gym检测到自定义环境，必须按如下方式注册。环境在<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs/__init__.py</code>中获得gym中所有注册的环境信息，在其中加入代码对自定义环境进行注册。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 例子</span></span><br><span class="line"><span class="comment"># user</span></span><br><span class="line"><span class="comment"># ---------</span></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&#x27;GridWorld-v1&#x27;</span>,</span><br><span class="line">    entry_point=<span class="string">&#x27;gym.envs.user:GridEnv1&#x27;</span>,</span><br><span class="line">    max_episode_steps=<span class="number">200</span>,</span><br><span class="line">    reward_threshold=<span class="number">100.0</span>,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>环境ID由三个部分组成，其中两个是可选的：一个可选的namespace（这里忽略掉了）、一个强制名称（GridWorld）、一个可选但推荐的版本（v1）。在环境创建期间应使用适当的ID。</p>
+<p>关键参数<code>max_episode_steps=200</code>将确保通过<code>gym.make</code>实例化的GridWorld环境将被包装在TimeLimit包装器中。如果agent已达到目标或在当前episode中已执行200步，则将产生done信号。</p>
+<p>除了id和entrypoint，还可以pass以下的关键字来注册：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Name</th>
+<th align="center">Type</th>
+<th align="center">Default</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">reward_threshold</td>
+<td align="center">float</td>
+<td align="center">None</td>
+<td align="center">任务被认为已解决前的奖励阈值</td>
+</tr>
+<tr>
+<td align="center">nondeterministic</td>
+<td align="center">bool</td>
+<td align="center">False</td>
+<td align="center">即使在seeding之后这个环境是否也是非确定性的</td>
+</tr>
+<tr>
+<td align="center">max_episode_steps</td>
+<td align="center">int</td>
+<td align="center">None</td>
+<td align="center">一个episode可以包含的最大步骤数。如果不是None则添加TimeLimit包装器</td>
+</tr>
+<tr>
+<td align="center">order_enforce</td>
+<td align="center">bool</td>
+<td align="center">True</td>
+<td align="center">是否将环境包装在OrderEnforcing包装器中</td>
+</tr>
+<tr>
+<td align="center">autoreset</td>
+<td align="center">bool</td>
+<td align="center">False</td>
+<td align="center">是否将环境包装在AutoResetWrapper</td>
+</tr>
+<tr>
+<td align="center">kwargs</td>
+<td align="center">dict</td>
+<td align="center">{}</td>
+<td align="center">传给环境类的默认k wa r g</td>
+</tr>
+</tbody></table>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="编写环境"><a href="#编写环境" class="headerlink" title="编写环境"></a>编写环境</h2><p>路径为<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs</code>。在envs中创建了一个文件夹<code>gym_test</code>，里面包含<code>__init__.py</code>和<code>env_guess_number.py</code>。其中后者描述具体环境，主要包括在init初始化函数中初始化一些参数、step输入action并返回四元组、reset重置，具体代码为：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> gym <span class="keyword">import</span> spaces</span><br><span class="line"><span class="keyword">from</span> gym.utils <span class="keyword">import</span> seeding</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">guess_number</span>(<span class="params">gym.Env</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Hotter Colder</span></span><br><span class="line"><span class="string">        The goal of hotter colder is to guess closer to a randomly selected guess_number</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        After each step the agent receives an observation of:</span></span><br><span class="line"><span class="string">        0 - No guess yet submitted (only after reset)</span></span><br><span class="line"><span class="string">        1 - Guess is lower than the target</span></span><br><span class="line"><span class="string">        2 - Guess is equal to the target</span></span><br><span class="line"><span class="string">        3 - Guess is higher than the target</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        The rewards is calculated as:</span></span><br><span class="line"><span class="string">        (min(action, self.guess_number) + self.range) / (max(action, self.guess_number) + self.range)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Ideally an agent will be able to recognise the &#x27;scent&#x27; of a higher reward and</span></span><br><span class="line"><span class="string">        increase the rate in which is guesses in that direction until the reward reaches</span></span><br><span class="line"><span class="string">        its maximum</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.<span class="built_in">range</span> = <span class="number">1000</span>  <span class="comment"># +/- value the randomly select guess_number can be between</span></span><br><span class="line">        self.bounds = <span class="number">2000</span>  <span class="comment"># Action space bounds</span></span><br><span class="line"></span><br><span class="line">        self.action_space = spaces.Box(low=np.array([-self.bounds]), high=np.array([self.bounds]), dtype=np.<span class="built_in">int</span>)</span><br><span class="line">        self.observation_space = spaces.Discrete(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">        self.guess_number = <span class="number">0</span></span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.guess_max = <span class="number">200</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        self.seed()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">seed</span>(<span class="params">self, seed=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.np_random, seed = seeding.np_random(seed)</span><br><span class="line">        <span class="keyword">return</span> [seed]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, action</span>):</span></span><br><span class="line">        <span class="comment"># assert self.action_space.contains(action)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> action &lt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action == self.guess_number:</span><br><span class="line">            self.observation = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action &gt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 两个值越接近，奖励越接近1</span></span><br><span class="line">        reward = ((<span class="built_in">min</span>(action, self.guess_number) + self.bounds) / (<span class="built_in">max</span>(action, self.guess_number) + self.bounds)) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        self.guess_count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 200个episode</span></span><br><span class="line">        done = self.guess_count &gt;= self.guess_max</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.observation, reward, done, &#123;<span class="string">&quot;guess_number&quot;</span>: self.guess_number, <span class="string">&quot;guesses&quot;</span>: self.guess_count&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.guess_number = <span class="built_in">int</span>(self.np_random.uniform(-self.<span class="built_in">range</span>, self.<span class="built_in">range</span>))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;guess number = &quot;</span>, self.guess_number)</span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> self.observation</span><br></pre></td></tr></table></figure>
+
+<p>完成基本环境设置后需要在<code>gym_test/__init__.py</code>中设置环境实例初始化的调用：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.envs.gym_test.env_guess_number <span class="keyword">import</span> guess_number</span><br></pre></td></tr></table></figure>
+
+<h2 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h2><p>在<code>envs/__init__.py</code>中加入：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">···</span><br><span class="line"><span class="comment"># User test</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line"></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&quot;GuessNumber-v0&quot;</span>,</span><br><span class="line">    entry_point=<span class="string">&quot;gym.envs.gym_test:guess_number&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Classic</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line">···</span><br></pre></td></tr></table></figure>
+
+<h2 id="gym测试"><a href="#gym测试" class="headerlink" title="gym测试"></a>gym测试</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;GuessNumber-v0&quot;</span>)</span><br><span class="line">obs = env.reset()</span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    action = env.action_space.sample()</span><br><span class="line">    <span class="built_in">print</span>(action)</span><br><span class="line">    obs, reward, done, info = env.step(action)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://www.gymlibrary.ml/content/environment_creation/">Gym Documentation</a></p>
+<p><a href="https://blog.csdn.net/RenJie_L/article/details/123500345">构建自己的gym训练环境 巨详细</a></p>
+<p><a href="https://blog.csdn.net/sinat_39620217/article/details/115519622">gym搭建自己的环境</a></p>
+<p><a href="https://lossyou.com/post/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84gym%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83">搭建自己的gym强化学习环境</a></p>
 ]]></content>
       <categories>
         <category>强化学习</category>
@@ -578,107 +679,6 @@
       </categories>
       <tags>
         <tag>编译</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Gym环境创建</title>
-    <url>/YingYingMonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
-    <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
-<h1 id="Subclassing-gym-Env"><a href="#Subclassing-gym-Env" class="headerlink" title="Subclassing gym.Env"></a>Subclassing gym.Env</h1><p>在学习创建自己的环境前应该查看Gym的<a href="https://www.gymlibrary.ml/content/api/">API文档</a>。将关注一个看起来像这样的gym-examples的子集：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym-examples/</span><br><span class="line">  README.md</span><br><span class="line">  setup.py</span><br><span class="line">  gym_examples/</span><br><span class="line">    __init__.py</span><br><span class="line">    envs/</span><br><span class="line">      __init__.py</span><br><span class="line">      grid_world.py</span><br><span class="line">    wrappers/</span><br><span class="line">      __init__.py</span><br><span class="line">      relative_position.py</span><br></pre></td></tr></table></figure>
-
-<p>通过实现一个简单的游戏<code>GridWorldEnv</code>来说明gym.Env子类的过程。在<code>gym-examples/gym_examples/envs/grid_world.py</code>中编写代码。环境由一个二维方形网格组成（大小由参数size决定）。Agent在每个timestep可以垂直或水平地移动。Agent的目标是导航到episode开始时随机放置的目标。</p>
-<ul>
-<li>Observations提供了agent和目标的位置。</li>
-<li>四个动作分别为上、下、左、右。</li>
-<li>Agent到达目标位置则发出done信号。</li>
-<li>奖励是二元且稀疏的，意味着除了到达目标时为1，其他情况都为0。</li>
-</ul>
-<p>分块看其源码。</p>
-<h1 id="Declaration-and-Initialization"><a href="#Declaration-and-Initialization" class="headerlink" title="Declaration and Initialization"></a>Declaration and Initialization</h1><p><code>__init__</code>主要作用是初始化一些参数。如在<code>GridWorldEnv</code>中规定了方格的大小、设置了用于渲染的变量、观测空间和动作空间。在初始化函数中设置<code>self.seed()</code>的参数<code>seed=</code>为整数可以使随机数固定、初始化结果一致，如果为空的话就是随机选取种子。</p>
-<h1 id="Constructing-Observations-From-Environment-States"><a href="#Constructing-Observations-From-Environment-States" class="headerlink" title="Constructing Observations From Environment States"></a>Constructing Observations From Environment States</h1><p>由于需要在<code>reset</code>和<code>step</code>中计算观测结果，因此使用（private）方法<code>_get_obs</code>将环境状态转换为观测结果通常很方便。但是这不是强制性的，也可以在<code>reset</code>和<code>step</code>中分别计算观测结果。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_obs</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;agent&quot;</span>: self._agent_location, <span class="string">&quot;target&quot;</span>: self._target_location&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于<code>reset</code>和<code>step</code>返回的辅助信息，也可以实现类似的方法。例如提供agent和目标的曼哈顿距离：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_info</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;distance&quot;</span>: np.linalg.norm(self._agent_location - self._target_location, <span class="built_in">ord</span>=<span class="number">1</span>)&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h1><p>调用<code>reset</code>来启动新的episode。可以假设在调用reset之前不会调用step方法。只要发出done信号，就应该调用reset。用户可以将种子关键字传递给 reset 以将环境使用的任何随机数生成器初始化为确定性状态。推荐使用环境基类<code>gym.Env</code>提供的随机数生成器<code>self.np_random</code>。如果只使用这个RNG，就不需要太担心seeding，但要使用<code>super.reset(seed=seed)</code>来确保gym.Env正确的seeding RNG。</p>
-<h1 id="Step"><a href="#Step" class="headerlink" title="Step"></a>Step</h1><p><code>step</code>方法通常包括环境的大部分逻辑。它接受一个动作，在应用该动作后计算环境状态并返回四元组(observation, reward, done, info)。</p>
-<h1 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h1><p>渲染，绘图函数，在图形界面上做出反应。</p>
-<h1 id="Close"><a href="#Close" class="headerlink" title="Close"></a>Close</h1><p>关闭环境使用的所有打开的资源。很多情况下不比去实现该方法。</p>
-<h1 id="Registering-Envs"><a href="#Registering-Envs" class="headerlink" title="Registering Envs"></a>Registering Envs</h1><p>为了让Gym检测到自定义环境，必须按如下方式注册。环境在<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs/__init__.py</code>中获得gym中所有注册的环境信息，在其中加入代码对自定义环境进行注册。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 例子</span></span><br><span class="line"><span class="comment"># user</span></span><br><span class="line"><span class="comment"># ---------</span></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&#x27;GridWorld-v1&#x27;</span>,</span><br><span class="line">    entry_point=<span class="string">&#x27;gym.envs.user:GridEnv1&#x27;</span>,</span><br><span class="line">    max_episode_steps=<span class="number">200</span>,</span><br><span class="line">    reward_threshold=<span class="number">100.0</span>,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
-
-<p>环境ID由三个部分组成，其中两个是可选的：一个可选的namespace（这里忽略掉了）、一个强制名称（GridWorld）、一个可选但推荐的版本（v1）。在环境创建期间应使用适当的ID。</p>
-<p>关键参数<code>max_episode_steps=200</code>将确保通过<code>gym.make</code>实例化的GridWorld环境将被包装在TimeLimit包装器中。如果agent已达到目标或在当前episode中已执行200步，则将产生done信号。</p>
-<p>除了id和entrypoint，还可以pass以下的关键字来注册：</p>
-<table>
-<thead>
-<tr>
-<th align="center">Name</th>
-<th align="center">Type</th>
-<th align="center">Default</th>
-<th align="center">Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">reward_threshold</td>
-<td align="center">float</td>
-<td align="center">None</td>
-<td align="center">任务被认为已解决前的奖励阈值</td>
-</tr>
-<tr>
-<td align="center">nondeterministic</td>
-<td align="center">bool</td>
-<td align="center">False</td>
-<td align="center">即使在seeding之后这个环境是否也是非确定性的</td>
-</tr>
-<tr>
-<td align="center">max_episode_steps</td>
-<td align="center">int</td>
-<td align="center">None</td>
-<td align="center">一个episode可以包含的最大步骤数。如果不是None则添加TimeLimit包装器</td>
-</tr>
-<tr>
-<td align="center">order_enforce</td>
-<td align="center">bool</td>
-<td align="center">True</td>
-<td align="center">是否将环境包装在OrderEnforcing包装器中</td>
-</tr>
-<tr>
-<td align="center">autoreset</td>
-<td align="center">bool</td>
-<td align="center">False</td>
-<td align="center">是否将环境包装在AutoResetWrapper</td>
-</tr>
-<tr>
-<td align="center">kwargs</td>
-<td align="center">dict</td>
-<td align="center">{}</td>
-<td align="center">传给环境类的默认k wa r g</td>
-</tr>
-</tbody></table>
-<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="编写环境"><a href="#编写环境" class="headerlink" title="编写环境"></a>编写环境</h2><p>路径为<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs</code>。在envs中创建了一个文件夹<code>gym_test</code>，里面包含<code>__init__.py</code>和<code>env_guess_number.py</code>。其中后者描述具体环境，主要包括在init初始化函数中初始化一些参数、step输入action并返回四元组、reset重置，具体代码为：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> gym <span class="keyword">import</span> spaces</span><br><span class="line"><span class="keyword">from</span> gym.utils <span class="keyword">import</span> seeding</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">guess_number</span>(<span class="params">gym.Env</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Hotter Colder</span></span><br><span class="line"><span class="string">        The goal of hotter colder is to guess closer to a randomly selected guess_number</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        After each step the agent receives an observation of:</span></span><br><span class="line"><span class="string">        0 - No guess yet submitted (only after reset)</span></span><br><span class="line"><span class="string">        1 - Guess is lower than the target</span></span><br><span class="line"><span class="string">        2 - Guess is equal to the target</span></span><br><span class="line"><span class="string">        3 - Guess is higher than the target</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        The rewards is calculated as:</span></span><br><span class="line"><span class="string">        (min(action, self.guess_number) + self.range) / (max(action, self.guess_number) + self.range)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Ideally an agent will be able to recognise the &#x27;scent&#x27; of a higher reward and</span></span><br><span class="line"><span class="string">        increase the rate in which is guesses in that direction until the reward reaches</span></span><br><span class="line"><span class="string">        its maximum</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.<span class="built_in">range</span> = <span class="number">1000</span>  <span class="comment"># +/- value the randomly select guess_number can be between</span></span><br><span class="line">        self.bounds = <span class="number">2000</span>  <span class="comment"># Action space bounds</span></span><br><span class="line"></span><br><span class="line">        self.action_space = spaces.Box(low=np.array([-self.bounds]), high=np.array([self.bounds]), dtype=np.<span class="built_in">int</span>)</span><br><span class="line">        self.observation_space = spaces.Discrete(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">        self.guess_number = <span class="number">0</span></span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.guess_max = <span class="number">200</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        self.seed()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">seed</span>(<span class="params">self, seed=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.np_random, seed = seeding.np_random(seed)</span><br><span class="line">        <span class="keyword">return</span> [seed]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, action</span>):</span></span><br><span class="line">        <span class="comment"># assert self.action_space.contains(action)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> action &lt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action == self.guess_number:</span><br><span class="line">            self.observation = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action &gt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 两个值越接近，奖励越接近1</span></span><br><span class="line">        reward = ((<span class="built_in">min</span>(action, self.guess_number) + self.bounds) / (<span class="built_in">max</span>(action, self.guess_number) + self.bounds)) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        self.guess_count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 200个episode</span></span><br><span class="line">        done = self.guess_count &gt;= self.guess_max</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.observation, reward, done, &#123;<span class="string">&quot;guess_number&quot;</span>: self.guess_number, <span class="string">&quot;guesses&quot;</span>: self.guess_count&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.guess_number = <span class="built_in">int</span>(self.np_random.uniform(-self.<span class="built_in">range</span>, self.<span class="built_in">range</span>))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;guess number = &quot;</span>, self.guess_number)</span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> self.observation</span><br></pre></td></tr></table></figure>
-
-<p>完成基本环境设置后需要在<code>gym_test/__init__.py</code>中设置环境实例初始化的调用：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.envs.gym_test.env_guess_number <span class="keyword">import</span> guess_number</span><br></pre></td></tr></table></figure>
-
-<h2 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h2><p>在<code>envs/__init__.py</code>中加入：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">···</span><br><span class="line"><span class="comment"># User test</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line"></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&quot;GuessNumber-v0&quot;</span>,</span><br><span class="line">    entry_point=<span class="string">&quot;gym.envs.gym_test:guess_number&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Classic</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line">···</span><br></pre></td></tr></table></figure>
-
-<h2 id="gym测试"><a href="#gym测试" class="headerlink" title="gym测试"></a>gym测试</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;GuessNumber-v0&quot;</span>)</span><br><span class="line">obs = env.reset()</span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    action = env.action_space.sample()</span><br><span class="line">    <span class="built_in">print</span>(action)</span><br><span class="line">    obs, reward, done, info = env.step(action)</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://www.gymlibrary.ml/content/environment_creation/">Gym Documentation</a></p>
-<p><a href="https://blog.csdn.net/RenJie_L/article/details/123500345">构建自己的gym训练环境 巨详细</a></p>
-<p><a href="https://blog.csdn.net/sinat_39620217/article/details/115519622">gym搭建自己的环境</a></p>
-<p><a href="https://lossyou.com/post/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84gym%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83">搭建自己的gym强化学习环境</a></p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>gym</tag>
       </tags>
   </entry>
   <entry>
