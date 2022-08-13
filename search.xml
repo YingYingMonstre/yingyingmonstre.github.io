@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Gym环境创建</title>
-    <url>/YingYingMonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
+    <url>/yingyingmonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
     <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
 <h1 id="Subclassing-gym-Env"><a href="#Subclassing-gym-Env" class="headerlink" title="Subclassing gym.Env"></a>Subclassing gym.Env</h1><p>在学习创建自己的环境前应该查看Gym的<a href="https://www.gymlibrary.ml/content/api/">API文档</a>。将关注一个看起来像这样的gym-examples的子集：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym-examples/</span><br><span class="line">  README.md</span><br><span class="line">  setup.py</span><br><span class="line">  gym_examples/</span><br><span class="line">    __init__.py</span><br><span class="line">    envs/</span><br><span class="line">      __init__.py</span><br><span class="line">      grid_world.py</span><br><span class="line">    wrappers/</span><br><span class="line">      __init__.py</span><br><span class="line">      relative_position.py</span><br></pre></td></tr></table></figure>
@@ -102,131 +102,63 @@
       </tags>
   </entry>
   <entry>
-    <title>深入浅出理解什么是LLVM</title>
-    <url>/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/</url>
-    <content><![CDATA[<h3 id="什么是LLVM"><a href="#什么是LLVM" class="headerlink" title="什么是LLVM"></a>什么是<a href="https://llvm.org/">LLVM</a></h3><blockquote>
-<p>LLVM项目是模块化、可重用的编译器以及工具链技术的集合。</p>
-</blockquote>
-<p>美国计算机协会 (ACM) 将其2012年软件系统奖项颁给了LLVM，之前曾经获得此奖项的软件和技术包括:Java、Apache、Mosaic、the World Wide Web、Smalltalk、UNIX、Eclipse等等。<br>创始人:Chris Lattner，亦是Swift之父。</p>
-<blockquote>
-<p>趣闻：Chris Latter本来只是想写一个底层的虚拟机，这也是LLVM名字的由来，low level virtual machine，跟Java的JVM虚拟机一样，可是后来，llvm从来没有被用作过虚拟机，哪怕LLVM的名气已经传开了。所以人们决定仍然叫他LLVM，更多的时候只是当作“商标”一样的感觉在使用，其实它跟虚拟机没有半毛钱关系。官方描述如下<br>The name “LLVM” itself is not an acronym; it is the full name of the project. “LLVM”这个名称本身不是首字母缩略词; 它是项目的全名。</p>
-</blockquote>
-<h3 id="传统的编译器架构"><a href="#传统的编译器架构" class="headerlink" title="传统的编译器架构"></a>传统的编译器架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/traditional.jpg" class="">
-
-<center>传统编译器架构</center>
-
-
+    <title>MacBook Air M1安装gym问题汇总</title>
+    <url>/yingyingmonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
+<p><strong>0. 关于本机</strong></p>
 <ul>
-<li><strong>Frontend:前端</strong><br>词法分析、语法分析、语义分析、生成中间代码</li>
-<li><strong>Optimizer:优化器</strong><br>中间代码优化</li>
-<li><strong>Backend:后端</strong><br>生成机器码</li>
+<li>macOS Monterey版本12.0.1</li>
+<li>MacBook Air（M1，2020）</li>
+<li>芯片 Apple M1</li>
 </ul>
-<h3 id="LLVM架构"><a href="#LLVM架构" class="headerlink" title="LLVM架构"></a>LLVM架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/llvm.png" class="">
-
-<center>LLVM架构</center>
-
-<ul>
-<li><p>不同的前端后端使用统一的中间代码LLVM Intermediate Representation (LLVM IR)</p>
-</li>
-<li><p>如果需要支持一种新的编程语言，那么只需要实现一个新的前端</p>
-</li>
-<li><p>如果需要支持一种新的硬件设备，那么只需要实现一个新的后端</p>
-</li>
-<li><p>优化阶段是一个通用的阶段，它针对的是统一的LLVM IR，不论是支持新的编程语言，还是支持新的硬件设备，都不需要对优化阶段做修改</p>
-</li>
-<li><p>相比之下，GCC的前端和后端没分得太开，前端后端耦合在了一起。所以GCC为了支持一门新的语言，或者为了支持一个新的目标平台，就变得特别困难</p>
-</li>
-<li><p>LLVM现在被作为实现各种静态和运行时编译语言的通用基础结构(GCC家族、Java、.NET、Python、Ruby、Scheme、Haskell、D等)</p>
-</li>
-</ul>
-<h3 id="什么是Clang"><a href="#什么是Clang" class="headerlink" title="什么是Clang"></a>什么是<a href="http://clang.llvm.org/">Clang</a></h3><p>LLVM项目的一个子项目，基于LLVM架构的C/C++/Objective-C编译器前端。</p>
-<p><strong>相比于GCC，Clang具有如下优点</strong></p>
-<ul>
-<li>编译速度快:在某些平台上，Clang的编译速度显著的快过GCC(Debug模式下编译OC速度比GCC快3倍)</li>
-<li>占用内存小:Clang生成的AST所占用的内存是GCC的五分之一左右</li>
-<li>模块化设计:Clang采用基于库的模块化设计，易于 IDE 集成及其他用途的重用</li>
-<li>诊断信息可读性强:在编译过程中，Clang 创建并保留了大量详细的元数据 (metadata)，有利于调试和错误报告</li>
-<li>设计清晰简单，容易理解，易于扩展增强</li>
-</ul>
-<h3 id="Clang与LLVM关系"><a href="#Clang与LLVM关系" class="headerlink" title="Clang与LLVM关系"></a>Clang与LLVM关系</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/Clang-LLVM.png" class="">
-
-<center>Clang与LLVM</center>
-
-<p>LLVM整体架构，前端用的是clang，广义的LLVM是指整个LLVM架构，一般狭义的LLVM指的是LLVM后端（包含代码优化和目标代码生成）。</p>
-<p>源代码（C/C++）经过clang–&gt; 中间代码(经过一系列的优化，优化用的是Pass) –&gt; 机器码</p>
-<h3 id="OC源文件的编译过程"><a href="#OC源文件的编译过程" class="headerlink" title="OC源文件的编译过程"></a>OC源文件的编译过程</h3><p>这里用Xcode创建一个Test项目，然后cd到main.m的上一路径。<br>命令行查看编译的过程:$ clang -ccc-print-phases main.m</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ clang -ccc-print-phases main.m </span><br><span class="line"></span><br><span class="line">0: input, &quot;main.m&quot;, objective-c</span><br><span class="line">1: preprocessor, &#123;0&#125;, objective-c-cpp-output</span><br><span class="line">2: compiler, &#123;1&#125;, ir</span><br><span class="line">3: backend, &#123;2&#125;, assembler</span><br><span class="line">4: assembler, &#123;3&#125;, object</span><br><span class="line">5: linker, &#123;4&#125;, image</span><br><span class="line">6: bind-arch, &quot;x86_64&quot;, &#123;5&#125;, image</span><br></pre></td></tr></table></figure>
-
-<p>0.找到main.m文件<br>1.预处理器，处理include、import、宏定义<br>2.编译器编译，编译成ir中间代码<br>3.后端，生成目标代码<br>4.汇编<br>5.链接其他动态库、静态库<br>6.编译成适合某个架构的代码</p>
-<p>查看preprocessor(预处理)的结果:$ clang -E main.m<br>这个命令敲出，终端就会打印许多信息，大致如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 1 &quot;main.m&quot;</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 353 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 1 &quot;&lt;command line&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 2</span><br><span class="line"># 1 &quot;main.m&quot; 2</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">  int main(int argc, const char * argv[]) &#123;</span><br><span class="line">@autoreleasepool &#123;</span><br><span class="line">    NSLog(@&quot;Hello, World!&quot;);</span><br><span class="line">&#125;</span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>1. 环境相关</strong></p>
+<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
+<p><strong>2. 下载gym</strong></p>
+<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
 
 
 
-<h3 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h3><p><strong>词法分析</strong>，生成Token: $ clang -fmodules -E -Xclang -dump-tokens main.m<br>将代码分成一个个小单元（token）</p>
-<p>举例如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void test(int a, int b)&#123;</span><br><span class="line">       int c &#x3D; a + b - 3;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
+<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
+<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
+<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
+<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
+<p>解决方法：brew install swig</p>
+<p><strong>5. zsh: command not found: brew</strong></p>
+<p>问题状况：在第4步输入brew install swig后报错。</p>
+<p>解决方法：mac安装homebrew，</p>
+<p>用以下命令安装，序列号选择中科大（1）的</p>
+<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
+<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
+<p><strong>6. from . import multiarray等</strong></p>
+<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void &#39;void&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:18:1&gt;</span><br><span class="line">identifier &#39;test&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:6&gt;</span><br><span class="line">l_paren &#39;(&#39;     Loc&#x3D;&lt;main.m:18:10&gt;</span><br><span class="line">int &#39;int&#39;       Loc&#x3D;&lt;main.m:18:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:15&gt;</span><br><span class="line">comma &#39;,&#39;       Loc&#x3D;&lt;main.m:18:16&gt;</span><br><span class="line">int &#39;int&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:18&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:22&gt;</span><br><span class="line">r_paren &#39;)&#39;     Loc&#x3D;&lt;main.m:18:23&gt;</span><br><span class="line">l_brace &#39;&#123;&#39;     Loc&#x3D;&lt;main.m:18:24&gt;</span><br><span class="line">int &#39;int&#39;    [StartOfLine] [LeadingSpace]   Loc&#x3D;&lt;main.m:19:5&gt;</span><br><span class="line">identifier &#39;c&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:9&gt;</span><br><span class="line">equal &#39;&#x3D;&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:13&gt;</span><br><span class="line">plus &#39;+&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:15&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:17&gt;</span><br><span class="line">minus &#39;-&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:19&gt;</span><br><span class="line">numeric_constant &#39;3&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:21&gt;</span><br><span class="line">semi &#39;;&#39;        Loc&#x3D;&lt;main.m:19:22&gt;</span><br><span class="line">r_brace &#39;&#125;&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:20:1&gt;</span><br><span class="line">eof &#39;&#39;      Loc&#x3D;&lt;main.m:20:2&gt;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，词法分析的时候，将上面的代码拆分一个个token，后面数字表示某一行的第几个字符，例如第一个void，表示第18行第一个字符。</p>
-<h3 id="语法树-AST"><a href="#语法树-AST" class="headerlink" title="语法树-AST"></a>语法树-AST</h3><p>语法分析，生成语法树(AST，Abstract Syntax Tree): $ clang -fmodules -fsyntax-only -Xclang -ast-dump main.m<br>通过语法树，我们能知道这个代码是做什么的。</p>
-<p>还是刚刚的test函数<br>生成语法树如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">|-FunctionDecl 0x7fa1439f5630 &lt;line:18:1, line:20:1&gt; line:18:6 test &#39;void (int, int)&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f54b0 &lt;col:11, col:15&gt; col:15 used a &#39;int&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f5528 &lt;col:18, col:22&gt; col:22 used b &#39;int&#39;</span><br><span class="line">| &#96;-CompoundStmt 0x7fa142167c88 &lt;col:24, line:20:1&gt;</span><br><span class="line">|   &#96;-DeclStmt 0x7fa142167c70 &lt;line:19:5, col:22&gt;</span><br><span class="line">|     &#96;-VarDecl 0x7fa1439f5708 &lt;col:5, col:21&gt; col:9 c &#39;int&#39; cinit</span><br><span class="line">|       &#96;-BinaryOperator 0x7fa142167c48 &lt;col:13, col:21&gt; &#39;int&#39; &#39;-&#39;</span><br><span class="line">|         |-BinaryOperator 0x7fa142167c00 &lt;col:13, col:17&gt; &#39;int&#39; &#39;+&#39;</span><br><span class="line">|         | |-ImplicitCastExpr 0x7fa1439f57b8 &lt;col:13&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         | | &#96;-DeclRefExpr 0x7fa1439f5768 &lt;col:13&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f54b0 &#39;a&#39; &#39;int&#39;</span><br><span class="line">|         | &#96;-ImplicitCastExpr 0x7fa1439f57d0 &lt;col:17&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         |   &#96;-DeclRefExpr 0x7fa1439f5790 &lt;col:17&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f5528 &#39;b&#39; &#39;int&#39;</span><br><span class="line">|         &#96;-IntegerLiteral 0x7fa142167c28 &lt;col:21&gt; &#39;int&#39; 3</span><br><span class="line"></span><br><span class="line">&#96;-&lt;undeserialized declarations&gt;</span><br></pre></td></tr></table></figure>
-
-<p>在终端敲出的时候，终端很直观的帮我们用颜色区分。我们可以用图形显示如下：</p>
-<img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/test-AST.jpg" class="">
-
-<center>test函数的语法树</center>
+<p>解决方法：重新安装了numpy之后就可以用了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="LLVM-IR"><a href="#LLVM-IR" class="headerlink" title="LLVM IR"></a>LLVM IR</h3><p>LLVM IR有3种表示形式（本质是等价的）</p>
-<ul>
-<li>text:便于阅读的文本格式，类似于汇编语言，拓展名.ll， $ clang -S -emit-llvm main.m</li>
-<li>memory:内存格式</li>
-<li>bitcode:二进制格式，拓展名.bc， $ clang -c -emit-llvm main.m</li>
-</ul>
-<p>我们以text形式编译查看：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">; Function Attrs: noinline nounwind optnone ssp uwtable</span><br><span class="line">define void @test(i32, i32) #2 &#123;</span><br><span class="line">  %3 &#x3D; alloca i32, align 4</span><br><span class="line">  %4 &#x3D; alloca i32, align 4</span><br><span class="line">  %5 &#x3D; alloca i32, align 4</span><br><span class="line">  store i32 %0, i32* %3, align 4</span><br><span class="line">  store i32 %1, i32* %4, align 4</span><br><span class="line">  %6 &#x3D; load i32, i32* %3, align 4</span><br><span class="line">  %7 &#x3D; load i32, i32* %4, align 4</span><br><span class="line">  %8 &#x3D; add nsw i32 %6, %7</span><br><span class="line">  %9 &#x3D; sub nsw i32 %8, 3</span><br><span class="line">  store i32 %9, i32* %5, align 4</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>IR基本语法</strong><br>注释以分号 ; 开头<br>全局标识符以@开头，局部标识符以%开头<br>alloca，在当前函数栈帧中分配内存<br>i32，32bit，4个字节的意思<br>align，内存对齐<br>store，写入数据<br>load，读取数据<br>官方语法参考 <a href="https://links.jianshu.com/go?to=https://llvm.org/docs/LangRef.html">https://llvm.org/docs/LangRef.html</a></p>
-<h3 id="应用与实践"><a href="#应用与实践" class="headerlink" title="应用与实践"></a>应用与实践</h3><p>我们的开发都是基于源码开发，所以我们首先要进行源码下载和编译。<br><strong>源码下载</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载LLVM</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;llvm.git&#x2F;</span><br><span class="line"></span><br><span class="line">下载clang</span><br><span class="line">$ cd llvm&#x2F;tools</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;clang.git&#x2F;</span><br><span class="line"></span><br><span class="line">备注：clang是llvm的子项目，但是它们的源码是分开的，我们需要将clang放在llvm&#x2F;tools目录下。</span><br></pre></td></tr></table></figure>
-
-<p><strong>源码编译</strong><br>这里我们在终端敲出的clang是xcode默认内置clang编译器，我们自己要进行LLVM开发的话，需要编译属于我们自己的clang编译器</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">首先安装cmake和ninja(先安装brew，https:&#x2F;&#x2F;brew.sh&#x2F;)</span><br><span class="line">$ brew install cmake</span><br><span class="line">$ brew install ninja</span><br><span class="line"></span><br><span class="line">ninja如果安装失败，可以直接从github获取release版放入【&#x2F;usr&#x2F;local&#x2F;bin】中</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;ninja-build&#x2F;ninja&#x2F;releases</span><br><span class="line"></span><br><span class="line">在LLVM源码同级目录下新建一个【llvm_build】目录(最终会在【llvm_build】目录下生成【build.ninja】</span><br><span class="line"></span><br><span class="line">$ cd llvm_build</span><br><span class="line">$ cmake -G Ninja ..&#x2F;llvm -DCMAKE_INSTALL_PREFIX&#x3D;LLVM的安装路径</span><br><span class="line"></span><br><span class="line">备注：生成build.ninja，就表示编译成功，-DCMAKE_INSTALL_PREFIX 表示编译好的东西放在指定的路径，-D表示参数。</span><br><span class="line"></span><br><span class="line">更多cmake相关选项，可以参考: https:&#x2F;&#x2F;llvm.org&#x2F;docs&#x2F;CMake.html</span><br></pre></td></tr></table></figure>
-
-<p>接下来依次执行编译、安装指令</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ninja</span><br><span class="line">编译完毕后， 【llvm_build】目录大概 21.05 G（这个真的是好大啊）</span><br><span class="line">$ ninja install</span><br></pre></td></tr></table></figure>
-
-<p>然后到这里我们的编译就完成了。</p>
-<p>另一种方式是通过Xcode编译，生成Xcode项目再进行编译，但是速度很慢(可能需要1个多小时)。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">方法如下：</span><br><span class="line"> 在llvm同级目录下新建一个【llvm_xcode】目录</span><br><span class="line">$ cd llvm_xcode</span><br><span class="line">$ cmake -G Xcode ..&#x2F;llvm</span><br></pre></td></tr></table></figure>
-
-<p><strong>应用与实践的参考</strong></p>
-<ul>
-<li>libclang、libTooling<br>官方参考:<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/Tooling.html">https://clang.llvm.org/docs/Tooling.html</a><br>应用:语法树分析、语言转换等</li>
-<li>Clang插件开发<br>官方参考<br>1、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ClangPlugins.html">https://clang.llvm.org/docs/ClangPlugins.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ExternalClangExamples.html">https://clang.llvm.org/docs/ExternalClangExamples.html</a><br>3、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/RAVFrontendAction.html">https://clang.llvm.org/docs/RAVFrontendAction.html</a><br>应用:代码检查(命名规范、代码规范)等</li>
-<li>Pass开发<br>官方参考:<a href="https://links.jianshu.com/go?to=https://llvm.org/docs/WritingAnLLVMPass.html">https://llvm.org/docs/WritingAnLLVMPass.html</a><br>应用:代码优化、代码混淆等</li>
-<li>开发新的编程语言<br>1、 <a href="https://links.jianshu.com/go?to=https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html">https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/">https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/</a></li>
-</ul>
-<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p>搬运自<a href="https://www.jianshu.com/p/1367dad95445">深入浅出让你理解什么是LLVM</a></p>
+<p><strong>7. zsh:killed</strong></p>
+<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
+<p>解决方法：删除环境重新搭建环境就可以了</p>
 ]]></content>
       <categories>
-        <category>编译</category>
+        <category>强化学习</category>
       </categories>
       <tags>
-        <tag>编译</tag>
+        <tag>强化学习</tag>
       </tags>
   </entry>
   <entry>
     <title>ModbusTCP协议学习</title>
-    <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
+    <url>/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
 <p>Modbus协议是一项应用层报文传输协议，包括ASCII、RTU、<strong>TCP</strong>三种报文类型。</p>
 <p>标准的Modbus协议物理层接口有RS232、RS422、RS485和<strong>以太网</strong>接口，采用<strong>master/slave</strong>方式通信。</p>
 <h3 id="Modbus-TCP数据帧"><a href="#Modbus-TCP数据帧" class="headerlink" title="Modbus TCP数据帧"></a>Modbus TCP数据帧</h3><p>Modbus TCP的数据帧可分为两部分：<strong>MBAP</strong>+<strong>PDU</strong>。其协议特征如图所示。</p>
-<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/feature.png" class="">
+<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/feature.png" class="">
 
 <center>Modbus TCP协议特征</center>
 
@@ -494,13 +426,13 @@
 
 
 <h3 id="Modbus-TCP-示例报文"><a href="#Modbus-TCP-示例报文" class="headerlink" title="Modbus TCP 示例报文"></a>Modbus TCP 示例报文</h3><p>ModBusTcp与串行链路Modbus的数据域是一致的，具体数据域可以参考串行Modbus。这里给出几个ModbusTcp的链路解析说明，辅助新人分析报文。</p>
-<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test1.png" class="">
+<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test1.png" class="">
 
-<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test2.png" class="">
+<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test2.png" class="">
 
-<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test3.png" class="">
+<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test3.png" class="">
 
-<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test4.png" class="">
+<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test4.png" class="">
 
 <blockquote>
 <p>功能码 0x10：写多个保持寄存器。上面图片3和图片4都写错了。</p>
@@ -547,58 +479,8 @@
       </tags>
   </entry>
   <entry>
-    <title>MacBook Air M1安装gym问题汇总</title>
-    <url>/YingYingMonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
-<p><strong>0. 关于本机</strong></p>
-<ul>
-<li>macOS Monterey版本12.0.1</li>
-<li>MacBook Air（M1，2020）</li>
-<li>芯片 Apple M1</li>
-</ul>
-<p><strong>1. 环境相关</strong></p>
-<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
-<p><strong>2. 下载gym</strong></p>
-<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
-<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
-<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
-<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
-<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
-<p>解决方法：brew install swig</p>
-<p><strong>5. zsh: command not found: brew</strong></p>
-<p>问题状况：在第4步输入brew install swig后报错。</p>
-<p>解决方法：mac安装homebrew，</p>
-<p>用以下命令安装，序列号选择中科大（1）的</p>
-<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
-<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
-<p><strong>6. from . import multiarray等</strong></p>
-<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
-
-<p>解决方法：重新安装了numpy之后就可以用了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>7. zsh:killed</strong></p>
-<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
-<p>解决方法：删除环境重新搭建环境就可以了</p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>强化学习</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>OpenAI的Gym</title>
-    <url>/YingYingMonstre.github.io/2022/08/09/gym/</url>
+    <url>/yingyingmonstre.github.io/2022/08/09/gym/</url>
     <content><![CDATA[<h1 id="什么是Gym"><a href="#什么是Gym" class="headerlink" title="什么是Gym"></a>什么是Gym</h1><p>Gym是一个用于强化学习(Reinforcement Learning, RL)的标准API，以及各种参考环境的集合。</p>
 <h1 id="Gym的优点"><a href="#Gym的优点" class="headerlink" title="Gym的优点"></a>Gym的优点</h1><p>Gym的接口简单、python化、能够表示一般的RL问题。</p>
 <p>示例代码：</p>
@@ -608,7 +490,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h2 id="Interacting-with-the-Environment"><a href="#Interacting-with-the-Environment" class="headerlink" title="Interacting with the Environment"></a>Interacting with the Environment</h2><p>Gym实现了经典的“Agent-Environment循环”：</p>
-<img src="/YingYingMonstre.github.io/2022/08/09/gym/1.AE_loop.png" class="" title="AE_loop.png">
+<img src="/yingyingmonstre.github.io/2022/08/09/gym/1.AE_loop.png" class="" title="AE_loop.png">
 
 <p>Agent与环境的行动-观察的exchange称为一个timestep。RL的目标是以某种特定的方式manipulate环境。</p>
 <p>给了一个示例，运行<code>LunarLander-v2</code>环境的一个实例1000个timestep，每一个step都渲染环境：</p>
@@ -682,8 +564,126 @@
       </tags>
   </entry>
   <entry>
+    <title>深入浅出理解什么是LLVM</title>
+    <url>/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/</url>
+    <content><![CDATA[<h3 id="什么是LLVM"><a href="#什么是LLVM" class="headerlink" title="什么是LLVM"></a>什么是<a href="https://llvm.org/">LLVM</a></h3><blockquote>
+<p>LLVM项目是模块化、可重用的编译器以及工具链技术的集合。</p>
+</blockquote>
+<p>美国计算机协会 (ACM) 将其2012年软件系统奖项颁给了LLVM，之前曾经获得此奖项的软件和技术包括:Java、Apache、Mosaic、the World Wide Web、Smalltalk、UNIX、Eclipse等等。<br>创始人:Chris Lattner，亦是Swift之父。</p>
+<blockquote>
+<p>趣闻：Chris Latter本来只是想写一个底层的虚拟机，这也是LLVM名字的由来，low level virtual machine，跟Java的JVM虚拟机一样，可是后来，llvm从来没有被用作过虚拟机，哪怕LLVM的名气已经传开了。所以人们决定仍然叫他LLVM，更多的时候只是当作“商标”一样的感觉在使用，其实它跟虚拟机没有半毛钱关系。官方描述如下<br>The name “LLVM” itself is not an acronym; it is the full name of the project. “LLVM”这个名称本身不是首字母缩略词; 它是项目的全名。</p>
+</blockquote>
+<h3 id="传统的编译器架构"><a href="#传统的编译器架构" class="headerlink" title="传统的编译器架构"></a>传统的编译器架构</h3><img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/traditional.jpg" class="">
+
+<center>传统编译器架构</center>
+
+
+<ul>
+<li><strong>Frontend:前端</strong><br>词法分析、语法分析、语义分析、生成中间代码</li>
+<li><strong>Optimizer:优化器</strong><br>中间代码优化</li>
+<li><strong>Backend:后端</strong><br>生成机器码</li>
+</ul>
+<h3 id="LLVM架构"><a href="#LLVM架构" class="headerlink" title="LLVM架构"></a>LLVM架构</h3><img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/llvm.png" class="">
+
+<center>LLVM架构</center>
+
+<ul>
+<li><p>不同的前端后端使用统一的中间代码LLVM Intermediate Representation (LLVM IR)</p>
+</li>
+<li><p>如果需要支持一种新的编程语言，那么只需要实现一个新的前端</p>
+</li>
+<li><p>如果需要支持一种新的硬件设备，那么只需要实现一个新的后端</p>
+</li>
+<li><p>优化阶段是一个通用的阶段，它针对的是统一的LLVM IR，不论是支持新的编程语言，还是支持新的硬件设备，都不需要对优化阶段做修改</p>
+</li>
+<li><p>相比之下，GCC的前端和后端没分得太开，前端后端耦合在了一起。所以GCC为了支持一门新的语言，或者为了支持一个新的目标平台，就变得特别困难</p>
+</li>
+<li><p>LLVM现在被作为实现各种静态和运行时编译语言的通用基础结构(GCC家族、Java、.NET、Python、Ruby、Scheme、Haskell、D等)</p>
+</li>
+</ul>
+<h3 id="什么是Clang"><a href="#什么是Clang" class="headerlink" title="什么是Clang"></a>什么是<a href="http://clang.llvm.org/">Clang</a></h3><p>LLVM项目的一个子项目，基于LLVM架构的C/C++/Objective-C编译器前端。</p>
+<p><strong>相比于GCC，Clang具有如下优点</strong></p>
+<ul>
+<li>编译速度快:在某些平台上，Clang的编译速度显著的快过GCC(Debug模式下编译OC速度比GCC快3倍)</li>
+<li>占用内存小:Clang生成的AST所占用的内存是GCC的五分之一左右</li>
+<li>模块化设计:Clang采用基于库的模块化设计，易于 IDE 集成及其他用途的重用</li>
+<li>诊断信息可读性强:在编译过程中，Clang 创建并保留了大量详细的元数据 (metadata)，有利于调试和错误报告</li>
+<li>设计清晰简单，容易理解，易于扩展增强</li>
+</ul>
+<h3 id="Clang与LLVM关系"><a href="#Clang与LLVM关系" class="headerlink" title="Clang与LLVM关系"></a>Clang与LLVM关系</h3><img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/Clang-LLVM.png" class="">
+
+<center>Clang与LLVM</center>
+
+<p>LLVM整体架构，前端用的是clang，广义的LLVM是指整个LLVM架构，一般狭义的LLVM指的是LLVM后端（包含代码优化和目标代码生成）。</p>
+<p>源代码（C/C++）经过clang–&gt; 中间代码(经过一系列的优化，优化用的是Pass) –&gt; 机器码</p>
+<h3 id="OC源文件的编译过程"><a href="#OC源文件的编译过程" class="headerlink" title="OC源文件的编译过程"></a>OC源文件的编译过程</h3><p>这里用Xcode创建一个Test项目，然后cd到main.m的上一路径。<br>命令行查看编译的过程:$ clang -ccc-print-phases main.m</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ clang -ccc-print-phases main.m </span><br><span class="line"></span><br><span class="line">0: input, &quot;main.m&quot;, objective-c</span><br><span class="line">1: preprocessor, &#123;0&#125;, objective-c-cpp-output</span><br><span class="line">2: compiler, &#123;1&#125;, ir</span><br><span class="line">3: backend, &#123;2&#125;, assembler</span><br><span class="line">4: assembler, &#123;3&#125;, object</span><br><span class="line">5: linker, &#123;4&#125;, image</span><br><span class="line">6: bind-arch, &quot;x86_64&quot;, &#123;5&#125;, image</span><br></pre></td></tr></table></figure>
+
+<p>0.找到main.m文件<br>1.预处理器，处理include、import、宏定义<br>2.编译器编译，编译成ir中间代码<br>3.后端，生成目标代码<br>4.汇编<br>5.链接其他动态库、静态库<br>6.编译成适合某个架构的代码</p>
+<p>查看preprocessor(预处理)的结果:$ clang -E main.m<br>这个命令敲出，终端就会打印许多信息，大致如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 1 &quot;main.m&quot;</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 353 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 1 &quot;&lt;command line&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 2</span><br><span class="line"># 1 &quot;main.m&quot; 2</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">  int main(int argc, const char * argv[]) &#123;</span><br><span class="line">@autoreleasepool &#123;</span><br><span class="line">    NSLog(@&quot;Hello, World!&quot;);</span><br><span class="line">&#125;</span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h3><p><strong>词法分析</strong>，生成Token: $ clang -fmodules -E -Xclang -dump-tokens main.m<br>将代码分成一个个小单元（token）</p>
+<p>举例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void test(int a, int b)&#123;</span><br><span class="line">       int c &#x3D; a + b - 3;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void &#39;void&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:18:1&gt;</span><br><span class="line">identifier &#39;test&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:6&gt;</span><br><span class="line">l_paren &#39;(&#39;     Loc&#x3D;&lt;main.m:18:10&gt;</span><br><span class="line">int &#39;int&#39;       Loc&#x3D;&lt;main.m:18:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:15&gt;</span><br><span class="line">comma &#39;,&#39;       Loc&#x3D;&lt;main.m:18:16&gt;</span><br><span class="line">int &#39;int&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:18&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:22&gt;</span><br><span class="line">r_paren &#39;)&#39;     Loc&#x3D;&lt;main.m:18:23&gt;</span><br><span class="line">l_brace &#39;&#123;&#39;     Loc&#x3D;&lt;main.m:18:24&gt;</span><br><span class="line">int &#39;int&#39;    [StartOfLine] [LeadingSpace]   Loc&#x3D;&lt;main.m:19:5&gt;</span><br><span class="line">identifier &#39;c&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:9&gt;</span><br><span class="line">equal &#39;&#x3D;&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:13&gt;</span><br><span class="line">plus &#39;+&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:15&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:17&gt;</span><br><span class="line">minus &#39;-&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:19&gt;</span><br><span class="line">numeric_constant &#39;3&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:21&gt;</span><br><span class="line">semi &#39;;&#39;        Loc&#x3D;&lt;main.m:19:22&gt;</span><br><span class="line">r_brace &#39;&#125;&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:20:1&gt;</span><br><span class="line">eof &#39;&#39;      Loc&#x3D;&lt;main.m:20:2&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，词法分析的时候，将上面的代码拆分一个个token，后面数字表示某一行的第几个字符，例如第一个void，表示第18行第一个字符。</p>
+<h3 id="语法树-AST"><a href="#语法树-AST" class="headerlink" title="语法树-AST"></a>语法树-AST</h3><p>语法分析，生成语法树(AST，Abstract Syntax Tree): $ clang -fmodules -fsyntax-only -Xclang -ast-dump main.m<br>通过语法树，我们能知道这个代码是做什么的。</p>
+<p>还是刚刚的test函数<br>生成语法树如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">|-FunctionDecl 0x7fa1439f5630 &lt;line:18:1, line:20:1&gt; line:18:6 test &#39;void (int, int)&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f54b0 &lt;col:11, col:15&gt; col:15 used a &#39;int&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f5528 &lt;col:18, col:22&gt; col:22 used b &#39;int&#39;</span><br><span class="line">| &#96;-CompoundStmt 0x7fa142167c88 &lt;col:24, line:20:1&gt;</span><br><span class="line">|   &#96;-DeclStmt 0x7fa142167c70 &lt;line:19:5, col:22&gt;</span><br><span class="line">|     &#96;-VarDecl 0x7fa1439f5708 &lt;col:5, col:21&gt; col:9 c &#39;int&#39; cinit</span><br><span class="line">|       &#96;-BinaryOperator 0x7fa142167c48 &lt;col:13, col:21&gt; &#39;int&#39; &#39;-&#39;</span><br><span class="line">|         |-BinaryOperator 0x7fa142167c00 &lt;col:13, col:17&gt; &#39;int&#39; &#39;+&#39;</span><br><span class="line">|         | |-ImplicitCastExpr 0x7fa1439f57b8 &lt;col:13&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         | | &#96;-DeclRefExpr 0x7fa1439f5768 &lt;col:13&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f54b0 &#39;a&#39; &#39;int&#39;</span><br><span class="line">|         | &#96;-ImplicitCastExpr 0x7fa1439f57d0 &lt;col:17&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         |   &#96;-DeclRefExpr 0x7fa1439f5790 &lt;col:17&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f5528 &#39;b&#39; &#39;int&#39;</span><br><span class="line">|         &#96;-IntegerLiteral 0x7fa142167c28 &lt;col:21&gt; &#39;int&#39; 3</span><br><span class="line"></span><br><span class="line">&#96;-&lt;undeserialized declarations&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在终端敲出的时候，终端很直观的帮我们用颜色区分。我们可以用图形显示如下：</p>
+<img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/test-AST.jpg" class="">
+
+<center>test函数的语法树</center>
+
+
+<h3 id="LLVM-IR"><a href="#LLVM-IR" class="headerlink" title="LLVM IR"></a>LLVM IR</h3><p>LLVM IR有3种表示形式（本质是等价的）</p>
+<ul>
+<li>text:便于阅读的文本格式，类似于汇编语言，拓展名.ll， $ clang -S -emit-llvm main.m</li>
+<li>memory:内存格式</li>
+<li>bitcode:二进制格式，拓展名.bc， $ clang -c -emit-llvm main.m</li>
+</ul>
+<p>我们以text形式编译查看：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">; Function Attrs: noinline nounwind optnone ssp uwtable</span><br><span class="line">define void @test(i32, i32) #2 &#123;</span><br><span class="line">  %3 &#x3D; alloca i32, align 4</span><br><span class="line">  %4 &#x3D; alloca i32, align 4</span><br><span class="line">  %5 &#x3D; alloca i32, align 4</span><br><span class="line">  store i32 %0, i32* %3, align 4</span><br><span class="line">  store i32 %1, i32* %4, align 4</span><br><span class="line">  %6 &#x3D; load i32, i32* %3, align 4</span><br><span class="line">  %7 &#x3D; load i32, i32* %4, align 4</span><br><span class="line">  %8 &#x3D; add nsw i32 %6, %7</span><br><span class="line">  %9 &#x3D; sub nsw i32 %8, 3</span><br><span class="line">  store i32 %9, i32* %5, align 4</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>IR基本语法</strong><br>注释以分号 ; 开头<br>全局标识符以@开头，局部标识符以%开头<br>alloca，在当前函数栈帧中分配内存<br>i32，32bit，4个字节的意思<br>align，内存对齐<br>store，写入数据<br>load，读取数据<br>官方语法参考 <a href="https://links.jianshu.com/go?to=https://llvm.org/docs/LangRef.html">https://llvm.org/docs/LangRef.html</a></p>
+<h3 id="应用与实践"><a href="#应用与实践" class="headerlink" title="应用与实践"></a>应用与实践</h3><p>我们的开发都是基于源码开发，所以我们首先要进行源码下载和编译。<br><strong>源码下载</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载LLVM</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;llvm.git&#x2F;</span><br><span class="line"></span><br><span class="line">下载clang</span><br><span class="line">$ cd llvm&#x2F;tools</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;clang.git&#x2F;</span><br><span class="line"></span><br><span class="line">备注：clang是llvm的子项目，但是它们的源码是分开的，我们需要将clang放在llvm&#x2F;tools目录下。</span><br></pre></td></tr></table></figure>
+
+<p><strong>源码编译</strong><br>这里我们在终端敲出的clang是xcode默认内置clang编译器，我们自己要进行LLVM开发的话，需要编译属于我们自己的clang编译器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">首先安装cmake和ninja(先安装brew，https:&#x2F;&#x2F;brew.sh&#x2F;)</span><br><span class="line">$ brew install cmake</span><br><span class="line">$ brew install ninja</span><br><span class="line"></span><br><span class="line">ninja如果安装失败，可以直接从github获取release版放入【&#x2F;usr&#x2F;local&#x2F;bin】中</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;ninja-build&#x2F;ninja&#x2F;releases</span><br><span class="line"></span><br><span class="line">在LLVM源码同级目录下新建一个【llvm_build】目录(最终会在【llvm_build】目录下生成【build.ninja】</span><br><span class="line"></span><br><span class="line">$ cd llvm_build</span><br><span class="line">$ cmake -G Ninja ..&#x2F;llvm -DCMAKE_INSTALL_PREFIX&#x3D;LLVM的安装路径</span><br><span class="line"></span><br><span class="line">备注：生成build.ninja，就表示编译成功，-DCMAKE_INSTALL_PREFIX 表示编译好的东西放在指定的路径，-D表示参数。</span><br><span class="line"></span><br><span class="line">更多cmake相关选项，可以参考: https:&#x2F;&#x2F;llvm.org&#x2F;docs&#x2F;CMake.html</span><br></pre></td></tr></table></figure>
+
+<p>接下来依次执行编译、安装指令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ninja</span><br><span class="line">编译完毕后， 【llvm_build】目录大概 21.05 G（这个真的是好大啊）</span><br><span class="line">$ ninja install</span><br></pre></td></tr></table></figure>
+
+<p>然后到这里我们的编译就完成了。</p>
+<p>另一种方式是通过Xcode编译，生成Xcode项目再进行编译，但是速度很慢(可能需要1个多小时)。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">方法如下：</span><br><span class="line"> 在llvm同级目录下新建一个【llvm_xcode】目录</span><br><span class="line">$ cd llvm_xcode</span><br><span class="line">$ cmake -G Xcode ..&#x2F;llvm</span><br></pre></td></tr></table></figure>
+
+<p><strong>应用与实践的参考</strong></p>
+<ul>
+<li>libclang、libTooling<br>官方参考:<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/Tooling.html">https://clang.llvm.org/docs/Tooling.html</a><br>应用:语法树分析、语言转换等</li>
+<li>Clang插件开发<br>官方参考<br>1、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ClangPlugins.html">https://clang.llvm.org/docs/ClangPlugins.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ExternalClangExamples.html">https://clang.llvm.org/docs/ExternalClangExamples.html</a><br>3、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/RAVFrontendAction.html">https://clang.llvm.org/docs/RAVFrontendAction.html</a><br>应用:代码检查(命名规范、代码规范)等</li>
+<li>Pass开发<br>官方参考:<a href="https://links.jianshu.com/go?to=https://llvm.org/docs/WritingAnLLVMPass.html">https://llvm.org/docs/WritingAnLLVMPass.html</a><br>应用:代码优化、代码混淆等</li>
+<li>开发新的编程语言<br>1、 <a href="https://links.jianshu.com/go?to=https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html">https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/">https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/</a></li>
+</ul>
+<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p>搬运自<a href="https://www.jianshu.com/p/1367dad95445">深入浅出让你理解什么是LLVM</a></p>
+]]></content>
+      <categories>
+        <category>编译</category>
+      </categories>
+      <tags>
+        <tag>编译</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Boofuzz源码分析</title>
-    <url>/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</url>
+    <url>/yingyingmonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<h3 id="Boofuzz样例"><a href="#Boofuzz样例" class="headerlink" title="Boofuzz样例"></a>Boofuzz样例</h3><p>以一个TFTP Fuzzer为例，大概看一下Boofuzz的用法。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> boofuzz <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    session = Session(sleep_time=<span class="number">1</span>,</span><br><span class="line">                      target=Target(connection=SocketConnection(<span class="string">&quot;127.0.0.1&quot;</span>,<span class="number">69</span>,proto=<span class="string">&quot;udp&quot;</span>)))</span><br><span class="line">    s_initialize(<span class="string">&quot;write&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;\\x00\\x02&quot;</span>)</span><br><span class="line">    s_string(<span class="string">&quot;filename&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;\\x00&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;netascii&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;\\x00&quot;</span>)</span><br><span class="line"></span><br><span class="line">    session.connect(s_get(<span class="string">&#x27;write&#x27;</span>))</span><br><span class="line">    session.fuzz()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
@@ -692,7 +692,7 @@
 
 <p>Fuzzer的创建包含三层，Session -&gt; Target -&gt; Connection</p>
 <h3 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h3><p>顾名思义，Connection对象是网络连接的代表，Boofuzz支持各种基于socket的连接，从源码部分就可以看到，常用的还是TCP和UDP，这里还支持网络协议栈中2层和3层的原生Socket。</p>
-<img src="/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connection.png" class="">
+<img src="/yingyingmonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connection.png" class="">
 
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">SocketConnection</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    host,</span></span></span><br><span class="line"><span class="function"><span class="params">    port=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    proto=<span class="string">&quot;tcp&quot;</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    bind=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    send_timeout=<span class="number">5.0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    recv_timeout=<span class="number">5.0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    ethernet_proto=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    l2_dst=<span class="string">b&quot;\xFF&quot;</span> * <span class="number">6</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    udp_broadcast=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    server=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    sslcontext=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    server_hostname=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>):</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    warnings.warn(</span><br><span class="line">        <span class="string">&quot;SocketConnection is deprecated and will be removed in a future version of Boofuzz. &quot;</span></span><br><span class="line">        <span class="string">&quot;Use the classes derived from BaseSocketConnection instead.&quot;</span>,</span><br><span class="line">        FutureWarning,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> proto <span class="keyword">not</span> <span class="keyword">in</span> _PROTOCOLS:</span><br><span class="line">        <span class="keyword">raise</span> exception.SullyRuntimeError(<span class="string">&quot;INVALID PROTOCOL SPECIFIED: %s&quot;</span> % proto)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> proto <span class="keyword">in</span> _PROTOCOLS_PORT_REQUIRED <span class="keyword">and</span> port <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;__init__() argument port required for protocol &#123;0&#125;&quot;</span>.<span class="built_in">format</span>(proto))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> proto == <span class="string">&quot;udp&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> udp_socket_connection.UDPSocketConnection(</span><br><span class="line">            host, port, send_timeout, recv_timeout, server, bind, udp_broadcast</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;tcp&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> tcp_socket_connection.TCPSocketConnection(host, port, send_timeout, recv_timeout, server)</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;ssl&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> ssl_socket_connection.SSLSocketConnection(</span><br><span class="line">            host, port, send_timeout, recv_timeout, server, sslcontext, server_hostname</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;raw-l2&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> raw_l2_socket_connection.RawL2SocketConnection(host, send_timeout, recv_timeout)</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;raw-l3&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> ethernet_proto <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            ethernet_proto = raw_l3_socket_connection.ETH_P_IP</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> raw_l3_socket_connection.RawL3SocketConnection(host, send_timeout, recv_timeout, ethernet_proto, l2_dst)</span><br></pre></td></tr></table></figure>
 
@@ -783,7 +783,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Connection</span>(<span class="params">pgraph.Edge</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, src, dst, callback=<span class="literal">None</span></span>):</span></span><br><span class="line">		    <span class="built_in">super</span>(Connection, self).__init__(src, dst)</span><br><span class="line"></span><br><span class="line">        self.callback = callback</span><br></pre></td></tr></table></figure>
 
 <p>状态图案例：</p>
-<img src="/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connect_graph.png" class="">
+<img src="/yingyingmonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connect_graph.png" class="">
 
 <p>创建完Request之后，接下来就是向里面添加Primitives，根据数据类型划分出多个添加函数，首先看string类型的函数s_string。</p>
 <h4 id="s-string"><a href="#s-string" class="headerlink" title="s_string"></a>s_string</h4><p>函数中新建String对象后，通过Request的push函数填充到request中。</p>
