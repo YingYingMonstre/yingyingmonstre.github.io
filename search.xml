@@ -1,6 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Gym环境创建</title>
+    <url>/YingYingMonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
+    <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
+<h1 id="Subclassing-gym-Env"><a href="#Subclassing-gym-Env" class="headerlink" title="Subclassing gym.Env"></a>Subclassing gym.Env</h1><p>在学习创建自己的环境前应该查看Gym的<a href="https://www.gymlibrary.ml/content/api/">API文档</a>。将关注一个看起来像这样的gym-examples的子集：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym-examples/</span><br><span class="line">  README.md</span><br><span class="line">  setup.py</span><br><span class="line">  gym_examples/</span><br><span class="line">    __init__.py</span><br><span class="line">    envs/</span><br><span class="line">      __init__.py</span><br><span class="line">      grid_world.py</span><br><span class="line">    wrappers/</span><br><span class="line">      __init__.py</span><br><span class="line">      relative_position.py</span><br></pre></td></tr></table></figure>
+
+<p>通过实现一个简单的游戏<code>GridWorldEnv</code>来说明gym.Env子类的过程。在<code>gym-examples/gym_examples/envs/grid_world.py</code>中编写代码。环境由一个二维方形网格组成（大小由参数size决定）。Agent在每个timestep可以垂直或水平地移动。Agent的目标是导航到episode开始时随机放置的目标。</p>
+<ul>
+<li>Observations提供了agent和目标的位置。</li>
+<li>四个动作分别为上、下、左、右。</li>
+<li>Agent到达目标位置则发出done信号。</li>
+<li>奖励是二元且稀疏的，意味着除了到达目标时为1，其他情况都为0。</li>
+</ul>
+<p>分块看其源码。</p>
+<h1 id="Declaration-and-Initialization"><a href="#Declaration-and-Initialization" class="headerlink" title="Declaration and Initialization"></a>Declaration and Initialization</h1><p><code>__init__</code>主要作用是初始化一些参数。如在<code>GridWorldEnv</code>中规定了方格的大小、设置了用于渲染的变量、观测空间和动作空间。在初始化函数中设置<code>self.seed()</code>的参数<code>seed=</code>为整数可以使随机数固定、初始化结果一致，如果为空的话就是随机选取种子。</p>
+<h1 id="Constructing-Observations-From-Environment-States"><a href="#Constructing-Observations-From-Environment-States" class="headerlink" title="Constructing Observations From Environment States"></a>Constructing Observations From Environment States</h1><p>由于需要在<code>reset</code>和<code>step</code>中计算观测结果，因此使用（private）方法<code>_get_obs</code>将环境状态转换为观测结果通常很方便。但是这不是强制性的，也可以在<code>reset</code>和<code>step</code>中分别计算观测结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_obs</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;agent&quot;</span>: self._agent_location, <span class="string">&quot;target&quot;</span>: self._target_location&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于<code>reset</code>和<code>step</code>返回的辅助信息，也可以实现类似的方法。例如提供agent和目标的曼哈顿距离：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_info</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;distance&quot;</span>: np.linalg.norm(self._agent_location - self._target_location, <span class="built_in">ord</span>=<span class="number">1</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h1><p>调用<code>reset</code>来启动新的episode。可以假设在调用reset之前不会调用step方法。只要发出done信号，就应该调用reset。用户可以将种子关键字传递给 reset 以将环境使用的任何随机数生成器初始化为确定性状态。推荐使用环境基类<code>gym.Env</code>提供的随机数生成器<code>self.np_random</code>。如果只使用这个RNG，就不需要太担心seeding，但要使用<code>super.reset(seed=seed)</code>来确保gym.Env正确的seeding RNG。</p>
+<h1 id="Step"><a href="#Step" class="headerlink" title="Step"></a>Step</h1><p><code>step</code>方法通常包括环境的大部分逻辑。它接受一个动作，在应用该动作后计算环境状态并返回四元组(observation, reward, done, info)。</p>
+<h1 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h1><p>渲染，绘图函数，在图形界面上做出反应。</p>
+<h1 id="Close"><a href="#Close" class="headerlink" title="Close"></a>Close</h1><p>关闭环境使用的所有打开的资源。很多情况下不比去实现该方法。</p>
+<h1 id="Registering-Envs"><a href="#Registering-Envs" class="headerlink" title="Registering Envs"></a>Registering Envs</h1><p>为了让Gym检测到自定义环境，必须按如下方式注册。环境在<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs/__init__.py</code>中获得gym中所有注册的环境信息，在其中加入代码对自定义环境进行注册。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 例子</span></span><br><span class="line"><span class="comment"># user</span></span><br><span class="line"><span class="comment"># ---------</span></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&#x27;GridWorld-v1&#x27;</span>,</span><br><span class="line">    entry_point=<span class="string">&#x27;gym.envs.user:GridEnv1&#x27;</span>,</span><br><span class="line">    max_episode_steps=<span class="number">200</span>,</span><br><span class="line">    reward_threshold=<span class="number">100.0</span>,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>环境ID由三个部分组成，其中两个是可选的：一个可选的namespace（这里忽略掉了）、一个强制名称（GridWorld）、一个可选但推荐的版本（v1）。在环境创建期间应使用适当的ID。</p>
+<p>关键参数<code>max_episode_steps=200</code>将确保通过<code>gym.make</code>实例化的GridWorld环境将被包装在TimeLimit包装器中。如果agent已达到目标或在当前episode中已执行200步，则将产生done信号。</p>
+<p>除了id和entrypoint，还可以pass以下的关键字来注册：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Name</th>
+<th align="center">Type</th>
+<th align="center">Default</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">reward_threshold</td>
+<td align="center">float</td>
+<td align="center">None</td>
+<td align="center">任务被认为已解决前的奖励阈值</td>
+</tr>
+<tr>
+<td align="center">nondeterministic</td>
+<td align="center">bool</td>
+<td align="center">False</td>
+<td align="center">即使在seeding之后这个环境是否也是非确定性的</td>
+</tr>
+<tr>
+<td align="center">max_episode_steps</td>
+<td align="center">int</td>
+<td align="center">None</td>
+<td align="center">一个episode可以包含的最大步骤数。如果不是None则添加TimeLimit包装器</td>
+</tr>
+<tr>
+<td align="center">order_enforce</td>
+<td align="center">bool</td>
+<td align="center">True</td>
+<td align="center">是否将环境包装在OrderEnforcing包装器中</td>
+</tr>
+<tr>
+<td align="center">autoreset</td>
+<td align="center">bool</td>
+<td align="center">False</td>
+<td align="center">是否将环境包装在AutoResetWrapper</td>
+</tr>
+<tr>
+<td align="center">kwargs</td>
+<td align="center">dict</td>
+<td align="center">{}</td>
+<td align="center">传给环境类的默认k wa r g</td>
+</tr>
+</tbody></table>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="编写环境"><a href="#编写环境" class="headerlink" title="编写环境"></a>编写环境</h2><p>路径为<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs</code>。在envs中创建了一个文件夹<code>gym_test</code>，里面包含<code>__init__.py</code>和<code>env_guess_number.py</code>。其中后者描述具体环境，主要包括在init初始化函数中初始化一些参数、step输入action并返回四元组、reset重置，具体代码为：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> gym <span class="keyword">import</span> spaces</span><br><span class="line"><span class="keyword">from</span> gym.utils <span class="keyword">import</span> seeding</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">guess_number</span>(<span class="params">gym.Env</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Hotter Colder</span></span><br><span class="line"><span class="string">        The goal of hotter colder is to guess closer to a randomly selected guess_number</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        After each step the agent receives an observation of:</span></span><br><span class="line"><span class="string">        0 - No guess yet submitted (only after reset)</span></span><br><span class="line"><span class="string">        1 - Guess is lower than the target</span></span><br><span class="line"><span class="string">        2 - Guess is equal to the target</span></span><br><span class="line"><span class="string">        3 - Guess is higher than the target</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        The rewards is calculated as:</span></span><br><span class="line"><span class="string">        (min(action, self.guess_number) + self.range) / (max(action, self.guess_number) + self.range)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Ideally an agent will be able to recognise the &#x27;scent&#x27; of a higher reward and</span></span><br><span class="line"><span class="string">        increase the rate in which is guesses in that direction until the reward reaches</span></span><br><span class="line"><span class="string">        its maximum</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.<span class="built_in">range</span> = <span class="number">1000</span>  <span class="comment"># +/- value the randomly select guess_number can be between</span></span><br><span class="line">        self.bounds = <span class="number">2000</span>  <span class="comment"># Action space bounds</span></span><br><span class="line"></span><br><span class="line">        self.action_space = spaces.Box(low=np.array([-self.bounds]), high=np.array([self.bounds]), dtype=np.<span class="built_in">int</span>)</span><br><span class="line">        self.observation_space = spaces.Discrete(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">        self.guess_number = <span class="number">0</span></span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.guess_max = <span class="number">200</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        self.seed()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">seed</span>(<span class="params">self, seed=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.np_random, seed = seeding.np_random(seed)</span><br><span class="line">        <span class="keyword">return</span> [seed]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, action</span>):</span></span><br><span class="line">        <span class="comment"># assert self.action_space.contains(action)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> action &lt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action == self.guess_number:</span><br><span class="line">            self.observation = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action &gt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 两个值越接近，奖励越接近1</span></span><br><span class="line">        reward = ((<span class="built_in">min</span>(action, self.guess_number) + self.bounds) / (<span class="built_in">max</span>(action, self.guess_number) + self.bounds)) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        self.guess_count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 200个episode</span></span><br><span class="line">        done = self.guess_count &gt;= self.guess_max</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.observation, reward, done, &#123;<span class="string">&quot;guess_number&quot;</span>: self.guess_number, <span class="string">&quot;guesses&quot;</span>: self.guess_count&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.guess_number = <span class="built_in">int</span>(self.np_random.uniform(-self.<span class="built_in">range</span>, self.<span class="built_in">range</span>))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;guess number = &quot;</span>, self.guess_number)</span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> self.observation</span><br></pre></td></tr></table></figure>
+
+<p>完成基本环境设置后需要在<code>gym_test/__init__.py</code>中设置环境实例初始化的调用：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.envs.gym_test.env_guess_number <span class="keyword">import</span> guess_number</span><br></pre></td></tr></table></figure>
+
+<h2 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h2><p>在<code>envs/__init__.py</code>中加入：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">···</span><br><span class="line"><span class="comment"># User test</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line"></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&quot;GuessNumber-v0&quot;</span>,</span><br><span class="line">    entry_point=<span class="string">&quot;gym.envs.gym_test:guess_number&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Classic</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line">···</span><br></pre></td></tr></table></figure>
+
+<h2 id="gym测试"><a href="#gym测试" class="headerlink" title="gym测试"></a>gym测试</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;GuessNumber-v0&quot;</span>)</span><br><span class="line">obs = env.reset()</span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    action = env.action_space.sample()</span><br><span class="line">    <span class="built_in">print</span>(action)</span><br><span class="line">    obs, reward, done, info = env.step(action)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://www.gymlibrary.ml/content/environment_creation/">Gym Documentation</a></p>
+<p><a href="https://blog.csdn.net/RenJie_L/article/details/123500345">构建自己的gym训练环境 巨详细</a></p>
+<p><a href="https://blog.csdn.net/sinat_39620217/article/details/115519622">gym搭建自己的环境</a></p>
+<p><a href="https://lossyou.com/post/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84gym%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83">搭建自己的gym强化学习环境</a></p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>gym</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入浅出理解什么是LLVM</title>
+    <url>/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/</url>
+    <content><![CDATA[<h3 id="什么是LLVM"><a href="#什么是LLVM" class="headerlink" title="什么是LLVM"></a>什么是<a href="https://llvm.org/">LLVM</a></h3><blockquote>
+<p>LLVM项目是模块化、可重用的编译器以及工具链技术的集合。</p>
+</blockquote>
+<p>美国计算机协会 (ACM) 将其2012年软件系统奖项颁给了LLVM，之前曾经获得此奖项的软件和技术包括:Java、Apache、Mosaic、the World Wide Web、Smalltalk、UNIX、Eclipse等等。<br>创始人:Chris Lattner，亦是Swift之父。</p>
+<blockquote>
+<p>趣闻：Chris Latter本来只是想写一个底层的虚拟机，这也是LLVM名字的由来，low level virtual machine，跟Java的JVM虚拟机一样，可是后来，llvm从来没有被用作过虚拟机，哪怕LLVM的名气已经传开了。所以人们决定仍然叫他LLVM，更多的时候只是当作“商标”一样的感觉在使用，其实它跟虚拟机没有半毛钱关系。官方描述如下<br>The name “LLVM” itself is not an acronym; it is the full name of the project. “LLVM”这个名称本身不是首字母缩略词; 它是项目的全名。</p>
+</blockquote>
+<h3 id="传统的编译器架构"><a href="#传统的编译器架构" class="headerlink" title="传统的编译器架构"></a>传统的编译器架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/traditional.jpg" class="">
+
+<center>传统编译器架构</center>
+
+
+<ul>
+<li><strong>Frontend:前端</strong><br>词法分析、语法分析、语义分析、生成中间代码</li>
+<li><strong>Optimizer:优化器</strong><br>中间代码优化</li>
+<li><strong>Backend:后端</strong><br>生成机器码</li>
+</ul>
+<h3 id="LLVM架构"><a href="#LLVM架构" class="headerlink" title="LLVM架构"></a>LLVM架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/llvm.png" class="">
+
+<center>LLVM架构</center>
+
+<ul>
+<li><p>不同的前端后端使用统一的中间代码LLVM Intermediate Representation (LLVM IR)</p>
+</li>
+<li><p>如果需要支持一种新的编程语言，那么只需要实现一个新的前端</p>
+</li>
+<li><p>如果需要支持一种新的硬件设备，那么只需要实现一个新的后端</p>
+</li>
+<li><p>优化阶段是一个通用的阶段，它针对的是统一的LLVM IR，不论是支持新的编程语言，还是支持新的硬件设备，都不需要对优化阶段做修改</p>
+</li>
+<li><p>相比之下，GCC的前端和后端没分得太开，前端后端耦合在了一起。所以GCC为了支持一门新的语言，或者为了支持一个新的目标平台，就变得特别困难</p>
+</li>
+<li><p>LLVM现在被作为实现各种静态和运行时编译语言的通用基础结构(GCC家族、Java、.NET、Python、Ruby、Scheme、Haskell、D等)</p>
+</li>
+</ul>
+<h3 id="什么是Clang"><a href="#什么是Clang" class="headerlink" title="什么是Clang"></a>什么是<a href="http://clang.llvm.org/">Clang</a></h3><p>LLVM项目的一个子项目，基于LLVM架构的C/C++/Objective-C编译器前端。</p>
+<p><strong>相比于GCC，Clang具有如下优点</strong></p>
+<ul>
+<li>编译速度快:在某些平台上，Clang的编译速度显著的快过GCC(Debug模式下编译OC速度比GCC快3倍)</li>
+<li>占用内存小:Clang生成的AST所占用的内存是GCC的五分之一左右</li>
+<li>模块化设计:Clang采用基于库的模块化设计，易于 IDE 集成及其他用途的重用</li>
+<li>诊断信息可读性强:在编译过程中，Clang 创建并保留了大量详细的元数据 (metadata)，有利于调试和错误报告</li>
+<li>设计清晰简单，容易理解，易于扩展增强</li>
+</ul>
+<h3 id="Clang与LLVM关系"><a href="#Clang与LLVM关系" class="headerlink" title="Clang与LLVM关系"></a>Clang与LLVM关系</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/Clang-LLVM.png" class="">
+
+<center>Clang与LLVM</center>
+
+<p>LLVM整体架构，前端用的是clang，广义的LLVM是指整个LLVM架构，一般狭义的LLVM指的是LLVM后端（包含代码优化和目标代码生成）。</p>
+<p>源代码（C/C++）经过clang–&gt; 中间代码(经过一系列的优化，优化用的是Pass) –&gt; 机器码</p>
+<h3 id="OC源文件的编译过程"><a href="#OC源文件的编译过程" class="headerlink" title="OC源文件的编译过程"></a>OC源文件的编译过程</h3><p>这里用Xcode创建一个Test项目，然后cd到main.m的上一路径。<br>命令行查看编译的过程:$ clang -ccc-print-phases main.m</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ clang -ccc-print-phases main.m </span><br><span class="line"></span><br><span class="line">0: input, &quot;main.m&quot;, objective-c</span><br><span class="line">1: preprocessor, &#123;0&#125;, objective-c-cpp-output</span><br><span class="line">2: compiler, &#123;1&#125;, ir</span><br><span class="line">3: backend, &#123;2&#125;, assembler</span><br><span class="line">4: assembler, &#123;3&#125;, object</span><br><span class="line">5: linker, &#123;4&#125;, image</span><br><span class="line">6: bind-arch, &quot;x86_64&quot;, &#123;5&#125;, image</span><br></pre></td></tr></table></figure>
+
+<p>0.找到main.m文件<br>1.预处理器，处理include、import、宏定义<br>2.编译器编译，编译成ir中间代码<br>3.后端，生成目标代码<br>4.汇编<br>5.链接其他动态库、静态库<br>6.编译成适合某个架构的代码</p>
+<p>查看preprocessor(预处理)的结果:$ clang -E main.m<br>这个命令敲出，终端就会打印许多信息，大致如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 1 &quot;main.m&quot;</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 353 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 1 &quot;&lt;command line&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 2</span><br><span class="line"># 1 &quot;main.m&quot; 2</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">  int main(int argc, const char * argv[]) &#123;</span><br><span class="line">@autoreleasepool &#123;</span><br><span class="line">    NSLog(@&quot;Hello, World!&quot;);</span><br><span class="line">&#125;</span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h3><p><strong>词法分析</strong>，生成Token: $ clang -fmodules -E -Xclang -dump-tokens main.m<br>将代码分成一个个小单元（token）</p>
+<p>举例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void test(int a, int b)&#123;</span><br><span class="line">       int c &#x3D; a + b - 3;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void &#39;void&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:18:1&gt;</span><br><span class="line">identifier &#39;test&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:6&gt;</span><br><span class="line">l_paren &#39;(&#39;     Loc&#x3D;&lt;main.m:18:10&gt;</span><br><span class="line">int &#39;int&#39;       Loc&#x3D;&lt;main.m:18:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:15&gt;</span><br><span class="line">comma &#39;,&#39;       Loc&#x3D;&lt;main.m:18:16&gt;</span><br><span class="line">int &#39;int&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:18&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:22&gt;</span><br><span class="line">r_paren &#39;)&#39;     Loc&#x3D;&lt;main.m:18:23&gt;</span><br><span class="line">l_brace &#39;&#123;&#39;     Loc&#x3D;&lt;main.m:18:24&gt;</span><br><span class="line">int &#39;int&#39;    [StartOfLine] [LeadingSpace]   Loc&#x3D;&lt;main.m:19:5&gt;</span><br><span class="line">identifier &#39;c&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:9&gt;</span><br><span class="line">equal &#39;&#x3D;&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:13&gt;</span><br><span class="line">plus &#39;+&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:15&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:17&gt;</span><br><span class="line">minus &#39;-&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:19&gt;</span><br><span class="line">numeric_constant &#39;3&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:21&gt;</span><br><span class="line">semi &#39;;&#39;        Loc&#x3D;&lt;main.m:19:22&gt;</span><br><span class="line">r_brace &#39;&#125;&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:20:1&gt;</span><br><span class="line">eof &#39;&#39;      Loc&#x3D;&lt;main.m:20:2&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，词法分析的时候，将上面的代码拆分一个个token，后面数字表示某一行的第几个字符，例如第一个void，表示第18行第一个字符。</p>
+<h3 id="语法树-AST"><a href="#语法树-AST" class="headerlink" title="语法树-AST"></a>语法树-AST</h3><p>语法分析，生成语法树(AST，Abstract Syntax Tree): $ clang -fmodules -fsyntax-only -Xclang -ast-dump main.m<br>通过语法树，我们能知道这个代码是做什么的。</p>
+<p>还是刚刚的test函数<br>生成语法树如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">|-FunctionDecl 0x7fa1439f5630 &lt;line:18:1, line:20:1&gt; line:18:6 test &#39;void (int, int)&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f54b0 &lt;col:11, col:15&gt; col:15 used a &#39;int&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f5528 &lt;col:18, col:22&gt; col:22 used b &#39;int&#39;</span><br><span class="line">| &#96;-CompoundStmt 0x7fa142167c88 &lt;col:24, line:20:1&gt;</span><br><span class="line">|   &#96;-DeclStmt 0x7fa142167c70 &lt;line:19:5, col:22&gt;</span><br><span class="line">|     &#96;-VarDecl 0x7fa1439f5708 &lt;col:5, col:21&gt; col:9 c &#39;int&#39; cinit</span><br><span class="line">|       &#96;-BinaryOperator 0x7fa142167c48 &lt;col:13, col:21&gt; &#39;int&#39; &#39;-&#39;</span><br><span class="line">|         |-BinaryOperator 0x7fa142167c00 &lt;col:13, col:17&gt; &#39;int&#39; &#39;+&#39;</span><br><span class="line">|         | |-ImplicitCastExpr 0x7fa1439f57b8 &lt;col:13&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         | | &#96;-DeclRefExpr 0x7fa1439f5768 &lt;col:13&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f54b0 &#39;a&#39; &#39;int&#39;</span><br><span class="line">|         | &#96;-ImplicitCastExpr 0x7fa1439f57d0 &lt;col:17&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         |   &#96;-DeclRefExpr 0x7fa1439f5790 &lt;col:17&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f5528 &#39;b&#39; &#39;int&#39;</span><br><span class="line">|         &#96;-IntegerLiteral 0x7fa142167c28 &lt;col:21&gt; &#39;int&#39; 3</span><br><span class="line"></span><br><span class="line">&#96;-&lt;undeserialized declarations&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在终端敲出的时候，终端很直观的帮我们用颜色区分。我们可以用图形显示如下：</p>
+<img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/test-AST.jpg" class="">
+
+<center>test函数的语法树</center>
+
+
+<h3 id="LLVM-IR"><a href="#LLVM-IR" class="headerlink" title="LLVM IR"></a>LLVM IR</h3><p>LLVM IR有3种表示形式（本质是等价的）</p>
+<ul>
+<li>text:便于阅读的文本格式，类似于汇编语言，拓展名.ll， $ clang -S -emit-llvm main.m</li>
+<li>memory:内存格式</li>
+<li>bitcode:二进制格式，拓展名.bc， $ clang -c -emit-llvm main.m</li>
+</ul>
+<p>我们以text形式编译查看：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">; Function Attrs: noinline nounwind optnone ssp uwtable</span><br><span class="line">define void @test(i32, i32) #2 &#123;</span><br><span class="line">  %3 &#x3D; alloca i32, align 4</span><br><span class="line">  %4 &#x3D; alloca i32, align 4</span><br><span class="line">  %5 &#x3D; alloca i32, align 4</span><br><span class="line">  store i32 %0, i32* %3, align 4</span><br><span class="line">  store i32 %1, i32* %4, align 4</span><br><span class="line">  %6 &#x3D; load i32, i32* %3, align 4</span><br><span class="line">  %7 &#x3D; load i32, i32* %4, align 4</span><br><span class="line">  %8 &#x3D; add nsw i32 %6, %7</span><br><span class="line">  %9 &#x3D; sub nsw i32 %8, 3</span><br><span class="line">  store i32 %9, i32* %5, align 4</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>IR基本语法</strong><br>注释以分号 ; 开头<br>全局标识符以@开头，局部标识符以%开头<br>alloca，在当前函数栈帧中分配内存<br>i32，32bit，4个字节的意思<br>align，内存对齐<br>store，写入数据<br>load，读取数据<br>官方语法参考 <a href="https://links.jianshu.com/go?to=https://llvm.org/docs/LangRef.html">https://llvm.org/docs/LangRef.html</a></p>
+<h3 id="应用与实践"><a href="#应用与实践" class="headerlink" title="应用与实践"></a>应用与实践</h3><p>我们的开发都是基于源码开发，所以我们首先要进行源码下载和编译。<br><strong>源码下载</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载LLVM</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;llvm.git&#x2F;</span><br><span class="line"></span><br><span class="line">下载clang</span><br><span class="line">$ cd llvm&#x2F;tools</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;clang.git&#x2F;</span><br><span class="line"></span><br><span class="line">备注：clang是llvm的子项目，但是它们的源码是分开的，我们需要将clang放在llvm&#x2F;tools目录下。</span><br></pre></td></tr></table></figure>
+
+<p><strong>源码编译</strong><br>这里我们在终端敲出的clang是xcode默认内置clang编译器，我们自己要进行LLVM开发的话，需要编译属于我们自己的clang编译器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">首先安装cmake和ninja(先安装brew，https:&#x2F;&#x2F;brew.sh&#x2F;)</span><br><span class="line">$ brew install cmake</span><br><span class="line">$ brew install ninja</span><br><span class="line"></span><br><span class="line">ninja如果安装失败，可以直接从github获取release版放入【&#x2F;usr&#x2F;local&#x2F;bin】中</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;ninja-build&#x2F;ninja&#x2F;releases</span><br><span class="line"></span><br><span class="line">在LLVM源码同级目录下新建一个【llvm_build】目录(最终会在【llvm_build】目录下生成【build.ninja】</span><br><span class="line"></span><br><span class="line">$ cd llvm_build</span><br><span class="line">$ cmake -G Ninja ..&#x2F;llvm -DCMAKE_INSTALL_PREFIX&#x3D;LLVM的安装路径</span><br><span class="line"></span><br><span class="line">备注：生成build.ninja，就表示编译成功，-DCMAKE_INSTALL_PREFIX 表示编译好的东西放在指定的路径，-D表示参数。</span><br><span class="line"></span><br><span class="line">更多cmake相关选项，可以参考: https:&#x2F;&#x2F;llvm.org&#x2F;docs&#x2F;CMake.html</span><br></pre></td></tr></table></figure>
+
+<p>接下来依次执行编译、安装指令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ninja</span><br><span class="line">编译完毕后， 【llvm_build】目录大概 21.05 G（这个真的是好大啊）</span><br><span class="line">$ ninja install</span><br></pre></td></tr></table></figure>
+
+<p>然后到这里我们的编译就完成了。</p>
+<p>另一种方式是通过Xcode编译，生成Xcode项目再进行编译，但是速度很慢(可能需要1个多小时)。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">方法如下：</span><br><span class="line"> 在llvm同级目录下新建一个【llvm_xcode】目录</span><br><span class="line">$ cd llvm_xcode</span><br><span class="line">$ cmake -G Xcode ..&#x2F;llvm</span><br></pre></td></tr></table></figure>
+
+<p><strong>应用与实践的参考</strong></p>
+<ul>
+<li>libclang、libTooling<br>官方参考:<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/Tooling.html">https://clang.llvm.org/docs/Tooling.html</a><br>应用:语法树分析、语言转换等</li>
+<li>Clang插件开发<br>官方参考<br>1、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ClangPlugins.html">https://clang.llvm.org/docs/ClangPlugins.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ExternalClangExamples.html">https://clang.llvm.org/docs/ExternalClangExamples.html</a><br>3、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/RAVFrontendAction.html">https://clang.llvm.org/docs/RAVFrontendAction.html</a><br>应用:代码检查(命名规范、代码规范)等</li>
+<li>Pass开发<br>官方参考:<a href="https://links.jianshu.com/go?to=https://llvm.org/docs/WritingAnLLVMPass.html">https://llvm.org/docs/WritingAnLLVMPass.html</a><br>应用:代码优化、代码混淆等</li>
+<li>开发新的编程语言<br>1、 <a href="https://links.jianshu.com/go?to=https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html">https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/">https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/</a></li>
+</ul>
+<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p>搬运自<a href="https://www.jianshu.com/p/1367dad95445">深入浅出让你理解什么是LLVM</a></p>
+]]></content>
+      <categories>
+        <category>编译</category>
+      </categories>
+      <tags>
+        <tag>编译</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ModbusTCP协议学习</title>
     <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
@@ -460,225 +679,6 @@
       </categories>
       <tags>
         <tag>gym</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Gym环境创建</title>
-    <url>/YingYingMonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
-    <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
-<h1 id="Subclassing-gym-Env"><a href="#Subclassing-gym-Env" class="headerlink" title="Subclassing gym.Env"></a>Subclassing gym.Env</h1><p>在学习创建自己的环境前应该查看Gym的<a href="https://www.gymlibrary.ml/content/api/">API文档</a>。将关注一个看起来像这样的gym-examples的子集：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym-examples/</span><br><span class="line">  README.md</span><br><span class="line">  setup.py</span><br><span class="line">  gym_examples/</span><br><span class="line">    __init__.py</span><br><span class="line">    envs/</span><br><span class="line">      __init__.py</span><br><span class="line">      grid_world.py</span><br><span class="line">    wrappers/</span><br><span class="line">      __init__.py</span><br><span class="line">      relative_position.py</span><br></pre></td></tr></table></figure>
-
-<p>通过实现一个简单的游戏<code>GridWorldEnv</code>来说明gym.Env子类的过程。在<code>gym-examples/gym_examples/envs/grid_world.py</code>中编写代码。环境由一个二维方形网格组成（大小由参数size决定）。Agent在每个timestep可以垂直或水平地移动。Agent的目标是导航到episode开始时随机放置的目标。</p>
-<ul>
-<li>Observations提供了agent和目标的位置。</li>
-<li>四个动作分别为上、下、左、右。</li>
-<li>Agent到达目标位置则发出done信号。</li>
-<li>奖励是二元且稀疏的，意味着除了到达目标时为1，其他情况都为0。</li>
-</ul>
-<p>分块看其源码。</p>
-<h1 id="Declaration-and-Initialization"><a href="#Declaration-and-Initialization" class="headerlink" title="Declaration and Initialization"></a>Declaration and Initialization</h1><p><code>__init__</code>主要作用是初始化一些参数。如在<code>GridWorldEnv</code>中规定了方格的大小、设置了用于渲染的变量、观测空间和动作空间。在初始化函数中设置<code>self.seed()</code>的参数<code>seed=</code>为整数可以使随机数固定、初始化结果一致，如果为空的话就是随机选取种子。</p>
-<h1 id="Constructing-Observations-From-Environment-States"><a href="#Constructing-Observations-From-Environment-States" class="headerlink" title="Constructing Observations From Environment States"></a>Constructing Observations From Environment States</h1><p>由于需要在<code>reset</code>和<code>step</code>中计算观测结果，因此使用（private）方法<code>_get_obs</code>将环境状态转换为观测结果通常很方便。但是这不是强制性的，也可以在<code>reset</code>和<code>step</code>中分别计算观测结果。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># example</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_obs</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;agent&quot;</span>: self._agent_location, <span class="string">&quot;target&quot;</span>: self._target_location&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于<code>reset</code>和<code>step</code>返回的辅助信息，也可以实现类似的方法。例如提供agent和目标的曼哈顿距离：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_info</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;distance&quot;</span>: np.linalg.norm(self._agent_location - self._target_location, <span class="built_in">ord</span>=<span class="number">1</span>)&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h1><p>调用<code>reset</code>来启动新的episode。可以假设在调用reset之前不会调用step方法。只要发出done信号，就应该调用reset。用户可以将种子关键字传递给 reset 以将环境使用的任何随机数生成器初始化为确定性状态。推荐使用环境基类<code>gym.Env</code>提供的随机数生成器<code>self.np_random</code>。如果只使用这个RNG，就不需要太担心seeding，但要使用<code>super.reset(seed=seed)</code>来确保gym.Env正确的seeding RNG。</p>
-<h1 id="Step"><a href="#Step" class="headerlink" title="Step"></a>Step</h1><p><code>step</code>方法通常包括环境的大部分逻辑。它接受一个动作，在应用该动作后计算环境状态并返回四元组(observation, reward, done, info)。</p>
-<h1 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h1><p>渲染，绘图函数，在图形界面上做出反应。</p>
-<h1 id="Close"><a href="#Close" class="headerlink" title="Close"></a>Close</h1><p>关闭环境使用的所有打开的资源。很多情况下不比去实现该方法。</p>
-<h1 id="Registering-Envs"><a href="#Registering-Envs" class="headerlink" title="Registering Envs"></a>Registering Envs</h1><p>为了让Gym检测到自定义环境，必须按如下方式注册。环境在<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs/__init__.py</code>中获得gym中所有注册的环境信息，在其中加入代码对自定义环境进行注册。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 例子</span></span><br><span class="line"><span class="comment"># user</span></span><br><span class="line"><span class="comment"># ---------</span></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&#x27;GridWorld-v1&#x27;</span>,</span><br><span class="line">    entry_point=<span class="string">&#x27;gym.envs.user:GridEnv1&#x27;</span>,</span><br><span class="line">    max_episode_steps=<span class="number">200</span>,</span><br><span class="line">    reward_threshold=<span class="number">100.0</span>,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
-
-<p>环境ID由三个部分组成，其中两个是可选的：一个可选的namespace（这里忽略掉了）、一个强制名称（GridWorld）、一个可选但推荐的版本（v1）。在环境创建期间应使用适当的ID。</p>
-<p>关键参数<code>max_episode_steps=200</code>将确保通过<code>gym.make</code>实例化的GridWorld环境将被包装在TimeLimit包装器中。如果agent已达到目标或在当前episode中已执行200步，则将产生done信号。</p>
-<p>除了id和entrypoint，还可以pass以下的关键字来注册：</p>
-<table>
-<thead>
-<tr>
-<th align="center">Name</th>
-<th align="center">Type</th>
-<th align="center">Default</th>
-<th align="center">Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">reward_threshold</td>
-<td align="center">float</td>
-<td align="center">None</td>
-<td align="center">任务被认为已解决前的奖励阈值</td>
-</tr>
-<tr>
-<td align="center">nondeterministic</td>
-<td align="center">bool</td>
-<td align="center">False</td>
-<td align="center">即使在seeding之后这个环境是否也是非确定性的</td>
-</tr>
-<tr>
-<td align="center">max_episode_steps</td>
-<td align="center">int</td>
-<td align="center">None</td>
-<td align="center">一个episode可以包含的最大步骤数。如果不是None则添加TimeLimit包装器</td>
-</tr>
-<tr>
-<td align="center">order_enforce</td>
-<td align="center">bool</td>
-<td align="center">True</td>
-<td align="center">是否将环境包装在OrderEnforcing包装器中</td>
-</tr>
-<tr>
-<td align="center">autoreset</td>
-<td align="center">bool</td>
-<td align="center">False</td>
-<td align="center">是否将环境包装在AutoResetWrapper</td>
-</tr>
-<tr>
-<td align="center">kwargs</td>
-<td align="center">dict</td>
-<td align="center">{}</td>
-<td align="center">传给环境类的默认k wa r g</td>
-</tr>
-</tbody></table>
-<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="编写环境"><a href="#编写环境" class="headerlink" title="编写环境"></a>编写环境</h2><p>路径为<code>/Users/zhangke/miniforge3/envs/zkFrame/lib/python3.8/site-packages/gym/envs</code>。在envs中创建了一个文件夹<code>gym_test</code>，里面包含<code>__init__.py</code>和<code>env_guess_number.py</code>。其中后者描述具体环境，主要包括在init初始化函数中初始化一些参数、step输入action并返回四元组、reset重置，具体代码为：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">from</span> gym <span class="keyword">import</span> spaces</span><br><span class="line"><span class="keyword">from</span> gym.utils <span class="keyword">import</span> seeding</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">guess_number</span>(<span class="params">gym.Env</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Hotter Colder</span></span><br><span class="line"><span class="string">        The goal of hotter colder is to guess closer to a randomly selected guess_number</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        After each step the agent receives an observation of:</span></span><br><span class="line"><span class="string">        0 - No guess yet submitted (only after reset)</span></span><br><span class="line"><span class="string">        1 - Guess is lower than the target</span></span><br><span class="line"><span class="string">        2 - Guess is equal to the target</span></span><br><span class="line"><span class="string">        3 - Guess is higher than the target</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        The rewards is calculated as:</span></span><br><span class="line"><span class="string">        (min(action, self.guess_number) + self.range) / (max(action, self.guess_number) + self.range)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Ideally an agent will be able to recognise the &#x27;scent&#x27; of a higher reward and</span></span><br><span class="line"><span class="string">        increase the rate in which is guesses in that direction until the reward reaches</span></span><br><span class="line"><span class="string">        its maximum</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.<span class="built_in">range</span> = <span class="number">1000</span>  <span class="comment"># +/- value the randomly select guess_number can be between</span></span><br><span class="line">        self.bounds = <span class="number">2000</span>  <span class="comment"># Action space bounds</span></span><br><span class="line"></span><br><span class="line">        self.action_space = spaces.Box(low=np.array([-self.bounds]), high=np.array([self.bounds]), dtype=np.<span class="built_in">int</span>)</span><br><span class="line">        self.observation_space = spaces.Discrete(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">        self.guess_number = <span class="number">0</span></span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.guess_max = <span class="number">200</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        self.seed()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">seed</span>(<span class="params">self, seed=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.np_random, seed = seeding.np_random(seed)</span><br><span class="line">        <span class="keyword">return</span> [seed]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, action</span>):</span></span><br><span class="line">        <span class="comment"># assert self.action_space.contains(action)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> action &lt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action == self.guess_number:</span><br><span class="line">            self.observation = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">elif</span> action &gt; self.guess_number:</span><br><span class="line">            self.observation = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 两个值越接近，奖励越接近1</span></span><br><span class="line">        reward = ((<span class="built_in">min</span>(action, self.guess_number) + self.bounds) / (<span class="built_in">max</span>(action, self.guess_number) + self.bounds)) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        self.guess_count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 200个episode</span></span><br><span class="line">        done = self.guess_count &gt;= self.guess_max</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.observation, reward, done, &#123;<span class="string">&quot;guess_number&quot;</span>: self.guess_number, <span class="string">&quot;guesses&quot;</span>: self.guess_count&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reset</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.guess_number = <span class="built_in">int</span>(self.np_random.uniform(-self.<span class="built_in">range</span>, self.<span class="built_in">range</span>))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;guess number = &quot;</span>, self.guess_number)</span><br><span class="line">        self.guess_count = <span class="number">0</span></span><br><span class="line">        self.observation = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> self.observation</span><br></pre></td></tr></table></figure>
-
-<p>完成基本环境设置后需要在<code>gym_test/__init__.py</code>中设置环境实例初始化的调用：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.envs.gym_test.env_guess_number <span class="keyword">import</span> guess_number</span><br></pre></td></tr></table></figure>
-
-<h2 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h2><p>在<code>envs/__init__.py</code>中加入：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">···</span><br><span class="line"><span class="comment"># User test</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line"></span><br><span class="line">register(</span><br><span class="line">    <span class="built_in">id</span>=<span class="string">&quot;GuessNumber-v0&quot;</span>,</span><br><span class="line">    entry_point=<span class="string">&quot;gym.envs.gym_test:guess_number&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Classic</span></span><br><span class="line"><span class="comment"># ----------------------------------------</span></span><br><span class="line">···</span><br></pre></td></tr></table></figure>
-
-<h2 id="gym测试"><a href="#gym测试" class="headerlink" title="gym测试"></a>gym测试</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;GuessNumber-v0&quot;</span>)</span><br><span class="line">obs = env.reset()</span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">    action = env.action_space.sample()</span><br><span class="line">    <span class="built_in">print</span>(action)</span><br><span class="line">    obs, reward, done, info = env.step(action)</span><br></pre></td></tr></table></figure>
-
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://www.gymlibrary.ml/content/environment_creation/">Gym Documentation</a></p>
-<p><a href="https://blog.csdn.net/RenJie_L/article/details/123500345">构建自己的gym训练环境 巨详细</a></p>
-<p><a href="https://blog.csdn.net/sinat_39620217/article/details/115519622">gym搭建自己的环境</a></p>
-<p><a href="https://lossyou.com/post/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84gym%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83">搭建自己的gym强化学习环境</a></p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>gym</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深入浅出理解什么是LLVM</title>
-    <url>/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/</url>
-    <content><![CDATA[<h3 id="什么是LLVM"><a href="#什么是LLVM" class="headerlink" title="什么是LLVM"></a>什么是<a href="https://llvm.org/">LLVM</a></h3><blockquote>
-<p>LLVM项目是模块化、可重用的编译器以及工具链技术的集合。</p>
-</blockquote>
-<p>美国计算机协会 (ACM) 将其2012年软件系统奖项颁给了LLVM，之前曾经获得此奖项的软件和技术包括:Java、Apache、Mosaic、the World Wide Web、Smalltalk、UNIX、Eclipse等等。<br>创始人:Chris Lattner，亦是Swift之父。</p>
-<blockquote>
-<p>趣闻：Chris Latter本来只是想写一个底层的虚拟机，这也是LLVM名字的由来，low level virtual machine，跟Java的JVM虚拟机一样，可是后来，llvm从来没有被用作过虚拟机，哪怕LLVM的名气已经传开了。所以人们决定仍然叫他LLVM，更多的时候只是当作“商标”一样的感觉在使用，其实它跟虚拟机没有半毛钱关系。官方描述如下<br>The name “LLVM” itself is not an acronym; it is the full name of the project. “LLVM”这个名称本身不是首字母缩略词; 它是项目的全名。</p>
-</blockquote>
-<h3 id="传统的编译器架构"><a href="#传统的编译器架构" class="headerlink" title="传统的编译器架构"></a>传统的编译器架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/traditional.jpg" class="">
-
-<center>传统编译器架构</center>
-
-
-<ul>
-<li><strong>Frontend:前端</strong><br>词法分析、语法分析、语义分析、生成中间代码</li>
-<li><strong>Optimizer:优化器</strong><br>中间代码优化</li>
-<li><strong>Backend:后端</strong><br>生成机器码</li>
-</ul>
-<h3 id="LLVM架构"><a href="#LLVM架构" class="headerlink" title="LLVM架构"></a>LLVM架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/llvm.png" class="">
-
-<center>LLVM架构</center>
-
-<ul>
-<li><p>不同的前端后端使用统一的中间代码LLVM Intermediate Representation (LLVM IR)</p>
-</li>
-<li><p>如果需要支持一种新的编程语言，那么只需要实现一个新的前端</p>
-</li>
-<li><p>如果需要支持一种新的硬件设备，那么只需要实现一个新的后端</p>
-</li>
-<li><p>优化阶段是一个通用的阶段，它针对的是统一的LLVM IR，不论是支持新的编程语言，还是支持新的硬件设备，都不需要对优化阶段做修改</p>
-</li>
-<li><p>相比之下，GCC的前端和后端没分得太开，前端后端耦合在了一起。所以GCC为了支持一门新的语言，或者为了支持一个新的目标平台，就变得特别困难</p>
-</li>
-<li><p>LLVM现在被作为实现各种静态和运行时编译语言的通用基础结构(GCC家族、Java、.NET、Python、Ruby、Scheme、Haskell、D等)</p>
-</li>
-</ul>
-<h3 id="什么是Clang"><a href="#什么是Clang" class="headerlink" title="什么是Clang"></a>什么是<a href="http://clang.llvm.org/">Clang</a></h3><p>LLVM项目的一个子项目，基于LLVM架构的C/C++/Objective-C编译器前端。</p>
-<p><strong>相比于GCC，Clang具有如下优点</strong></p>
-<ul>
-<li>编译速度快:在某些平台上，Clang的编译速度显著的快过GCC(Debug模式下编译OC速度比GCC快3倍)</li>
-<li>占用内存小:Clang生成的AST所占用的内存是GCC的五分之一左右</li>
-<li>模块化设计:Clang采用基于库的模块化设计，易于 IDE 集成及其他用途的重用</li>
-<li>诊断信息可读性强:在编译过程中，Clang 创建并保留了大量详细的元数据 (metadata)，有利于调试和错误报告</li>
-<li>设计清晰简单，容易理解，易于扩展增强</li>
-</ul>
-<h3 id="Clang与LLVM关系"><a href="#Clang与LLVM关系" class="headerlink" title="Clang与LLVM关系"></a>Clang与LLVM关系</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/Clang-LLVM.png" class="">
-
-<center>Clang与LLVM</center>
-
-<p>LLVM整体架构，前端用的是clang，广义的LLVM是指整个LLVM架构，一般狭义的LLVM指的是LLVM后端（包含代码优化和目标代码生成）。</p>
-<p>源代码（C/C++）经过clang–&gt; 中间代码(经过一系列的优化，优化用的是Pass) –&gt; 机器码</p>
-<h3 id="OC源文件的编译过程"><a href="#OC源文件的编译过程" class="headerlink" title="OC源文件的编译过程"></a>OC源文件的编译过程</h3><p>这里用Xcode创建一个Test项目，然后cd到main.m的上一路径。<br>命令行查看编译的过程:$ clang -ccc-print-phases main.m</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ clang -ccc-print-phases main.m </span><br><span class="line"></span><br><span class="line">0: input, &quot;main.m&quot;, objective-c</span><br><span class="line">1: preprocessor, &#123;0&#125;, objective-c-cpp-output</span><br><span class="line">2: compiler, &#123;1&#125;, ir</span><br><span class="line">3: backend, &#123;2&#125;, assembler</span><br><span class="line">4: assembler, &#123;3&#125;, object</span><br><span class="line">5: linker, &#123;4&#125;, image</span><br><span class="line">6: bind-arch, &quot;x86_64&quot;, &#123;5&#125;, image</span><br></pre></td></tr></table></figure>
-
-<p>0.找到main.m文件<br>1.预处理器，处理include、import、宏定义<br>2.编译器编译，编译成ir中间代码<br>3.后端，生成目标代码<br>4.汇编<br>5.链接其他动态库、静态库<br>6.编译成适合某个架构的代码</p>
-<p>查看preprocessor(预处理)的结果:$ clang -E main.m<br>这个命令敲出，终端就会打印许多信息，大致如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 1 &quot;main.m&quot;</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 353 &quot;&lt;built-in&gt;&quot; 3</span><br><span class="line"># 1 &quot;&lt;command line&gt;&quot; 1</span><br><span class="line"># 1 &quot;&lt;built-in&gt;&quot; 2</span><br><span class="line"># 1 &quot;main.m&quot; 2</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">  int main(int argc, const char * argv[]) &#123;</span><br><span class="line">@autoreleasepool &#123;</span><br><span class="line">    NSLog(@&quot;Hello, World!&quot;);</span><br><span class="line">&#125;</span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h3><p><strong>词法分析</strong>，生成Token: $ clang -fmodules -E -Xclang -dump-tokens main.m<br>将代码分成一个个小单元（token）</p>
-<p>举例如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void test(int a, int b)&#123;</span><br><span class="line">       int c &#x3D; a + b - 3;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void &#39;void&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:18:1&gt;</span><br><span class="line">identifier &#39;test&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:6&gt;</span><br><span class="line">l_paren &#39;(&#39;     Loc&#x3D;&lt;main.m:18:10&gt;</span><br><span class="line">int &#39;int&#39;       Loc&#x3D;&lt;main.m:18:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:15&gt;</span><br><span class="line">comma &#39;,&#39;       Loc&#x3D;&lt;main.m:18:16&gt;</span><br><span class="line">int &#39;int&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:18:18&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:18:22&gt;</span><br><span class="line">r_paren &#39;)&#39;     Loc&#x3D;&lt;main.m:18:23&gt;</span><br><span class="line">l_brace &#39;&#123;&#39;     Loc&#x3D;&lt;main.m:18:24&gt;</span><br><span class="line">int &#39;int&#39;    [StartOfLine] [LeadingSpace]   Loc&#x3D;&lt;main.m:19:5&gt;</span><br><span class="line">identifier &#39;c&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:9&gt;</span><br><span class="line">equal &#39;&#x3D;&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:11&gt;</span><br><span class="line">identifier &#39;a&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:13&gt;</span><br><span class="line">plus &#39;+&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:15&gt;</span><br><span class="line">identifier &#39;b&#39;   [LeadingSpace] Loc&#x3D;&lt;main.m:19:17&gt;</span><br><span class="line">minus &#39;-&#39;    [LeadingSpace] Loc&#x3D;&lt;main.m:19:19&gt;</span><br><span class="line">numeric_constant &#39;3&#39;     [LeadingSpace] Loc&#x3D;&lt;main.m:19:21&gt;</span><br><span class="line">semi &#39;;&#39;        Loc&#x3D;&lt;main.m:19:22&gt;</span><br><span class="line">r_brace &#39;&#125;&#39;  [StartOfLine]  Loc&#x3D;&lt;main.m:20:1&gt;</span><br><span class="line">eof &#39;&#39;      Loc&#x3D;&lt;main.m:20:2&gt;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，词法分析的时候，将上面的代码拆分一个个token，后面数字表示某一行的第几个字符，例如第一个void，表示第18行第一个字符。</p>
-<h3 id="语法树-AST"><a href="#语法树-AST" class="headerlink" title="语法树-AST"></a>语法树-AST</h3><p>语法分析，生成语法树(AST，Abstract Syntax Tree): $ clang -fmodules -fsyntax-only -Xclang -ast-dump main.m<br>通过语法树，我们能知道这个代码是做什么的。</p>
-<p>还是刚刚的test函数<br>生成语法树如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">|-FunctionDecl 0x7fa1439f5630 &lt;line:18:1, line:20:1&gt; line:18:6 test &#39;void (int, int)&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f54b0 &lt;col:11, col:15&gt; col:15 used a &#39;int&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f5528 &lt;col:18, col:22&gt; col:22 used b &#39;int&#39;</span><br><span class="line">| &#96;-CompoundStmt 0x7fa142167c88 &lt;col:24, line:20:1&gt;</span><br><span class="line">|   &#96;-DeclStmt 0x7fa142167c70 &lt;line:19:5, col:22&gt;</span><br><span class="line">|     &#96;-VarDecl 0x7fa1439f5708 &lt;col:5, col:21&gt; col:9 c &#39;int&#39; cinit</span><br><span class="line">|       &#96;-BinaryOperator 0x7fa142167c48 &lt;col:13, col:21&gt; &#39;int&#39; &#39;-&#39;</span><br><span class="line">|         |-BinaryOperator 0x7fa142167c00 &lt;col:13, col:17&gt; &#39;int&#39; &#39;+&#39;</span><br><span class="line">|         | |-ImplicitCastExpr 0x7fa1439f57b8 &lt;col:13&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         | | &#96;-DeclRefExpr 0x7fa1439f5768 &lt;col:13&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f54b0 &#39;a&#39; &#39;int&#39;</span><br><span class="line">|         | &#96;-ImplicitCastExpr 0x7fa1439f57d0 &lt;col:17&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         |   &#96;-DeclRefExpr 0x7fa1439f5790 &lt;col:17&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f5528 &#39;b&#39; &#39;int&#39;</span><br><span class="line">|         &#96;-IntegerLiteral 0x7fa142167c28 &lt;col:21&gt; &#39;int&#39; 3</span><br><span class="line"></span><br><span class="line">&#96;-&lt;undeserialized declarations&gt;</span><br></pre></td></tr></table></figure>
-
-<p>在终端敲出的时候，终端很直观的帮我们用颜色区分。我们可以用图形显示如下：</p>
-<img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/test-AST.jpg" class="">
-
-<center>test函数的语法树</center>
-
-
-<h3 id="LLVM-IR"><a href="#LLVM-IR" class="headerlink" title="LLVM IR"></a>LLVM IR</h3><p>LLVM IR有3种表示形式（本质是等价的）</p>
-<ul>
-<li>text:便于阅读的文本格式，类似于汇编语言，拓展名.ll， $ clang -S -emit-llvm main.m</li>
-<li>memory:内存格式</li>
-<li>bitcode:二进制格式，拓展名.bc， $ clang -c -emit-llvm main.m</li>
-</ul>
-<p>我们以text形式编译查看：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">; Function Attrs: noinline nounwind optnone ssp uwtable</span><br><span class="line">define void @test(i32, i32) #2 &#123;</span><br><span class="line">  %3 &#x3D; alloca i32, align 4</span><br><span class="line">  %4 &#x3D; alloca i32, align 4</span><br><span class="line">  %5 &#x3D; alloca i32, align 4</span><br><span class="line">  store i32 %0, i32* %3, align 4</span><br><span class="line">  store i32 %1, i32* %4, align 4</span><br><span class="line">  %6 &#x3D; load i32, i32* %3, align 4</span><br><span class="line">  %7 &#x3D; load i32, i32* %4, align 4</span><br><span class="line">  %8 &#x3D; add nsw i32 %6, %7</span><br><span class="line">  %9 &#x3D; sub nsw i32 %8, 3</span><br><span class="line">  store i32 %9, i32* %5, align 4</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>IR基本语法</strong><br>注释以分号 ; 开头<br>全局标识符以@开头，局部标识符以%开头<br>alloca，在当前函数栈帧中分配内存<br>i32，32bit，4个字节的意思<br>align，内存对齐<br>store，写入数据<br>load，读取数据<br>官方语法参考 <a href="https://links.jianshu.com/go?to=https://llvm.org/docs/LangRef.html">https://llvm.org/docs/LangRef.html</a></p>
-<h3 id="应用与实践"><a href="#应用与实践" class="headerlink" title="应用与实践"></a>应用与实践</h3><p>我们的开发都是基于源码开发，所以我们首先要进行源码下载和编译。<br><strong>源码下载</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载LLVM</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;llvm.git&#x2F;</span><br><span class="line"></span><br><span class="line">下载clang</span><br><span class="line">$ cd llvm&#x2F;tools</span><br><span class="line">$ git clone https:&#x2F;&#x2F;git.llvm.org&#x2F;git&#x2F;clang.git&#x2F;</span><br><span class="line"></span><br><span class="line">备注：clang是llvm的子项目，但是它们的源码是分开的，我们需要将clang放在llvm&#x2F;tools目录下。</span><br></pre></td></tr></table></figure>
-
-<p><strong>源码编译</strong><br>这里我们在终端敲出的clang是xcode默认内置clang编译器，我们自己要进行LLVM开发的话，需要编译属于我们自己的clang编译器</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">首先安装cmake和ninja(先安装brew，https:&#x2F;&#x2F;brew.sh&#x2F;)</span><br><span class="line">$ brew install cmake</span><br><span class="line">$ brew install ninja</span><br><span class="line"></span><br><span class="line">ninja如果安装失败，可以直接从github获取release版放入【&#x2F;usr&#x2F;local&#x2F;bin】中</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;ninja-build&#x2F;ninja&#x2F;releases</span><br><span class="line"></span><br><span class="line">在LLVM源码同级目录下新建一个【llvm_build】目录(最终会在【llvm_build】目录下生成【build.ninja】</span><br><span class="line"></span><br><span class="line">$ cd llvm_build</span><br><span class="line">$ cmake -G Ninja ..&#x2F;llvm -DCMAKE_INSTALL_PREFIX&#x3D;LLVM的安装路径</span><br><span class="line"></span><br><span class="line">备注：生成build.ninja，就表示编译成功，-DCMAKE_INSTALL_PREFIX 表示编译好的东西放在指定的路径，-D表示参数。</span><br><span class="line"></span><br><span class="line">更多cmake相关选项，可以参考: https:&#x2F;&#x2F;llvm.org&#x2F;docs&#x2F;CMake.html</span><br></pre></td></tr></table></figure>
-
-<p>接下来依次执行编译、安装指令</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ninja</span><br><span class="line">编译完毕后， 【llvm_build】目录大概 21.05 G（这个真的是好大啊）</span><br><span class="line">$ ninja install</span><br></pre></td></tr></table></figure>
-
-<p>然后到这里我们的编译就完成了。</p>
-<p>另一种方式是通过Xcode编译，生成Xcode项目再进行编译，但是速度很慢(可能需要1个多小时)。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">方法如下：</span><br><span class="line"> 在llvm同级目录下新建一个【llvm_xcode】目录</span><br><span class="line">$ cd llvm_xcode</span><br><span class="line">$ cmake -G Xcode ..&#x2F;llvm</span><br></pre></td></tr></table></figure>
-
-<p><strong>应用与实践的参考</strong></p>
-<ul>
-<li>libclang、libTooling<br>官方参考:<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/Tooling.html">https://clang.llvm.org/docs/Tooling.html</a><br>应用:语法树分析、语言转换等</li>
-<li>Clang插件开发<br>官方参考<br>1、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ClangPlugins.html">https://clang.llvm.org/docs/ClangPlugins.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/ExternalClangExamples.html">https://clang.llvm.org/docs/ExternalClangExamples.html</a><br>3、<a href="https://links.jianshu.com/go?to=https://clang.llvm.org/docs/RAVFrontendAction.html">https://clang.llvm.org/docs/RAVFrontendAction.html</a><br>应用:代码检查(命名规范、代码规范)等</li>
-<li>Pass开发<br>官方参考:<a href="https://links.jianshu.com/go?to=https://llvm.org/docs/WritingAnLLVMPass.html">https://llvm.org/docs/WritingAnLLVMPass.html</a><br>应用:代码优化、代码混淆等</li>
-<li>开发新的编程语言<br>1、 <a href="https://links.jianshu.com/go?to=https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html">https://llvm-tutorial-cn.readthedocs.io/en/latest/index.html</a><br>2、<a href="https://links.jianshu.com/go?to=https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/">https://kaleidoscope-llvm-tutorial-zh-cn.readthedocs.io/zh_CN/latest/</a></li>
-</ul>
-<h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p>搬运自<a href="https://www.jianshu.com/p/1367dad95445">深入浅出让你理解什么是LLVM</a></p>
-]]></content>
-      <categories>
-        <category>编译</category>
-      </categories>
-      <tags>
-        <tag>编译</tag>
       </tags>
   </entry>
   <entry>
