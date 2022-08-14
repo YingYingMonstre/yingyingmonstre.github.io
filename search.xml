@@ -1,58 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>MacBook Air M1安装gym问题汇总</title>
-    <url>/yingyingmonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
-<p><strong>0. 关于本机</strong></p>
-<ul>
-<li>macOS Monterey版本12.0.1</li>
-<li>MacBook Air（M1，2020）</li>
-<li>芯片 Apple M1</li>
-</ul>
-<p><strong>1. 环境相关</strong></p>
-<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
-<p><strong>2. 下载gym</strong></p>
-<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
-<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
-<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
-<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
-<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
-<p>解决方法：brew install swig</p>
-<p><strong>5. zsh: command not found: brew</strong></p>
-<p>问题状况：在第4步输入brew install swig后报错。</p>
-<p>解决方法：mac安装homebrew，</p>
-<p>用以下命令安装，序列号选择中科大（1）的</p>
-<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
-<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
-<p><strong>6. from . import multiarray等</strong></p>
-<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
-
-<p>解决方法：重新安装了numpy之后就可以用了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>7. zsh:killed</strong></p>
-<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
-<p>解决方法：删除环境重新搭建环境就可以了</p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>强化学习</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Gym环境创建</title>
-    <url>/yingyingmonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
+    <url>/YingYingMonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
     <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
 <h1 id="Subclassing-gym-Env"><a href="#Subclassing-gym-Env" class="headerlink" title="Subclassing gym.Env"></a>Subclassing gym.Env</h1><p>在学习创建自己的环境前应该查看Gym的<a href="https://www.gymlibrary.ml/content/api/">API文档</a>。将关注一个看起来像这样的gym-examples的子集：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym-examples/</span><br><span class="line">  README.md</span><br><span class="line">  setup.py</span><br><span class="line">  gym_examples/</span><br><span class="line">    __init__.py</span><br><span class="line">    envs/</span><br><span class="line">      __init__.py</span><br><span class="line">      grid_world.py</span><br><span class="line">    wrappers/</span><br><span class="line">      __init__.py</span><br><span class="line">      relative_position.py</span><br></pre></td></tr></table></figure>
@@ -152,13 +102,148 @@
       </tags>
   </entry>
   <entry>
+    <title>MacBook Air M1安装gym问题汇总</title>
+    <url>/YingYingMonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
+<p><strong>0. 关于本机</strong></p>
+<ul>
+<li>macOS Monterey版本12.0.1</li>
+<li>MacBook Air（M1，2020）</li>
+<li>芯片 Apple M1</li>
+</ul>
+<p><strong>1. 环境相关</strong></p>
+<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
+<p><strong>2. 下载gym</strong></p>
+<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
+<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
+<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
+<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
+<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
+<p>解决方法：brew install swig</p>
+<p><strong>5. zsh: command not found: brew</strong></p>
+<p>问题状况：在第4步输入brew install swig后报错。</p>
+<p>解决方法：mac安装homebrew，</p>
+<p>用以下命令安装，序列号选择中科大（1）的</p>
+<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
+<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
+<p><strong>6. from . import multiarray等</strong></p>
+<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
+
+<p>解决方法：重新安装了numpy之后就可以用了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>7. zsh:killed</strong></p>
+<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
+<p>解决方法：删除环境重新搭建环境就可以了</p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OpenAI的Gym</title>
+    <url>/YingYingMonstre.github.io/2022/08/09/gym/</url>
+    <content><![CDATA[<h1 id="什么是Gym"><a href="#什么是Gym" class="headerlink" title="什么是Gym"></a>什么是Gym</h1><p>Gym是一个用于强化学习(Reinforcement Learning, RL)的标准API，以及各种参考环境的集合。</p>
+<h1 id="Gym的优点"><a href="#Gym的优点" class="headerlink" title="Gym的优点"></a>Gym的优点</h1><p>Gym的接口简单、python化、能够表示一般的RL问题。</p>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;LunarLander-v2&quot;</span>)</span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">   env.render()</span><br><span class="line">   action = policy(observation)  <span class="comment"># User-defined policy function</span></span><br><span class="line">   observation, reward, done, info = env.step(action)</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> done:</span><br><span class="line">      observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
+
+<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><h2 id="Initializing-Environment"><a href="#Initializing-Environment" class="headerlink" title="Initializing Environment"></a>Initializing Environment</h2><p>在Gym中初始化环境(Initializing Environment)很简单，可以通过：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Interacting-with-the-Environment"><a href="#Interacting-with-the-Environment" class="headerlink" title="Interacting with the Environment"></a>Interacting with the Environment</h2><p>Gym实现了经典的“Agent-Environment循环”：</p>
+<img src="/YingYingMonstre.github.io/2022/08/09/gym/1.AE_loop.png" class="" title="AE_loop.png">
+
+<p>Agent与环境的行动-观察的exchange称为一个timestep。RL的目标是以某种特定的方式manipulate环境。</p>
+<p>给了一个示例，运行<code>LunarLander-v2</code>环境的一个实例1000个timestep，每一个step都渲染环境：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;LunarLander-v2&#x27;</span>)</span><br><span class="line">env.action_space.seed(<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">250</span>):</span><br><span class="line">    observation, reward, done, info = env.step(env.action_space.sample())</span><br><span class="line">    env.render()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> done:</span><br><span class="line">        observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
+
+<p>每个环境会提供<code>env.action_space</code>属性明确valid actions的格式。类似的，valid observations的格式由<code>env.observation_space</code>明确。上述例子中，使用<code>env.action_space.sample()</code>对随机动作进行采样。这里环境和动作空间的seed是独立的，以确保可重复的样本。</p>
+<h2 id="Standard-methods"><a href="#Standard-methods" class="headerlink" title="Standard methods"></a>Standard methods</h2><h3 id="Stepping"><a href="#Stepping" class="headerlink" title="Stepping"></a>Stepping</h3><p><code>gym.Env.step(self, action: ActType) → Union[Tuple[ObsType, float, bool, bool, dict], Tuple[ObsType, float, bool, dict]]</code></p>
+<p>运行一个动态环境的timestep。当episode结束时，使用<code>reset()</code>来重置环境的状态。接收一个动作，返回一个元祖(observation, reward, terminated, truncated, info)或(observation, reward, done, info)。后者已被弃用，未来会被删掉。</p>
+<p>参数：</p>
+<p><strong>action</strong>（ActType）- 由Agent提供的一个动作</p>
+<p>返回：</p>
+<ul>
+<li><strong>observation</strong>（object）- <code> observation_space</code>的一个元素。例如可能是一个包含某些对象的位置或速度的numpy数组。</li>
+<li><strong>reward</strong>（float）- 采取行动后返回的奖励。</li>
+<li><strong>terminated</strong>（bool）- 是否达到终止状态（根据任务的MDP定义）。在到达这种状态后进一步的step()调用可能会返回为定义的结果。</li>
+<li><strong>truncated</strong>（bool）- 是否满足MDP范围之外的截断条件。通常是一个时间限制，但也可以用于指示agent在物理上超出范围。可用于在达到终止状态之前提前结束episode。</li>
+<li><strong>info</strong>（dictionary）- 包含辅助诊断信息（有助于调试、学习和记录）。例如可能包含：描述agent性能状态的指标、对观察隐藏的变量、组合起来产生总奖励的单个奖励项。</li>
+<li><strong>done</strong>（bool）- 如果episode结束则返回的布尔值，在这种情况下进一步调用<code>step()</code>将返回未定义的结果。可能会因为不同的原因发出done信号：环境下的任务已解决、超出某个时间限制、物理模拟已经入无效状态。</li>
+</ul>
+<h3 id="Resetting"><a href="#Resetting" class="headerlink" title="Resetting"></a>Resetting</h3><p><code>gym.Env.reset(self, *, seed: Optional[int] = None, return_info: bool = False, options: Optional[dict] = None) → Union[ObsType, Tuple[ObsType, dict]]</code></p>
+<p>将环境重置为初始状态并返回初始observation。如果种子是整数或环境未初始化随机数生成器（Random Number Generator，RNG），此方法可以重置环境的RNG。如果环境已有一个RNG并用seed=None调用了<code>reset()</code>，则不应重置RNG。此外，<code>reset()</code>应该（在典型用例中）在初始化后立即使用整数种子调用，然后再不重复。</p>
+<p>参数：</p>
+<p><strong>seed</strong>（optional int）- 初始化环境的PRNG。如果环境还没有PRNG并且传递的<code>seed=None</code>（默认选项），将从一些source of entropy中随机选择一个种子（例如时间戳或/dev/urandom）。但是如果环境已经有PRNG并传递<code>seed=None</code>则不会重置PRNG。如果pass整数，即使PRNG存在也会重置。通常在环境初始化后立即pass个整数，然后再不传递。</p>
+<p><strong>return_info</strong>（bool）- 如果为真，则返回附加信息以及初始观察。此info应类似于step()中返回的信息。</p>
+<p><strong>options</strong>（optional dict）- 指定如何重置环境的附加信息（可选，取决于特定环境）。</p>
+<p>返回：</p>
+<ul>
+<li><strong>observation</strong>（object）- 初始状态的观察。这将是<code>observation_space</code>的一个元素（通常是一个numpy数组），类似于step()返回的观察值。</li>
+<li><strong>info</strong>（optional dictionary）- 仅当<code>return_info=True</code>被传递时才会返回。它包含补充观察的辅助信息。该字典应类似于step()返回的信息。</li>
+</ul>
+<h3 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.render(self: <span class="built_in">object</span>, *args: <span class="type">Tuple</span>[<span class="type">Any</span>], **kwargs: <span class="type">Dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>]) → <span class="type">Optional</span>[<span class="type">Union</span>[RenderFrame, <span class="type">List</span>[RenderFrame]]]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Additional-Environment-API"><a href="#Additional-Environment-API" class="headerlink" title="Additional Environment API"></a>Additional Environment API</h2><h3 id="Attributes"><a href="#Attributes" class="headerlink" title="Attributes"></a>Attributes</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.action_space: Space[ActType]</span><br></pre></td></tr></table></figure>
+
+<p>该属性给出了有效动作的格式。它是Gym提供的数据类型Space。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.observation_space: Space[ObsType]</span><br></pre></td></tr></table></figure>
+
+<p>该属性给出了有效observation的格式。可以使用属性检查box bounds。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.reward_range = (-inf, inf)</span><br></pre></td></tr></table></figure>
+
+<p>该属性对应最小、最大奖励的元组，默认从负无穷到正无穷，可以自行设定范围。</p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.close(self)</span><br></pre></td></tr></table></figure>
+
+<p>在子类中override close函数以执行必要的清理。</p>
+<p>当垃圾收集或程序退出时，环境会自动执行close()函数。</p>
+<h2 id="Checking-API-Conformity"><a href="#Checking-API-Conformity" class="headerlink" title="Checking API-Conformity"></a>Checking API-Conformity</h2><p>如果已经实现了自定义环境并希望进行健全性检查以确保符合API，可以运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.utils.env_checker <span class="keyword">import</span> check_env</span><br><span class="line">check_env(env)</span><br></pre></td></tr></table></figure>
+<p>如果环境不遵循Gym API，此函数将引发异常。如果犯了错误或未遵循最佳practice将引发异常（例如observation_space看起来像图片但dtype不正确），则会产生warnings。可以通过传递<code>warn=False</code>来关闭警告。默认情况下check_env不会检查渲染方法，可以通过<code>skip_render_check=False</code>来更改。</p>
+<blockquote>
+<p>在环境中运行check_env后不应重复使用已检查的实例，因为它可能已经关闭。</p>
+</blockquote>
+<h2 id="Spaces"><a href="#Spaces" class="headerlink" title="Spaces"></a>Spaces</h2><p> Spaces通常用于指定有效动作和observation的格式。每个环境都应该有属性<code>action_space</code>和<code>observation_space</code>，它们都应该是继承自Space类的实例。Gym中有多种可用的空间类型：</p>
+<ul>
+<li><code>Box</code>:描述一个n维的连续空间。这是一个有界空间，可以在其中定义上下界，这些上下限描述observation可以采用的有效值。</li>
+<li><code>Discrete</code>:描述一个离散空间，其中{0, 1, ···, n-1}是observation或action可以采取的有效值。可以使用可选参数将值转换为{a, a+1, ···, a+n-1}。</li>
+<li><code>Dict</code>:表示simple spaces的一个字典。</li>
+<li><code>Tuple</code>:表示simple spaces的一个元组。</li>
+<li><code>MultiBinary</code>:创建一个n-shape的二元空间。参数n可以是一个数字或数字列表。</li>
+<li><code>MultiDiscrete</code>:由一系列离散动作空间组成，每个元素中具有不同数量的动作。</li>
+</ul>
+<h2 id="Wrappers（略）"><a href="#Wrappers（略）" class="headerlink" title="Wrappers（略）"></a>Wrappers（略）</h2><p>包装器是一种无需直接更改底层代码即可修改现有环境的便捷方式。使用包装器可以避免大量样板代码，并使环境更加模块化。包装器也可以链接起来以组合它们的效果。大多数通过<code>gym.make</code>生成的环境已经被默认包装了。</p>
+<p>为了包装一个环境，必须首先初始化一个基础环境。然后可以将此环境与（可能是可选的）参数一起传递给包装器的构造函数。</p>
+<h2 id="Playing-within-an-environment（略）"><a href="#Playing-within-an-environment（略）" class="headerlink" title="Playing within an environment（略）"></a>Playing within an environment（略）</h2><p>还可以使用<code>gym.utils.play</code>中的播放功能使用键盘播放环境。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.gymlibrary.ml/">Gym Documentation</a></p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>gym</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ModbusTCP协议学习</title>
-    <url>/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
+    <url>/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Modbus由MODICON公司于1979年开发，是一种<strong>工业现场总线</strong>协议标准。1996年<strong>施耐德</strong>公司推出基于<strong>以太网TCP/IP</strong>的Modbus协议：<strong>Modbus TCP</strong>。</p>
 <p>Modbus协议是一项应用层报文传输协议，包括ASCII、RTU、<strong>TCP</strong>三种报文类型。</p>
 <p>标准的Modbus协议物理层接口有RS232、RS422、RS485和<strong>以太网</strong>接口，采用<strong>master/slave</strong>方式通信。</p>
 <h3 id="Modbus-TCP数据帧"><a href="#Modbus-TCP数据帧" class="headerlink" title="Modbus TCP数据帧"></a>Modbus TCP数据帧</h3><p>Modbus TCP的数据帧可分为两部分：<strong>MBAP</strong>+<strong>PDU</strong>。其协议特征如图所示。</p>
-<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/feature.png" class="">
+<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/feature.png" class="">
 
 <center>Modbus TCP协议特征</center>
 
@@ -426,13 +511,13 @@
 
 
 <h3 id="Modbus-TCP-示例报文"><a href="#Modbus-TCP-示例报文" class="headerlink" title="Modbus TCP 示例报文"></a>Modbus TCP 示例报文</h3><p>ModBusTcp与串行链路Modbus的数据域是一致的，具体数据域可以参考串行Modbus。这里给出几个ModbusTcp的链路解析说明，辅助新人分析报文。</p>
-<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test1.png" class="">
+<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test1.png" class="">
 
-<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test2.png" class="">
+<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test2.png" class="">
 
-<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test3.png" class="">
+<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test3.png" class="">
 
-<img src="/yingyingmonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test4.png" class="">
+<img src="/YingYingMonstre.github.io/2021/09/17/ModbusTCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/test4.png" class="">
 
 <blockquote>
 <p>功能码 0x10：写多个保持寄存器。上面图片3和图片4都写错了。</p>
@@ -479,93 +564,8 @@
       </tags>
   </entry>
   <entry>
-    <title>OpenAI的Gym</title>
-    <url>/yingyingmonstre.github.io/2022/08/09/gym/</url>
-    <content><![CDATA[<h1 id="什么是Gym"><a href="#什么是Gym" class="headerlink" title="什么是Gym"></a>什么是Gym</h1><p>Gym是一个用于强化学习(Reinforcement Learning, RL)的标准API，以及各种参考环境的集合。</p>
-<h1 id="Gym的优点"><a href="#Gym的优点" class="headerlink" title="Gym的优点"></a>Gym的优点</h1><p>Gym的接口简单、python化、能够表示一般的RL问题。</p>
-<p>示例代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;LunarLander-v2&quot;</span>)</span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">   env.render()</span><br><span class="line">   action = policy(observation)  <span class="comment"># User-defined policy function</span></span><br><span class="line">   observation, reward, done, info = env.step(action)</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> done:</span><br><span class="line">      observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
-
-<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><h2 id="Initializing-Environment"><a href="#Initializing-Environment" class="headerlink" title="Initializing Environment"></a>Initializing Environment</h2><p>在Gym中初始化环境(Initializing Environment)很简单，可以通过：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<h2 id="Interacting-with-the-Environment"><a href="#Interacting-with-the-Environment" class="headerlink" title="Interacting with the Environment"></a>Interacting with the Environment</h2><p>Gym实现了经典的“Agent-Environment循环”：</p>
-<img src="/yingyingmonstre.github.io/2022/08/09/gym/1.AE_loop.png" class="" title="AE_loop.png">
-
-<p>Agent与环境的行动-观察的exchange称为一个timestep。RL的目标是以某种特定的方式manipulate环境。</p>
-<p>给了一个示例，运行<code>LunarLander-v2</code>环境的一个实例1000个timestep，每一个step都渲染环境：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;LunarLander-v2&#x27;</span>)</span><br><span class="line">env.action_space.seed(<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">250</span>):</span><br><span class="line">    observation, reward, done, info = env.step(env.action_space.sample())</span><br><span class="line">    env.render()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> done:</span><br><span class="line">        observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
-
-<p>每个环境会提供<code>env.action_space</code>属性明确valid actions的格式。类似的，valid observations的格式由<code>env.observation_space</code>明确。上述例子中，使用<code>env.action_space.sample()</code>对随机动作进行采样。这里环境和动作空间的seed是独立的，以确保可重复的样本。</p>
-<h2 id="Standard-methods"><a href="#Standard-methods" class="headerlink" title="Standard methods"></a>Standard methods</h2><h3 id="Stepping"><a href="#Stepping" class="headerlink" title="Stepping"></a>Stepping</h3><p><code>gym.Env.step(self, action: ActType) → Union[Tuple[ObsType, float, bool, bool, dict], Tuple[ObsType, float, bool, dict]]</code></p>
-<p>运行一个动态环境的timestep。当episode结束时，使用<code>reset()</code>来重置环境的状态。接收一个动作，返回一个元祖(observation, reward, terminated, truncated, info)或(observation, reward, done, info)。后者已被弃用，未来会被删掉。</p>
-<p>参数：</p>
-<p><strong>action</strong>（ActType）- 由Agent提供的一个动作</p>
-<p>返回：</p>
-<ul>
-<li><strong>observation</strong>（object）- <code> observation_space</code>的一个元素。例如可能是一个包含某些对象的位置或速度的numpy数组。</li>
-<li><strong>reward</strong>（float）- 采取行动后返回的奖励。</li>
-<li><strong>terminated</strong>（bool）- 是否达到终止状态（根据任务的MDP定义）。在到达这种状态后进一步的step()调用可能会返回为定义的结果。</li>
-<li><strong>truncated</strong>（bool）- 是否满足MDP范围之外的截断条件。通常是一个时间限制，但也可以用于指示agent在物理上超出范围。可用于在达到终止状态之前提前结束episode。</li>
-<li><strong>info</strong>（dictionary）- 包含辅助诊断信息（有助于调试、学习和记录）。例如可能包含：描述agent性能状态的指标、对观察隐藏的变量、组合起来产生总奖励的单个奖励项。</li>
-<li><strong>done</strong>（bool）- 如果episode结束则返回的布尔值，在这种情况下进一步调用<code>step()</code>将返回未定义的结果。可能会因为不同的原因发出done信号：环境下的任务已解决、超出某个时间限制、物理模拟已经入无效状态。</li>
-</ul>
-<h3 id="Resetting"><a href="#Resetting" class="headerlink" title="Resetting"></a>Resetting</h3><p><code>gym.Env.reset(self, *, seed: Optional[int] = None, return_info: bool = False, options: Optional[dict] = None) → Union[ObsType, Tuple[ObsType, dict]]</code></p>
-<p>将环境重置为初始状态并返回初始observation。如果种子是整数或环境未初始化随机数生成器（Random Number Generator，RNG），此方法可以重置环境的RNG。如果环境已有一个RNG并用seed=None调用了<code>reset()</code>，则不应重置RNG。此外，<code>reset()</code>应该（在典型用例中）在初始化后立即使用整数种子调用，然后再不重复。</p>
-<p>参数：</p>
-<p><strong>seed</strong>（optional int）- 初始化环境的PRNG。如果环境还没有PRNG并且传递的<code>seed=None</code>（默认选项），将从一些source of entropy中随机选择一个种子（例如时间戳或/dev/urandom）。但是如果环境已经有PRNG并传递<code>seed=None</code>则不会重置PRNG。如果pass整数，即使PRNG存在也会重置。通常在环境初始化后立即pass个整数，然后再不传递。</p>
-<p><strong>return_info</strong>（bool）- 如果为真，则返回附加信息以及初始观察。此info应类似于step()中返回的信息。</p>
-<p><strong>options</strong>（optional dict）- 指定如何重置环境的附加信息（可选，取决于特定环境）。</p>
-<p>返回：</p>
-<ul>
-<li><strong>observation</strong>（object）- 初始状态的观察。这将是<code>observation_space</code>的一个元素（通常是一个numpy数组），类似于step()返回的观察值。</li>
-<li><strong>info</strong>（optional dictionary）- 仅当<code>return_info=True</code>被传递时才会返回。它包含补充观察的辅助信息。该字典应类似于step()返回的信息。</li>
-</ul>
-<h3 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.render(self: <span class="built_in">object</span>, *args: <span class="type">Tuple</span>[<span class="type">Any</span>], **kwargs: <span class="type">Dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>]) → <span class="type">Optional</span>[<span class="type">Union</span>[RenderFrame, <span class="type">List</span>[RenderFrame]]]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="Additional-Environment-API"><a href="#Additional-Environment-API" class="headerlink" title="Additional Environment API"></a>Additional Environment API</h2><h3 id="Attributes"><a href="#Attributes" class="headerlink" title="Attributes"></a>Attributes</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.action_space: Space[ActType]</span><br></pre></td></tr></table></figure>
-
-<p>该属性给出了有效动作的格式。它是Gym提供的数据类型Space。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.observation_space: Space[ObsType]</span><br></pre></td></tr></table></figure>
-
-<p>该属性给出了有效observation的格式。可以使用属性检查box bounds。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.reward_range = (-inf, inf)</span><br></pre></td></tr></table></figure>
-
-<p>该属性对应最小、最大奖励的元组，默认从负无穷到正无穷，可以自行设定范围。</p>
-<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.close(self)</span><br></pre></td></tr></table></figure>
-
-<p>在子类中override close函数以执行必要的清理。</p>
-<p>当垃圾收集或程序退出时，环境会自动执行close()函数。</p>
-<h2 id="Checking-API-Conformity"><a href="#Checking-API-Conformity" class="headerlink" title="Checking API-Conformity"></a>Checking API-Conformity</h2><p>如果已经实现了自定义环境并希望进行健全性检查以确保符合API，可以运行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.utils.env_checker <span class="keyword">import</span> check_env</span><br><span class="line">check_env(env)</span><br></pre></td></tr></table></figure>
-<p>如果环境不遵循Gym API，此函数将引发异常。如果犯了错误或未遵循最佳practice将引发异常（例如observation_space看起来像图片但dtype不正确），则会产生warnings。可以通过传递<code>warn=False</code>来关闭警告。默认情况下check_env不会检查渲染方法，可以通过<code>skip_render_check=False</code>来更改。</p>
-<blockquote>
-<p>在环境中运行check_env后不应重复使用已检查的实例，因为它可能已经关闭。</p>
-</blockquote>
-<h2 id="Spaces"><a href="#Spaces" class="headerlink" title="Spaces"></a>Spaces</h2><p> Spaces通常用于指定有效动作和observation的格式。每个环境都应该有属性<code>action_space</code>和<code>observation_space</code>，它们都应该是继承自Space类的实例。Gym中有多种可用的空间类型：</p>
-<ul>
-<li><code>Box</code>:描述一个n维的连续空间。这是一个有界空间，可以在其中定义上下界，这些上下限描述observation可以采用的有效值。</li>
-<li><code>Discrete</code>:描述一个离散空间，其中{0, 1, ···, n-1}是observation或action可以采取的有效值。可以使用可选参数将值转换为{a, a+1, ···, a+n-1}。</li>
-<li><code>Dict</code>:表示simple spaces的一个字典。</li>
-<li><code>Tuple</code>:表示simple spaces的一个元组。</li>
-<li><code>MultiBinary</code>:创建一个n-shape的二元空间。参数n可以是一个数字或数字列表。</li>
-<li><code>MultiDiscrete</code>:由一系列离散动作空间组成，每个元素中具有不同数量的动作。</li>
-</ul>
-<h2 id="Wrappers（略）"><a href="#Wrappers（略）" class="headerlink" title="Wrappers（略）"></a>Wrappers（略）</h2><p>包装器是一种无需直接更改底层代码即可修改现有环境的便捷方式。使用包装器可以避免大量样板代码，并使环境更加模块化。包装器也可以链接起来以组合它们的效果。大多数通过<code>gym.make</code>生成的环境已经被默认包装了。</p>
-<p>为了包装一个环境，必须首先初始化一个基础环境。然后可以将此环境与（可能是可选的）参数一起传递给包装器的构造函数。</p>
-<h2 id="Playing-within-an-environment（略）"><a href="#Playing-within-an-environment（略）" class="headerlink" title="Playing within an environment（略）"></a>Playing within an environment（略）</h2><p>还可以使用<code>gym.utils.play</code>中的播放功能使用键盘播放环境。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.gymlibrary.ml/">Gym Documentation</a></p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>gym</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深入浅出理解什么是LLVM</title>
-    <url>/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/</url>
+    <url>/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/</url>
     <content><![CDATA[<h3 id="什么是LLVM"><a href="#什么是LLVM" class="headerlink" title="什么是LLVM"></a>什么是<a href="https://llvm.org/">LLVM</a></h3><blockquote>
 <p>LLVM项目是模块化、可重用的编译器以及工具链技术的集合。</p>
 </blockquote>
@@ -573,7 +573,7 @@
 <blockquote>
 <p>趣闻：Chris Latter本来只是想写一个底层的虚拟机，这也是LLVM名字的由来，low level virtual machine，跟Java的JVM虚拟机一样，可是后来，llvm从来没有被用作过虚拟机，哪怕LLVM的名气已经传开了。所以人们决定仍然叫他LLVM，更多的时候只是当作“商标”一样的感觉在使用，其实它跟虚拟机没有半毛钱关系。官方描述如下<br>The name “LLVM” itself is not an acronym; it is the full name of the project. “LLVM”这个名称本身不是首字母缩略词; 它是项目的全名。</p>
 </blockquote>
-<h3 id="传统的编译器架构"><a href="#传统的编译器架构" class="headerlink" title="传统的编译器架构"></a>传统的编译器架构</h3><img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/traditional.jpg" class="">
+<h3 id="传统的编译器架构"><a href="#传统的编译器架构" class="headerlink" title="传统的编译器架构"></a>传统的编译器架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/traditional.jpg" class="">
 
 <center>传统编译器架构</center>
 
@@ -583,7 +583,7 @@
 <li><strong>Optimizer:优化器</strong><br>中间代码优化</li>
 <li><strong>Backend:后端</strong><br>生成机器码</li>
 </ul>
-<h3 id="LLVM架构"><a href="#LLVM架构" class="headerlink" title="LLVM架构"></a>LLVM架构</h3><img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/llvm.png" class="">
+<h3 id="LLVM架构"><a href="#LLVM架构" class="headerlink" title="LLVM架构"></a>LLVM架构</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/llvm.png" class="">
 
 <center>LLVM架构</center>
 
@@ -610,7 +610,7 @@
 <li>诊断信息可读性强:在编译过程中，Clang 创建并保留了大量详细的元数据 (metadata)，有利于调试和错误报告</li>
 <li>设计清晰简单，容易理解，易于扩展增强</li>
 </ul>
-<h3 id="Clang与LLVM关系"><a href="#Clang与LLVM关系" class="headerlink" title="Clang与LLVM关系"></a>Clang与LLVM关系</h3><img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/Clang-LLVM.png" class="">
+<h3 id="Clang与LLVM关系"><a href="#Clang与LLVM关系" class="headerlink" title="Clang与LLVM关系"></a>Clang与LLVM关系</h3><img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/Clang-LLVM.png" class="">
 
 <center>Clang与LLVM</center>
 
@@ -637,7 +637,7 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">|-FunctionDecl 0x7fa1439f5630 &lt;line:18:1, line:20:1&gt; line:18:6 test &#39;void (int, int)&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f54b0 &lt;col:11, col:15&gt; col:15 used a &#39;int&#39;</span><br><span class="line">| |-ParmVarDecl 0x7fa1439f5528 &lt;col:18, col:22&gt; col:22 used b &#39;int&#39;</span><br><span class="line">| &#96;-CompoundStmt 0x7fa142167c88 &lt;col:24, line:20:1&gt;</span><br><span class="line">|   &#96;-DeclStmt 0x7fa142167c70 &lt;line:19:5, col:22&gt;</span><br><span class="line">|     &#96;-VarDecl 0x7fa1439f5708 &lt;col:5, col:21&gt; col:9 c &#39;int&#39; cinit</span><br><span class="line">|       &#96;-BinaryOperator 0x7fa142167c48 &lt;col:13, col:21&gt; &#39;int&#39; &#39;-&#39;</span><br><span class="line">|         |-BinaryOperator 0x7fa142167c00 &lt;col:13, col:17&gt; &#39;int&#39; &#39;+&#39;</span><br><span class="line">|         | |-ImplicitCastExpr 0x7fa1439f57b8 &lt;col:13&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         | | &#96;-DeclRefExpr 0x7fa1439f5768 &lt;col:13&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f54b0 &#39;a&#39; &#39;int&#39;</span><br><span class="line">|         | &#96;-ImplicitCastExpr 0x7fa1439f57d0 &lt;col:17&gt; &#39;int&#39; &lt;LValueToRValue&gt;</span><br><span class="line">|         |   &#96;-DeclRefExpr 0x7fa1439f5790 &lt;col:17&gt; &#39;int&#39; lvalue ParmVar 0x7fa1439f5528 &#39;b&#39; &#39;int&#39;</span><br><span class="line">|         &#96;-IntegerLiteral 0x7fa142167c28 &lt;col:21&gt; &#39;int&#39; 3</span><br><span class="line"></span><br><span class="line">&#96;-&lt;undeserialized declarations&gt;</span><br></pre></td></tr></table></figure>
 
 <p>在终端敲出的时候，终端很直观的帮我们用颜色区分。我们可以用图形显示如下：</p>
-<img src="/yingyingmonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/test-AST.jpg" class="">
+<img src="/YingYingMonstre.github.io/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/test-AST.jpg" class="">
 
 <center>test函数的语法树</center>
 
@@ -683,7 +683,7 @@
   </entry>
   <entry>
     <title>Boofuzz源码分析</title>
-    <url>/yingyingmonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</url>
+    <url>/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<h3 id="Boofuzz样例"><a href="#Boofuzz样例" class="headerlink" title="Boofuzz样例"></a>Boofuzz样例</h3><p>以一个TFTP Fuzzer为例，大概看一下Boofuzz的用法。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> boofuzz <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    session = Session(sleep_time=<span class="number">1</span>,</span><br><span class="line">                      target=Target(connection=SocketConnection(<span class="string">&quot;127.0.0.1&quot;</span>,<span class="number">69</span>,proto=<span class="string">&quot;udp&quot;</span>)))</span><br><span class="line">    s_initialize(<span class="string">&quot;write&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;\\x00\\x02&quot;</span>)</span><br><span class="line">    s_string(<span class="string">&quot;filename&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;\\x00&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;netascii&quot;</span>)</span><br><span class="line">    s_static(<span class="string">&quot;\\x00&quot;</span>)</span><br><span class="line"></span><br><span class="line">    session.connect(s_get(<span class="string">&#x27;write&#x27;</span>))</span><br><span class="line">    session.fuzz()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
@@ -692,7 +692,7 @@
 
 <p>Fuzzer的创建包含三层，Session -&gt; Target -&gt; Connection</p>
 <h3 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h3><p>顾名思义，Connection对象是网络连接的代表，Boofuzz支持各种基于socket的连接，从源码部分就可以看到，常用的还是TCP和UDP，这里还支持网络协议栈中2层和3层的原生Socket。</p>
-<img src="/yingyingmonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connection.png" class="">
+<img src="/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connection.png" class="">
 
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">SocketConnection</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    host,</span></span></span><br><span class="line"><span class="function"><span class="params">    port=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    proto=<span class="string">&quot;tcp&quot;</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    bind=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    send_timeout=<span class="number">5.0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    recv_timeout=<span class="number">5.0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    ethernet_proto=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    l2_dst=<span class="string">b&quot;\xFF&quot;</span> * <span class="number">6</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    udp_broadcast=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    server=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    sslcontext=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    server_hostname=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="function"><span class="params"></span>):</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    warnings.warn(</span><br><span class="line">        <span class="string">&quot;SocketConnection is deprecated and will be removed in a future version of Boofuzz. &quot;</span></span><br><span class="line">        <span class="string">&quot;Use the classes derived from BaseSocketConnection instead.&quot;</span>,</span><br><span class="line">        FutureWarning,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> proto <span class="keyword">not</span> <span class="keyword">in</span> _PROTOCOLS:</span><br><span class="line">        <span class="keyword">raise</span> exception.SullyRuntimeError(<span class="string">&quot;INVALID PROTOCOL SPECIFIED: %s&quot;</span> % proto)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> proto <span class="keyword">in</span> _PROTOCOLS_PORT_REQUIRED <span class="keyword">and</span> port <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;__init__() argument port required for protocol &#123;0&#125;&quot;</span>.<span class="built_in">format</span>(proto))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> proto == <span class="string">&quot;udp&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> udp_socket_connection.UDPSocketConnection(</span><br><span class="line">            host, port, send_timeout, recv_timeout, server, bind, udp_broadcast</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;tcp&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> tcp_socket_connection.TCPSocketConnection(host, port, send_timeout, recv_timeout, server)</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;ssl&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> ssl_socket_connection.SSLSocketConnection(</span><br><span class="line">            host, port, send_timeout, recv_timeout, server, sslcontext, server_hostname</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;raw-l2&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> raw_l2_socket_connection.RawL2SocketConnection(host, send_timeout, recv_timeout)</span><br><span class="line">    <span class="keyword">elif</span> proto == <span class="string">&quot;raw-l3&quot;</span>:</span><br><span class="line">        <span class="keyword">if</span> ethernet_proto <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            ethernet_proto = raw_l3_socket_connection.ETH_P_IP</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> raw_l3_socket_connection.RawL3SocketConnection(host, send_timeout, recv_timeout, ethernet_proto, l2_dst)</span><br></pre></td></tr></table></figure>
 
@@ -783,7 +783,7 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Connection</span>(<span class="params">pgraph.Edge</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, src, dst, callback=<span class="literal">None</span></span>):</span></span><br><span class="line">		    <span class="built_in">super</span>(Connection, self).__init__(src, dst)</span><br><span class="line"></span><br><span class="line">        self.callback = callback</span><br></pre></td></tr></table></figure>
 
 <p>状态图案例：</p>
-<img src="/yingyingmonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connect_graph.png" class="">
+<img src="/YingYingMonstre.github.io/2022/03/22/Boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/connect_graph.png" class="">
 
 <p>创建完Request之后，接下来就是向里面添加Primitives，根据数据类型划分出多个添加函数，首先看string类型的函数s_string。</p>
 <h4 id="s-string"><a href="#s-string" class="headerlink" title="s_string"></a>s_string</h4><p>函数中新建String对象后，通过Request的push函数填充到request中。</p>
