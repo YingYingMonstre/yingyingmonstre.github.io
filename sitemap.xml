@@ -2,13 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://yingyingmonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</loc>
-    
-    <lastmod>2022-08-15</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://yingyingmonstre.github.io/2022/08/09/gym/</loc>
     
     <lastmod>2022-08-15</lastmod>
@@ -17,6 +10,13 @@
   
   <url>
     <loc>https://yingyingmonstre.github.io/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</loc>
+    
+    <lastmod>2022-08-15</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://yingyingmonstre.github.io/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</loc>
     
     <lastmod>2022-08-15</lastmod>
     
@@ -74,7 +74,14 @@
 
   
   <url>
-    <loc>https://yingyingmonstre.github.io/tags/gym-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</loc>
+    <loc>https://yingyingmonstre.github.io/tags/gym/</loc>
+    <lastmod>2022-08-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yingyingmonstre.github.io/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2022-08-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
