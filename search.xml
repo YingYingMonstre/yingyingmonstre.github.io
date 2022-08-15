@@ -98,7 +98,7 @@
         <category>强化学习</category>
       </categories>
       <tags>
-        <tag>gym</tag>
+        <tag>gym 强化学习</tag>
       </tags>
   </entry>
   <entry>
@@ -148,7 +148,7 @@
         <category>强化学习</category>
       </categories>
       <tags>
-        <tag>强化学习</tag>
+        <tag>gym 强化学习</tag>
       </tags>
   </entry>
   <entry>
@@ -479,91 +479,6 @@
       </tags>
   </entry>
   <entry>
-    <title>OpenAI的Gym</title>
-    <url>/2022/08/09/gym/</url>
-    <content><![CDATA[<h1 id="什么是Gym"><a href="#什么是Gym" class="headerlink" title="什么是Gym"></a>什么是Gym</h1><p>Gym是一个用于强化学习(Reinforcement Learning, RL)的标准API，以及各种参考环境的集合。</p>
-<h1 id="Gym的优点"><a href="#Gym的优点" class="headerlink" title="Gym的优点"></a>Gym的优点</h1><p>Gym的接口简单、python化、能够表示一般的RL问题。</p>
-<p>示例代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;LunarLander-v2&quot;</span>)</span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">   env.render()</span><br><span class="line">   action = policy(observation)  <span class="comment"># User-defined policy function</span></span><br><span class="line">   observation, reward, done, info = env.step(action)</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> done:</span><br><span class="line">      observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
-
-<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><h2 id="Initializing-Environment"><a href="#Initializing-Environment" class="headerlink" title="Initializing Environment"></a>Initializing Environment</h2><p>在Gym中初始化环境(Initializing Environment)很简单，可以通过：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<h2 id="Interacting-with-the-Environment"><a href="#Interacting-with-the-Environment" class="headerlink" title="Interacting with the Environment"></a>Interacting with the Environment</h2><p>Gym实现了经典的“Agent-Environment循环”：</p>
-<img src="/2022/08/09/gym/1.AE_loop.png" class="" title="AE_loop.png">
-
-<p>Agent与环境的行动-观察的exchange称为一个timestep。RL的目标是以某种特定的方式manipulate环境。</p>
-<p>给了一个示例，运行<code>LunarLander-v2</code>环境的一个实例1000个timestep，每一个step都渲染环境：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;LunarLander-v2&#x27;</span>)</span><br><span class="line">env.action_space.seed(<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">250</span>):</span><br><span class="line">    observation, reward, done, info = env.step(env.action_space.sample())</span><br><span class="line">    env.render()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> done:</span><br><span class="line">        observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
-
-<p>每个环境会提供<code>env.action_space</code>属性明确valid actions的格式。类似的，valid observations的格式由<code>env.observation_space</code>明确。上述例子中，使用<code>env.action_space.sample()</code>对随机动作进行采样。这里环境和动作空间的seed是独立的，以确保可重复的样本。</p>
-<h2 id="Standard-methods"><a href="#Standard-methods" class="headerlink" title="Standard methods"></a>Standard methods</h2><h3 id="Stepping"><a href="#Stepping" class="headerlink" title="Stepping"></a>Stepping</h3><p><code>gym.Env.step(self, action: ActType) → Union[Tuple[ObsType, float, bool, bool, dict], Tuple[ObsType, float, bool, dict]]</code></p>
-<p>运行一个动态环境的timestep。当episode结束时，使用<code>reset()</code>来重置环境的状态。接收一个动作，返回一个元祖(observation, reward, terminated, truncated, info)或(observation, reward, done, info)。后者已被弃用，未来会被删掉。</p>
-<p>参数：</p>
-<p><strong>action</strong>（ActType）- 由Agent提供的一个动作</p>
-<p>返回：</p>
-<ul>
-<li><strong>observation</strong>（object）- <code> observation_space</code>的一个元素。例如可能是一个包含某些对象的位置或速度的numpy数组。</li>
-<li><strong>reward</strong>（float）- 采取行动后返回的奖励。</li>
-<li><strong>terminated</strong>（bool）- 是否达到终止状态（根据任务的MDP定义）。在到达这种状态后进一步的step()调用可能会返回为定义的结果。</li>
-<li><strong>truncated</strong>（bool）- 是否满足MDP范围之外的截断条件。通常是一个时间限制，但也可以用于指示agent在物理上超出范围。可用于在达到终止状态之前提前结束episode。</li>
-<li><strong>info</strong>（dictionary）- 包含辅助诊断信息（有助于调试、学习和记录）。例如可能包含：描述agent性能状态的指标、对观察隐藏的变量、组合起来产生总奖励的单个奖励项。</li>
-<li><strong>done</strong>（bool）- 如果episode结束则返回的布尔值，在这种情况下进一步调用<code>step()</code>将返回未定义的结果。可能会因为不同的原因发出done信号：环境下的任务已解决、超出某个时间限制、物理模拟已经入无效状态。</li>
-</ul>
-<h3 id="Resetting"><a href="#Resetting" class="headerlink" title="Resetting"></a>Resetting</h3><p><code>gym.Env.reset(self, *, seed: Optional[int] = None, return_info: bool = False, options: Optional[dict] = None) → Union[ObsType, Tuple[ObsType, dict]]</code></p>
-<p>将环境重置为初始状态并返回初始observation。如果种子是整数或环境未初始化随机数生成器（Random Number Generator，RNG），此方法可以重置环境的RNG。如果环境已有一个RNG并用seed=None调用了<code>reset()</code>，则不应重置RNG。此外，<code>reset()</code>应该（在典型用例中）在初始化后立即使用整数种子调用，然后再不重复。</p>
-<p>参数：</p>
-<p><strong>seed</strong>（optional int）- 初始化环境的PRNG。如果环境还没有PRNG并且传递的<code>seed=None</code>（默认选项），将从一些source of entropy中随机选择一个种子（例如时间戳或/dev/urandom）。但是如果环境已经有PRNG并传递<code>seed=None</code>则不会重置PRNG。如果pass整数，即使PRNG存在也会重置。通常在环境初始化后立即pass个整数，然后再不传递。</p>
-<p><strong>return_info</strong>（bool）- 如果为真，则返回附加信息以及初始观察。此info应类似于step()中返回的信息。</p>
-<p><strong>options</strong>（optional dict）- 指定如何重置环境的附加信息（可选，取决于特定环境）。</p>
-<p>返回：</p>
-<ul>
-<li><strong>observation</strong>（object）- 初始状态的观察。这将是<code>observation_space</code>的一个元素（通常是一个numpy数组），类似于step()返回的观察值。</li>
-<li><strong>info</strong>（optional dictionary）- 仅当<code>return_info=True</code>被传递时才会返回。它包含补充观察的辅助信息。该字典应类似于step()返回的信息。</li>
-</ul>
-<h3 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.render(self: <span class="built_in">object</span>, *args: <span class="type">Tuple</span>[<span class="type">Any</span>], **kwargs: <span class="type">Dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>]) → <span class="type">Optional</span>[<span class="type">Union</span>[RenderFrame, <span class="type">List</span>[RenderFrame]]]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="Additional-Environment-API"><a href="#Additional-Environment-API" class="headerlink" title="Additional Environment API"></a>Additional Environment API</h2><h3 id="Attributes"><a href="#Attributes" class="headerlink" title="Attributes"></a>Attributes</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.action_space: Space[ActType]</span><br></pre></td></tr></table></figure>
-
-<p>该属性给出了有效动作的格式。它是Gym提供的数据类型Space。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.observation_space: Space[ObsType]</span><br></pre></td></tr></table></figure>
-
-<p>该属性给出了有效observation的格式。可以使用属性检查box bounds。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.reward_range = (-inf, inf)</span><br></pre></td></tr></table></figure>
-
-<p>该属性对应最小、最大奖励的元组，默认从负无穷到正无穷，可以自行设定范围。</p>
-<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.close(self)</span><br></pre></td></tr></table></figure>
-
-<p>在子类中override close函数以执行必要的清理。</p>
-<p>当垃圾收集或程序退出时，环境会自动执行close()函数。</p>
-<h2 id="Checking-API-Conformity"><a href="#Checking-API-Conformity" class="headerlink" title="Checking API-Conformity"></a>Checking API-Conformity</h2><p>如果已经实现了自定义环境并希望进行健全性检查以确保符合API，可以运行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.utils.env_checker <span class="keyword">import</span> check_env</span><br><span class="line">check_env(env)</span><br></pre></td></tr></table></figure>
-<p>如果环境不遵循Gym API，此函数将引发异常。如果犯了错误或未遵循最佳practice将引发异常（例如observation_space看起来像图片但dtype不正确），则会产生warnings。可以通过传递<code>warn=False</code>来关闭警告。默认情况下check_env不会检查渲染方法，可以通过<code>skip_render_check=False</code>来更改。</p>
-<blockquote>
-<p>在环境中运行check_env后不应重复使用已检查的实例，因为它可能已经关闭。</p>
-</blockquote>
-<h2 id="Spaces"><a href="#Spaces" class="headerlink" title="Spaces"></a>Spaces</h2><p> Spaces通常用于指定有效动作和observation的格式。每个环境都应该有属性<code>action_space</code>和<code>observation_space</code>，它们都应该是继承自Space类的实例。Gym中有多种可用的空间类型：</p>
-<ul>
-<li><code>Box</code>:描述一个n维的连续空间。这是一个有界空间，可以在其中定义上下界，这些上下限描述observation可以采用的有效值。</li>
-<li><code>Discrete</code>:描述一个离散空间，其中{0, 1, ···, n-1}是observation或action可以采取的有效值。可以使用可选参数将值转换为{a, a+1, ···, a+n-1}。</li>
-<li><code>Dict</code>:表示simple spaces的一个字典。</li>
-<li><code>Tuple</code>:表示simple spaces的一个元组。</li>
-<li><code>MultiBinary</code>:创建一个n-shape的二元空间。参数n可以是一个数字或数字列表。</li>
-<li><code>MultiDiscrete</code>:由一系列离散动作空间组成，每个元素中具有不同数量的动作。</li>
-</ul>
-<h2 id="Wrappers（略）"><a href="#Wrappers（略）" class="headerlink" title="Wrappers（略）"></a>Wrappers（略）</h2><p>包装器是一种无需直接更改底层代码即可修改现有环境的便捷方式。使用包装器可以避免大量样板代码，并使环境更加模块化。包装器也可以链接起来以组合它们的效果。大多数通过<code>gym.make</code>生成的环境已经被默认包装了。</p>
-<p>为了包装一个环境，必须首先初始化一个基础环境。然后可以将此环境与（可能是可选的）参数一起传递给包装器的构造函数。</p>
-<h2 id="Playing-within-an-environment（略）"><a href="#Playing-within-an-environment（略）" class="headerlink" title="Playing within an environment（略）"></a>Playing within an environment（略）</h2><p>还可以使用<code>gym.utils.play</code>中的播放功能使用键盘播放环境。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.gymlibrary.ml/">Gym Documentation</a></p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>gym</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深入浅出理解什么是LLVM</title>
     <url>/2021/12/24/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%90%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AFLLVM/</url>
     <content><![CDATA[<h3 id="什么是LLVM"><a href="#什么是LLVM" class="headerlink" title="什么是LLVM"></a>什么是<a href="https://llvm.org/">LLVM</a></h3><blockquote>
@@ -679,6 +594,91 @@
       </categories>
       <tags>
         <tag>编译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OpenAI的Gym</title>
+    <url>/2022/08/09/gym/</url>
+    <content><![CDATA[<h1 id="什么是Gym"><a href="#什么是Gym" class="headerlink" title="什么是Gym"></a>什么是Gym</h1><p>Gym是一个用于强化学习(Reinforcement Learning, RL)的标准API，以及各种参考环境的集合。</p>
+<h1 id="Gym的优点"><a href="#Gym的优点" class="headerlink" title="Gym的优点"></a>Gym的优点</h1><p>Gym的接口简单、python化、能够表示一般的RL问题。</p>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&quot;LunarLander-v2&quot;</span>)</span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">   env.render()</span><br><span class="line">   action = policy(observation)  <span class="comment"># User-defined policy function</span></span><br><span class="line">   observation, reward, done, info = env.step(action)</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> done:</span><br><span class="line">      observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
+
+<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><h2 id="Initializing-Environment"><a href="#Initializing-Environment" class="headerlink" title="Initializing Environment"></a>Initializing Environment</h2><p>在Gym中初始化环境(Initializing Environment)很简单，可以通过：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Interacting-with-the-Environment"><a href="#Interacting-with-the-Environment" class="headerlink" title="Interacting with the Environment"></a>Interacting with the Environment</h2><p>Gym实现了经典的“Agent-Environment循环”：</p>
+<img src="/2022/08/09/gym/1.AE_loop.png" class="" title="AE_loop.png">
+
+<p>Agent与环境的行动-观察的exchange称为一个timestep。RL的目标是以某种特定的方式manipulate环境。</p>
+<p>给了一个示例，运行<code>LunarLander-v2</code>环境的一个实例1000个timestep，每一个step都渲染环境：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;LunarLander-v2&#x27;</span>)</span><br><span class="line">env.action_space.seed(<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line">observation, info = env.reset(seed=<span class="number">42</span>, return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">250</span>):</span><br><span class="line">    observation, reward, done, info = env.step(env.action_space.sample())</span><br><span class="line">    env.render()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> done:</span><br><span class="line">        observation, info = env.reset(return_info=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">env.close()</span><br></pre></td></tr></table></figure>
+
+<p>每个环境会提供<code>env.action_space</code>属性明确valid actions的格式。类似的，valid observations的格式由<code>env.observation_space</code>明确。上述例子中，使用<code>env.action_space.sample()</code>对随机动作进行采样。这里环境和动作空间的seed是独立的，以确保可重复的样本。</p>
+<h2 id="Standard-methods"><a href="#Standard-methods" class="headerlink" title="Standard methods"></a>Standard methods</h2><h3 id="Stepping"><a href="#Stepping" class="headerlink" title="Stepping"></a>Stepping</h3><p><code>gym.Env.step(self, action: ActType) → Union[Tuple[ObsType, float, bool, bool, dict], Tuple[ObsType, float, bool, dict]]</code></p>
+<p>运行一个动态环境的timestep。当episode结束时，使用<code>reset()</code>来重置环境的状态。接收一个动作，返回一个元祖(observation, reward, terminated, truncated, info)或(observation, reward, done, info)。后者已被弃用，未来会被删掉。</p>
+<p>参数：</p>
+<p><strong>action</strong>（ActType）- 由Agent提供的一个动作</p>
+<p>返回：</p>
+<ul>
+<li><strong>observation</strong>（object）- <code> observation_space</code>的一个元素。例如可能是一个包含某些对象的位置或速度的numpy数组。</li>
+<li><strong>reward</strong>（float）- 采取行动后返回的奖励。</li>
+<li><strong>terminated</strong>（bool）- 是否达到终止状态（根据任务的MDP定义）。在到达这种状态后进一步的step()调用可能会返回为定义的结果。</li>
+<li><strong>truncated</strong>（bool）- 是否满足MDP范围之外的截断条件。通常是一个时间限制，但也可以用于指示agent在物理上超出范围。可用于在达到终止状态之前提前结束episode。</li>
+<li><strong>info</strong>（dictionary）- 包含辅助诊断信息（有助于调试、学习和记录）。例如可能包含：描述agent性能状态的指标、对观察隐藏的变量、组合起来产生总奖励的单个奖励项。</li>
+<li><strong>done</strong>（bool）- 如果episode结束则返回的布尔值，在这种情况下进一步调用<code>step()</code>将返回未定义的结果。可能会因为不同的原因发出done信号：环境下的任务已解决、超出某个时间限制、物理模拟已经入无效状态。</li>
+</ul>
+<h3 id="Resetting"><a href="#Resetting" class="headerlink" title="Resetting"></a>Resetting</h3><p><code>gym.Env.reset(self, *, seed: Optional[int] = None, return_info: bool = False, options: Optional[dict] = None) → Union[ObsType, Tuple[ObsType, dict]]</code></p>
+<p>将环境重置为初始状态并返回初始observation。如果种子是整数或环境未初始化随机数生成器（Random Number Generator，RNG），此方法可以重置环境的RNG。如果环境已有一个RNG并用seed=None调用了<code>reset()</code>，则不应重置RNG。此外，<code>reset()</code>应该（在典型用例中）在初始化后立即使用整数种子调用，然后再不重复。</p>
+<p>参数：</p>
+<p><strong>seed</strong>（optional int）- 初始化环境的PRNG。如果环境还没有PRNG并且传递的<code>seed=None</code>（默认选项），将从一些source of entropy中随机选择一个种子（例如时间戳或/dev/urandom）。但是如果环境已经有PRNG并传递<code>seed=None</code>则不会重置PRNG。如果pass整数，即使PRNG存在也会重置。通常在环境初始化后立即pass个整数，然后再不传递。</p>
+<p><strong>return_info</strong>（bool）- 如果为真，则返回附加信息以及初始观察。此info应类似于step()中返回的信息。</p>
+<p><strong>options</strong>（optional dict）- 指定如何重置环境的附加信息（可选，取决于特定环境）。</p>
+<p>返回：</p>
+<ul>
+<li><strong>observation</strong>（object）- 初始状态的观察。这将是<code>observation_space</code>的一个元素（通常是一个numpy数组），类似于step()返回的观察值。</li>
+<li><strong>info</strong>（optional dictionary）- 仅当<code>return_info=True</code>被传递时才会返回。它包含补充观察的辅助信息。该字典应类似于step()返回的信息。</li>
+</ul>
+<h3 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.render(self: <span class="built_in">object</span>, *args: <span class="type">Tuple</span>[<span class="type">Any</span>], **kwargs: <span class="type">Dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>]) → <span class="type">Optional</span>[<span class="type">Union</span>[RenderFrame, <span class="type">List</span>[RenderFrame]]]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Additional-Environment-API"><a href="#Additional-Environment-API" class="headerlink" title="Additional Environment API"></a>Additional Environment API</h2><h3 id="Attributes"><a href="#Attributes" class="headerlink" title="Attributes"></a>Attributes</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.action_space: Space[ActType]</span><br></pre></td></tr></table></figure>
+
+<p>该属性给出了有效动作的格式。它是Gym提供的数据类型Space。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.observation_space: Space[ObsType]</span><br></pre></td></tr></table></figure>
+
+<p>该属性给出了有效observation的格式。可以使用属性检查box bounds。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Env.reward_range = (-inf, inf)</span><br></pre></td></tr></table></figure>
+
+<p>该属性对应最小、最大奖励的元组，默认从负无穷到正无穷，可以自行设定范围。</p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gym.Env.close(self)</span><br></pre></td></tr></table></figure>
+
+<p>在子类中override close函数以执行必要的清理。</p>
+<p>当垃圾收集或程序退出时，环境会自动执行close()函数。</p>
+<h2 id="Checking-API-Conformity"><a href="#Checking-API-Conformity" class="headerlink" title="Checking API-Conformity"></a>Checking API-Conformity</h2><p>如果已经实现了自定义环境并希望进行健全性检查以确保符合API，可以运行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> gym.utils.env_checker <span class="keyword">import</span> check_env</span><br><span class="line">check_env(env)</span><br></pre></td></tr></table></figure>
+<p>如果环境不遵循Gym API，此函数将引发异常。如果犯了错误或未遵循最佳practice将引发异常（例如observation_space看起来像图片但dtype不正确），则会产生warnings。可以通过传递<code>warn=False</code>来关闭警告。默认情况下check_env不会检查渲染方法，可以通过<code>skip_render_check=False</code>来更改。</p>
+<blockquote>
+<p>在环境中运行check_env后不应重复使用已检查的实例，因为它可能已经关闭。</p>
+</blockquote>
+<h2 id="Spaces"><a href="#Spaces" class="headerlink" title="Spaces"></a>Spaces</h2><p> Spaces通常用于指定有效动作和observation的格式。每个环境都应该有属性<code>action_space</code>和<code>observation_space</code>，它们都应该是继承自Space类的实例。Gym中有多种可用的空间类型：</p>
+<ul>
+<li><code>Box</code>:描述一个n维的连续空间。这是一个有界空间，可以在其中定义上下界，这些上下限描述observation可以采用的有效值。</li>
+<li><code>Discrete</code>:描述一个离散空间，其中{0, 1, ···, n-1}是observation或action可以采取的有效值。可以使用可选参数将值转换为{a, a+1, ···, a+n-1}。</li>
+<li><code>Dict</code>:表示simple spaces的一个字典。</li>
+<li><code>Tuple</code>:表示simple spaces的一个元组。</li>
+<li><code>MultiBinary</code>:创建一个n-shape的二元空间。参数n可以是一个数字或数字列表。</li>
+<li><code>MultiDiscrete</code>:由一系列离散动作空间组成，每个元素中具有不同数量的动作。</li>
+</ul>
+<h2 id="Wrappers（略）"><a href="#Wrappers（略）" class="headerlink" title="Wrappers（略）"></a>Wrappers（略）</h2><p>包装器是一种无需直接更改底层代码即可修改现有环境的便捷方式。使用包装器可以避免大量样板代码，并使环境更加模块化。包装器也可以链接起来以组合它们的效果。大多数通过<code>gym.make</code>生成的环境已经被默认包装了。</p>
+<p>为了包装一个环境，必须首先初始化一个基础环境。然后可以将此环境与（可能是可选的）参数一起传递给包装器的构造函数。</p>
+<h2 id="Playing-within-an-environment（略）"><a href="#Playing-within-an-environment（略）" class="headerlink" title="Playing within an environment（略）"></a>Playing within an environment（略）</h2><p>还可以使用<code>gym.utils.play</code>中的播放功能使用键盘播放环境。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.gymlibrary.ml/">Gym Documentation</a></p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>gym 强化学习</tag>
       </tags>
   </entry>
   <entry>
