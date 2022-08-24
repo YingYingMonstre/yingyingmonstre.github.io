@@ -6,7 +6,7 @@
   <link href="https://yingyingmonstre.github.io/atom.xml" rel="self"/>
   
   <link href="https://yingyingmonstre.github.io/"/>
-  <updated>2022-08-15T15:10:43.126Z</updated>
+  <updated>2022-08-24T16:41:46.851Z</updated>
   <id>https://yingyingmonstre.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>小提琴图与分位点</title>
+    <link href="https://yingyingmonstre.github.io/2022/08/25/percentile%E7%99%BE%E5%88%86%E4%BD%8D/"/>
+    <id>https://yingyingmonstre.github.io/2022/08/25/percentile%E7%99%BE%E5%88%86%E4%BD%8D/</id>
+    <published>2022-08-24T16:00:00.000Z</published>
+    <updated>2022-08-24T16:41:46.851Z</updated>
+    
+    <content type="html"><![CDATA[<p>处理数据时使用到了小提琴图，看了四分位点的计算公式，但是和numpy的percentile对应不上，搞了一会知道它是怎么计算的了，特此记录。</p><h1 id="小提琴图"><a href="#小提琴图" class="headerlink" title="小提琴图"></a>小提琴图</h1><p>一般来说，小提琴图是一种绘制连续型数据的方法，可以认为是箱形图与核密度图的结合体。在小提琴图中，我们可以获取与箱形图中相同的信息。</p><img src="/2022/08/25/percentile%E7%99%BE%E5%88%86%E4%BD%8D/violin.png" class="" title="violin"><ul><li>中位数（小提琴图上的一个白点）</li><li>四分位数距(Inter Quartile Range, IQR)：小提琴图中心的黑色粗条</li><li>Upper adjacent value：Third Quartile + 1.5 * IQR</li><li>Lower adjacent value：First Quartile - 1.5 * IQR</li><li>Upper/lower adjacent value（黑色细线）用来检测离群值，即位于这俩“栅栏“之外的值可被视为离群值。</li></ul><blockquote><p>离群值是一个统计学里的专业术语。<strong>在对同一样本进行多次重复测定时，经常会发现在一组测定数据中有某一个或数个测定值看似比其他测定值明显地偏小或偏大。称这种显著偏离的数据为离群值</strong>。有疑问的观察值可能是测试中随机波动的极度表现，但还处于统计控制 的范围之内，是属于同一总体的误差，不算离群值。</p></blockquote><h1 id="四分位数"><a href="#四分位数" class="headerlink" title="四分位数"></a>四分位数</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>四分位数（Quartile）应用于统计学中的箱线图绘制，是统计学中分位数的一种，即把所有数值由小到大排列并分为四等份，处于三个分割点位置的数值就是四分位数。</p><h2 id="如何理解四分位"><a href="#如何理解四分位" class="headerlink" title="如何理解四分位"></a>如何理解四分位</h2><p>中位数把数集分成两个50%，下四分位就是把前50%分成两个25%，上四分位就是把后50%，分成两个25%。</p><h2 id="如何计算"><a href="#如何计算" class="headerlink" title="如何计算"></a>如何计算</h2><p>假设数列一共有n个数。</p><p>（1）当(n+1)/4可以整除时，Q1在(n+1)/4位、Q2在(n+1)/2位、Q3在(n+1)·3/4位。</p><p>举例 数列[1 2 2 5 6 9 9]：</p><p>Q1在第(7+1)/4=2位，即Q1=2</p><p>Q2在第(7+1)/2=4位，即Q2=5</p><p>Q3在第(7+1)·3/4=6位，即Q3=9</p><p>（2）当(n+1)/4不能整除时</p><p>举例 数列[1 2 3 4 5 6 7 8]：</p><p>Q1在(8+1)/4=2.25位，介于第二和第三位之间，但是更靠近第二位。所以第二位数权重占75%(小数位)，第三位数权重占25%。Q1=(2*0.75+3*0.25)/(0.75+0.25)=2.25</p><p>Q2在(8+1)/2=4.5位，即第4和第5位的平均数，Q2=4.5</p><p>同理Q3在(8+1)/4*3=6.75位，在第六位和第七位之间，更靠近第7位。所以第7位权重75%，第6位权重25%。Q3=(7*0.75+6*0.25)/(0.75+0.25)=6.75</p><h2 id="numpy的percentile"><a href="#numpy的percentile" class="headerlink" title="numpy的percentile"></a>numpy的percentile</h2><p>上边计算中所用的方法是n+1的方法。而numpy的percentile使用的是n-1的方法，即：</p><p>Q1的位置=1+(n-1)x0.25</p><p>Q2的位置=1+(n-1)x0.5</p><p>Q3的位置=1+(n-1)x0.75</p><p>靠近分位的那个占较大比重，为小数点后的那部分。例如数列[1 2 3]：Q1=1.5、Q2=2、Q3=2.5；数列[1 2 3 4 5 6 7 8 9]的60%分位点位置=1+(9-1)x0.6=5.8，Q=6x0.8+5x0.2=5.8。</p><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://zhuanlan.zhihu.com/p/376055263">如何通俗的理解小提琴图</a></p><p><a href="https://zhuanlan.zhihu.com/p/235345817">如何计算四分位数值&amp;应用</a></p><p><a href="https://baike.baidu.com/item/%E5%9B%9B%E5%88%86%E4%BD%8D%E6%95%B0/5040599">四分位数</a></p><p><a href="https://cloud.tencent.com/developer/article/1734923">python numpy库np.percentile用法说明</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;处理数据时使用到了小提琴图，看了四分位点的计算公式，但是和numpy的percentile对应不上，搞了一会知道它是怎么计算的了，特此记录。&lt;/p&gt;
+&lt;h1 id=&quot;小提琴图&quot;&gt;&lt;a href=&quot;#小提琴图&quot; class=&quot;headerlink&quot; title=&quot;小提琴图&quot;&gt;</summary>
+      
+    
+    
+    
+    <category term="数据分析" scheme="https://yingyingmonstre.github.io/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"/>
+    
+    
+    <category term="小提琴图" scheme="https://yingyingmonstre.github.io/tags/%E5%B0%8F%E6%8F%90%E7%90%B4%E5%9B%BE/"/>
+    
+  </entry>
   
   <entry>
     <title>Gym环境创建</title>
