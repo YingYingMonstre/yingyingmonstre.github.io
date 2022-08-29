@@ -1,6 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>MacBook Air M1安装gym问题汇总</title>
+    <url>/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
+<p><strong>0. 关于本机</strong></p>
+<ul>
+<li>macOS Monterey版本12.0.1</li>
+<li>MacBook Air（M1，2020）</li>
+<li>芯片 Apple M1</li>
+</ul>
+<p><strong>1. 环境相关</strong></p>
+<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
+<p><strong>2. 下载gym</strong></p>
+<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
+<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
+<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
+<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
+<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
+<p>解决方法：brew install swig</p>
+<p><strong>5. zsh: command not found: brew</strong></p>
+<p>问题状况：在第4步输入brew install swig后报错。</p>
+<p>解决方法：mac安装homebrew，</p>
+<p>用以下命令安装，序列号选择中科大（1）的</p>
+<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
+<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
+<p><strong>6. from . import multiarray等</strong></p>
+<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
+
+<p>解决方法：重新安装了numpy之后就可以用了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>7. zsh:killed</strong></p>
+<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
+<p>解决方法：删除环境重新搭建环境就可以了</p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Q-learning和DQN算法总结</title>
+    <url>/2022/08/29/DQN/</url>
+    <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>Q-learning算法主要是维护一个Q表格，其中的值表示当前状态下采取动作能带来的价值。</p>
+<img src="/2022/08/29/DQN/diff.png" class="" title="q-learning">
+
+<p>DQN可以视为Q-learning的进阶版，是针对巨大的状态和动作空间、Q表格的维护和查找不现实所引入神经网络的方法。但是引入非线性函数、使用神经网络近似Q表，训练结果可能不收敛。</p>
+<img src="/2022/08/29/DQN/diff2.png" class="" title="DQN">
+
+<p>DQN有两版，2013版《Playing Atari with Deep Reinforcement Learning》伪代码：</p>
+<img src="/2022/08/29/DQN/2013.png" class="" width="2013">
+
+<p>2015版《Human-level control through deep reinforcement learning》伪代码：</p>
+<img src="/2022/08/29/DQN/2015.png" class="" width="2015">
+
+<h1 id="Q-learning算法"><a href="#Q-learning算法" class="headerlink" title="Q-learning算法"></a>Q-learning算法</h1><p>Q-learning是一种model-free的强化学习算法，用于学习特定状态下动作的价值。该算法的核心为使用贝尔曼方程进行简单的值迭代更新，对当前值和新信息进行加权平均。</p>
+<blockquote>
+<p>model-free算法只用学习策略即可。model-based算法让agent学习环境的模型，在训练之后，代理必须通过预测下一个状态和reward来采取行动。</p>
+</blockquote>
+<blockquote>
+<p>Bellman方程：<br>状态s的最优值$V^*(s)$、Q-state的最优值$Q^*(s,a)$<br>$V^*(s)=\max\limits_{a}\sum\limits_{s’}T(s,a,s’)[R(s,a,s’)+rV^*(s’)]=\max\limits_{a}Q^*(s,a)$<br>$Q^*(s,a)=\sum\limits_{s’}T(s,a,s’)[R(s,a,s’)+rV^*(s’)]$</p>
+</blockquote>
+<p>值迭代更新：</p>
+<p>$Q^{new}(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\cdot(r_t+\gamma\cdot\max\limits_{a}Q(s_{t+1},a)-Q(s_t,a_t))$</p>
+<p>其中:</p>
+<ul>
+<li>$Q(s_t,a_t)$为当前值</li>
+<li>$\alpha$为学习率</li>
+<li>$r_t$为状态从$s_t$到$s_{t+1}$获得的奖励</li>
+<li>$\gamma$为折扣系数（接近于0时，智能体更在意短期回报；接近于1时，更在意长期回报）</li>
+<li>$\max\limits_{a}Q(s_{t+1},a)$表示对未来最优值的估计</li>
+</ul>
+<h1 id="DQN的两大改进"><a href="#DQN的两大改进" class="headerlink" title="DQN的两大改进"></a>DQN的两大改进</h1><p>DQN的整体结构如图所示。</p>
+<img src="/2022/08/29/DQN/structure.png" class="" title="structure">
+
+<h2 id="Replay-Memory经验池"><a href="#Replay-Memory经验池" class="headerlink" title="Replay Memory经验池"></a>Replay Memory经验池</h2><p>DQN引入了经验池，利用Q-learning是off-policy的特性，使用经验回放记忆训练DQN。存储agent观察到的转换，允许稍后重用这些数据，重复利用过去经验。通过随机抽样，构建批次的转换是decorrelated。已经表明这极大的稳定和改进了DQN训练过程（DQN tutorial那里提到的）。需要两个类：</p>
+<ul>
+<li><code>Transition</code> - 一个命名元组，代表环境中的单个transition。本质上将(state, action)对映射到它们的(next_state, reward)结果。</li>
+<li><code>ReplayMemory</code> - 一个有界大小的循环缓冲区，用于保存最近观察到的transitions。它还实现了一个<code>.sample()</code>的方法，用于随机选择批次的transition进行训练。</li>
+</ul>
+<h2 id="固定Q-target"><a href="#固定Q-target" class="headerlink" title="固定Q-target"></a>固定Q-target</h2><p>DQN中会有两个结构完全相同但是参数却不同的网络，一个(policy_net)用于预测Q估计、一个(target_net)用于预测Q现实。这是由于$Q(s,a)$ 在用表格表示与用网络表示有很大的不同：修改$Q(s,a)$要让它接近$r+\gamma\cdot\max\limits_{a’}Q(s_{t+1},a’)$，对于表格表示，修改不会影响别的位置的值；而对于网络表示，修改网络参数会造成全局的变化，会导致$\max\limits_{a’}Q(s_{t+1},a’)$的值也改变。即预测在接近target的过程中，target也在移动，因此训练比较困难。</p>
+<p>对于训练更新规则，将使用一个事实——Every Q function for some policy obeys the Bellman方程：</p>
+<p>$Q^π(s, a) = r + γQ^π(s’,π(s’))$</p>
+<p>Temporal difference error为：$δ=Q(s,a)-Q^*(s,a)$。损失函数一般采用均方误差损失。</p>
+<p>过程描述：初始化policy_net和target_net，根据损失函数更新policy_net的参数，而target_net的参数固定不变。在经过多次迭代后，将policy_net的参数全部复制给target_net，并一直如此迭代。<strong>这样一段时间内的target_net是固定不变的，从而使得算法更新更加稳定</strong>。</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><p>详细代码略，这里推荐<a href="https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html">pytorch官方DQN代码</a>，比较具体。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://en.wikipedia.org/wiki/Q-learning">Q-learning</a></p>
+<p><a href="https://blog.csdn.net/yf_programmer/article/details/120667700">DQN简介</a></p>
+<p><a href="https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html">REINFORCEMENT LEARNING (DQN) TUTORIAL</a></p>
+<p><a href="https://blog.csdn.net/qq_34003876/article/details/107349526">Pytorch实现简单DQN</a></p>
+]]></content>
+      <categories>
+        <category>强化学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Gym环境创建</title>
     <url>/2022/08/09/Gym%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/</url>
     <content><![CDATA[<p>本文档概述了为创建新环境而设计的Gym中包含的创建新环境和相关有用的wrappers、utilities、tests。可以克隆gym-examples以使用此处的代码。<a href="https://github.com/Farama-Foundation/gym-examples">gym-examples</a>。</p>
@@ -98,58 +207,6 @@
         <category>强化学习</category>
       </categories>
       <tags>
-        <tag>gym</tag>
-        <tag>强化学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MacBook Air M1安装gym问题汇总</title>
-    <url>/2021/11/03/MacBook%20Air%20M1%E5%AE%89%E8%A3%85gym%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>安装gym花了一天时间，中途出了很多问题，特此记录。</p>
-<p><strong>0. 关于本机</strong></p>
-<ul>
-<li>macOS Monterey版本12.0.1</li>
-<li>MacBook Air（M1，2020）</li>
-<li>芯片 Apple M1</li>
-</ul>
-<p><strong>1. 环境相关</strong></p>
-<p>创建pycharm环境参考文章：<a href="https://zhuanlan.zhihu.com/p/410961551">https://zhuanlan.zhihu.com/p/410961551</a></p>
-<p><strong>2. 下载gym</strong></p>
-<p>可以直接在终端上pip install gym，但是在pycharm中使用时会报错缺一些组件，比如No module named ‘pyglet’。本人使用的是下边的方法：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;openai&#x2F;gym.git</span><br><span class="line"></span><br><span class="line">cd gym</span><br><span class="line"></span><br><span class="line">pip install -e &#39;.[all]&#39;</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>3. No matching distribution found for ale-py~=0.7.1 (from gym==0.21.0)</strong></p>
-<p>问题状况：在问题2中pip install -e ‘.[all]’时报错。</p>
-<p>解决方法：直接pip install ale-py，如果不能下载（具体报错的原因忘了），尝试conda update pip，我是在更新完pip后可以下载的。</p>
-<p><strong>4. unable to execute ‘swig’: No such file or directory</strong></p>
-<p>问题状况：解决了第3步的问题后，在pip install -e ‘.[all]’过程中出现。</p>
-<p>解决方法：brew install swig</p>
-<p><strong>5. zsh: command not found: brew</strong></p>
-<p>问题状况：在第4步输入brew install swig后报错。</p>
-<p>解决方法：mac安装homebrew，</p>
-<p>用以下命令安装，序列号选择中科大（1）的</p>
-<p>/bin/zsh -c “$(curl -fsSL <a href="https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;">https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)&quot;</a></p>
-<p>原文地址：<a href="https://links.jianshu.com/go?to=https://blog.csdn.net/wangyun71/article/details/108560873">https://blog.csdn.net/wangyun71/article/details/108560873</a></p>
-<p><strong>6. from . import multiarray等</strong></p>
-<p>问题状况：在解决了第4、5步的问题后继续运行pip install -e ‘.[all]’，成功安装。但是在测试用例代码时报的错误。提示检查python和numpy的版本。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 测试用例</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line">env = gym.make(<span class="string">&#x27;CartPole-v0&#x27;</span>)</span><br><span class="line">env.reset()</span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    env.render()</span><br><span class="line">    env.step(env.action_space.sample()) <span class="comment"># take a random action</span></span><br></pre></td></tr></table></figure>
-
-<p>解决方法：重新安装了numpy之后就可以用了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip uninstall numpy</span><br><span class="line"></span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>7. zsh:killed</strong></p>
-<p>问题状况：偶然遇到的，在conda activate环境后不能用clear、pip等命令，不知道是什么原因。</p>
-<p>解决方法：删除环境重新搭建环境就可以了</p>
-]]></content>
-      <categories>
-        <category>强化学习</category>
-      </categories>
-      <tags>
-        <tag>gym</tag>
         <tag>强化学习</tag>
       </tags>
   </entry>
@@ -474,10 +531,10 @@
 <h3 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h3><p><a href="https://www.cnblogs.com/ioufev/articles/10830028.html">ModbusTCP协议 - ioufev - 博客园 (cnblogs.com)</a></p>
 ]]></content>
       <categories>
-        <category>protocol</category>
+        <category>协议</category>
       </categories>
       <tags>
-        <tag>Modbus</tag>
+        <tag>工控协议</tag>
       </tags>
   </entry>
   <entry>
@@ -562,7 +619,6 @@
         <category>强化学习</category>
       </categories>
       <tags>
-        <tag>gym</tag>
         <tag>强化学习</tag>
       </tags>
   </entry>
@@ -1113,10 +1169,10 @@
 <p><a href="https://paper.seebug.org/1626/">IoT设备固件分析之网络协议 fuzz (seebug.org)</a></p>
 ]]></content>
       <categories>
-        <category>Fuzzing</category>
+        <category>模糊测试</category>
       </categories>
       <tags>
-        <tag>Fuzzing</tag>
+        <tag>模糊测试</tag>
       </tags>
   </entry>
 </search>
