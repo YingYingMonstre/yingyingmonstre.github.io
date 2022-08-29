@@ -877,7 +877,7 @@ load，读取数据<br>
     <url>/2022/08/29/markdown_latex/</url>
     <content><![CDATA[<p>在学习过程中，会涉及到大量的数学公式，并且考虑到准备以 Markdown 为主要做笔记方式，因此，在这里对 Markdown 中 LaTeX 数学公式命令做一个汇总。</p>
 <blockquote>
-<p>**重要说明：**示例中的 <code>$formula$</code> 是生成公式的 LaTeX 语法。</p>
+<p>重要说明：示例中的 <code>$formula$</code> 是生成公式的 LaTeX 语法。渲染器使用的是hexo-renderer-markdown-it-katex，最近一次更新在3年前，存在一些公式不能正常显示的现象，但由于不用过多配置且能满足大部分使用需要，故仍选择使用此渲染器。以下内容在typora中均能正常显示。</p>
 </blockquote>
 <h1 id="公式排版">公式排版</h1>
 <p>LaTeX 公式有两种，一种是公式和文字在一行中混合排列的<strong>行内公式</strong>，一种是公式独占一行或几行的<strong>行间公式（独立公式）</strong>：</p>
@@ -892,7 +892,7 @@ load，读取数据<br>
 </li>
 </ul>
 <blockquote>
-<p>**Tips:**以下几个字符 <code># $ % &amp; ~ _ ^ \ &#123; &#125;</code> 有特殊意义。当表示这些字符时，需要转义，即在每个字符前加上 <code>\</code> 。而对于字符 <code>\</code> ，可使用 <code>$\backslash$</code> 命令得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">\</mi></mrow><annotation encoding="application/x-tex">\backslash</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">\</span></span></span></span>。</p>
+<p>Tips:以下几个字符 <code># $ % &amp; ~ _ ^ \ &#123; &#125;</code> 有特殊意义。当表示这些字符时，需要转义，即在每个字符前加上 <code>\</code> 。而对于字符 <code>\</code> ，可使用 <code>$\backslash$</code> 命令得到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">\</mi></mrow><annotation encoding="application/x-tex">\backslash</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">\</span></span></span></span>。</p>
 </blockquote>
 <h1 id="常用数学表达命令">常用数学表达命令</h1>
 <h2 id="上下标表示">上下标表示</h2>
