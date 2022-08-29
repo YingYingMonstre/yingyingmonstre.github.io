@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yingyingmonstre.github.io/2022/08/29/markdown_latex/</loc>
+    
+    <lastmod>2022-08-29</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://yingyingmonstre.github.io/2022/08/29/DQN/</loc>
     
     <lastmod>2022-08-29</lastmod>
@@ -88,14 +95,14 @@
 
   
   <url>
-    <loc>https://yingyingmonstre.github.io/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</loc>
+    <loc>https://yingyingmonstre.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2022-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://yingyingmonstre.github.io/tags/%E7%AE%97%E6%B3%95/</loc>
+    <loc>https://yingyingmonstre.github.io/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2022-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -117,6 +124,20 @@
   
   <url>
     <loc>https://yingyingmonstre.github.io/tags/%E7%BC%96%E8%AF%91/</loc>
+    <lastmod>2022-08-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yingyingmonstre.github.io/tags/Markdown/</loc>
+    <lastmod>2022-08-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yingyingmonstre.github.io/tags/LaTex/</loc>
     <lastmod>2022-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -154,6 +175,13 @@
   
   <url>
     <loc>https://yingyingmonstre.github.io/categories/%E7%BC%96%E8%AF%91/</loc>
+    <lastmod>2022-08-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yingyingmonstre.github.io/categories/%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/</loc>
     <lastmod>2022-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
