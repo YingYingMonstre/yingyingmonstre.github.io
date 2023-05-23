@@ -134,60 +134,6 @@
       </tags>
   </entry>
   <entry>
-    <title>小提琴图与分位点</title>
-    <url>/2022/08/25/percentile%E7%99%BE%E5%88%86%E4%BD%8D/</url>
-    <content><![CDATA[<p>处理数据时用到了小提琴图，看了四分位点的计算公式，但是和numpy的percentile()函数对应不上，记录一下具体的计算方式。</p>
-<h1 id="小提琴图">小提琴图</h1>
-<p>一般来说，小提琴图是一种绘制连续型数据的方法，可以认为是箱形图与核密度图的结合体。在小提琴图中，我们可以获取与箱形图中相同的信息。</p>
-<img src="/2022/08/25/percentile%E7%99%BE%E5%88%86%E4%BD%8D/violin.png" class="" title="violin">
-<ul>
-<li>中位数（小提琴图中的一个白点）</li>
-<li>四分位数距(Inter Quartile Range, IQR)：小提琴图中心的黑色粗条</li>
-<li>Upper adjacent value：Third Quartile + 1.5 * IQR</li>
-<li>Lower adjacent value：First Quartile - 1.5 * IQR</li>
-<li>Upper/lower adjacent value（黑色细线）用来检测离群值，即位于这俩“栅栏“之外的值可被视为离群值。</li>
-</ul>
-<blockquote>
-<p>离群值是一个统计学里的专业术语。<strong>在对同一样本进行多次重复测定时，经常会发现在一组测定数据中有某一个或数个测定值看似比其他测定值明显地偏小或偏大。称这种显著偏离的数据为离群值</strong>。有疑问的观察值可能是测试中随机波动的极度表现，但还处于统计控制 的范围之内，是属于同一总体的误差，不算离群值。</p>
-</blockquote>
-<h1 id="四分位数">四分位数</h1>
-<h2 id="定义">定义</h2>
-<p>四分位数（Quartile）应用于统计学中的箱线图绘制，是统计学中分位数的一种，即把所有数值由小到大排列并分为四等份，处于三个分割点位置的数值就是四分位数。</p>
-<h2 id="如何理解四分位">如何理解四分位</h2>
-<p>中位数把数集分成两个50%，下四分位就是把前50%分成两个25%，上四分位就是把后50%，分成两个25%。</p>
-<h2 id="如何计算">如何计算</h2>
-<p>假设数列一共有n个数。</p>
-<p>（1）当(n+1)/4可以整除时，Q1在(n+1)/4位、Q2在(n+1)/2位、Q3在(n+1)·3/4位。</p>
-<p>以数列[1 2 2 5 6 9 9]举例：</p>
-<p>Q1在第(7+1)/4=2位，即Q1=2</p>
-<p>Q2在第(7+1)/2=4位，即Q2=5</p>
-<p>Q3在第(7+1)·3/4=6位，即Q3=9</p>
-<p>（2）当(n+1)/4不能整除时</p>
-<p>以数列[1 2 3 4 5 6 7 8]举例：</p>
-<p>Q1在(8+1)/4=2.25位，介于第二和第三位之间，但是更靠近第二位。所以第二位数权重占75%(小数位)，第三位数权重占25%。Q1=(2*0.75+3*0.25)/(0.75+0.25)=2.25</p>
-<p>Q2在(8+1)/2=4.5位，即第4和第5位的平均数，Q2=4.5</p>
-<p>同理Q3在(8+1)/4*3=6.75位，在第六位和第七位之间，更靠近第7位。所以第7位权重75%，第6位权重25%。Q3=(7*0.75+6*0.25)/(0.75+0.25)=6.75</p>
-<h2 id="numpy的percentile-函数">numpy的percentile()函数</h2>
-<p>上边计算中所用的方法是n+1的方法。而numpy的percentile()函数使用的是n-1的方法，即：</p>
-<p>Q1的位置=1+(n-1)x0.25</p>
-<p>Q2的位置=1+(n-1)x0.5</p>
-<p>Q3的位置=1+(n-1)x0.75</p>
-<p>靠近分位位置的那一个值占较大比重，为位置小数点后的那部分（或者壹减去小数点后的部分，与上边计算方式相似）。例如数列[1 2 3]：Q1=1.5、Q2=2、Q3=2.5；数列[1 2 3 4 5 6 7 8 9]的60%分位点位置=1+(9-1)x0.6=5.8，Q=6x0.8+5x0.2=5.8。测试代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="built_in">print</span>(np.percentile(arr, <span class="number">25</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line"><span class="comment"># import pandas as pd</span></span><br><span class="line"><span class="comment"># arr = pd.Series([1, 2, 3])</span></span><br><span class="line"><span class="comment"># print(arr.describe())</span></span><br></pre></td></tr></table></figure>
-<h1 id="参考文献">参考文献</h1>
-<p><a href="https://zhuanlan.zhihu.com/p/376055263">如何通俗的理解小提琴图</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/235345817">如何计算四分位数值&amp;应用</a></p>
-<p><a href="https://baike.baidu.com/item/%E5%9B%9B%E5%88%86%E4%BD%8D%E6%95%B0/5040599">四分位数</a></p>
-<p><a href="https://cloud.tencent.com/developer/article/1734923">python numpy库np.percentile用法说明</a></p>
-]]></content>
-      <categories>
-        <category>数据分析</category>
-      </categories>
-      <tags>
-        <tag>小提琴图</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Modbus TCP协议学习</title>
     <url>/2021/09/17/Modbus%20TCP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<h1 id="简介">简介</h1>
@@ -526,6 +472,60 @@
       </categories>
       <tags>
         <tag>工控协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>小提琴图与分位点</title>
+    <url>/2022/08/25/percentile%E7%99%BE%E5%88%86%E4%BD%8D/</url>
+    <content><![CDATA[<p>处理数据时用到了小提琴图，看了四分位点的计算公式，但是和numpy的percentile()函数对应不上，记录一下具体的计算方式。</p>
+<h1 id="小提琴图">小提琴图</h1>
+<p>一般来说，小提琴图是一种绘制连续型数据的方法，可以认为是箱形图与核密度图的结合体。在小提琴图中，我们可以获取与箱形图中相同的信息。</p>
+<img src="/2022/08/25/percentile%E7%99%BE%E5%88%86%E4%BD%8D/violin.png" class="" title="violin">
+<ul>
+<li>中位数（小提琴图中的一个白点）</li>
+<li>四分位数距(Inter Quartile Range, IQR)：小提琴图中心的黑色粗条</li>
+<li>Upper adjacent value：Third Quartile + 1.5 * IQR</li>
+<li>Lower adjacent value：First Quartile - 1.5 * IQR</li>
+<li>Upper/lower adjacent value（黑色细线）用来检测离群值，即位于这俩“栅栏“之外的值可被视为离群值。</li>
+</ul>
+<blockquote>
+<p>离群值是一个统计学里的专业术语。<strong>在对同一样本进行多次重复测定时，经常会发现在一组测定数据中有某一个或数个测定值看似比其他测定值明显地偏小或偏大。称这种显著偏离的数据为离群值</strong>。有疑问的观察值可能是测试中随机波动的极度表现，但还处于统计控制 的范围之内，是属于同一总体的误差，不算离群值。</p>
+</blockquote>
+<h1 id="四分位数">四分位数</h1>
+<h2 id="定义">定义</h2>
+<p>四分位数（Quartile）应用于统计学中的箱线图绘制，是统计学中分位数的一种，即把所有数值由小到大排列并分为四等份，处于三个分割点位置的数值就是四分位数。</p>
+<h2 id="如何理解四分位">如何理解四分位</h2>
+<p>中位数把数集分成两个50%，下四分位就是把前50%分成两个25%，上四分位就是把后50%，分成两个25%。</p>
+<h2 id="如何计算">如何计算</h2>
+<p>假设数列一共有n个数。</p>
+<p>（1）当(n+1)/4可以整除时，Q1在(n+1)/4位、Q2在(n+1)/2位、Q3在(n+1)·3/4位。</p>
+<p>以数列[1 2 2 5 6 9 9]举例：</p>
+<p>Q1在第(7+1)/4=2位，即Q1=2</p>
+<p>Q2在第(7+1)/2=4位，即Q2=5</p>
+<p>Q3在第(7+1)·3/4=6位，即Q3=9</p>
+<p>（2）当(n+1)/4不能整除时</p>
+<p>以数列[1 2 3 4 5 6 7 8]举例：</p>
+<p>Q1在(8+1)/4=2.25位，介于第二和第三位之间，但是更靠近第二位。所以第二位数权重占75%(小数位)，第三位数权重占25%。Q1=(2*0.75+3*0.25)/(0.75+0.25)=2.25</p>
+<p>Q2在(8+1)/2=4.5位，即第4和第5位的平均数，Q2=4.5</p>
+<p>同理Q3在(8+1)/4*3=6.75位，在第六位和第七位之间，更靠近第7位。所以第7位权重75%，第6位权重25%。Q3=(7*0.75+6*0.25)/(0.75+0.25)=6.75</p>
+<h2 id="numpy的percentile-函数">numpy的percentile()函数</h2>
+<p>上边计算中所用的方法是n+1的方法。而numpy的percentile()函数使用的是n-1的方法，即：</p>
+<p>Q1的位置=1+(n-1)x0.25</p>
+<p>Q2的位置=1+(n-1)x0.5</p>
+<p>Q3的位置=1+(n-1)x0.75</p>
+<p>靠近分位位置的那一个值占较大比重，为位置小数点后的那部分（或者壹减去小数点后的部分，与上边计算方式相似）。例如数列[1 2 3]：Q1=1.5、Q2=2、Q3=2.5；数列[1 2 3 4 5 6 7 8 9]的60%分位点位置=1+(9-1)x0.6=5.8，Q=6x0.8+5x0.2=5.8。测试代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="built_in">print</span>(np.percentile(arr, <span class="number">25</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line"><span class="comment"># import pandas as pd</span></span><br><span class="line"><span class="comment"># arr = pd.Series([1, 2, 3])</span></span><br><span class="line"><span class="comment"># print(arr.describe())</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考文献">参考文献</h1>
+<p><a href="https://zhuanlan.zhihu.com/p/376055263">如何通俗的理解小提琴图</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/235345817">如何计算四分位数值&amp;应用</a></p>
+<p><a href="https://baike.baidu.com/item/%E5%9B%9B%E5%88%86%E4%BD%8D%E6%95%B0/5040599">四分位数</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1734923">python numpy库np.percentile用法说明</a></p>
+]]></content>
+      <categories>
+        <category>数据分析</category>
+      </categories>
+      <tags>
+        <tag>小提琴图</tag>
       </tags>
   </entry>
   <entry>
@@ -2785,7 +2785,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
       </tags>
   </entry>
   <entry>
-    <title>boofuzz源码分析</title>
+    <title>模糊测试框架boofuzz源码分析</title>
     <url>/2022/03/22/boofuzz%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<h1 id="简介">简介</h1>
 <p>模糊测试框架 boofuzz 基于现已不再更新维护的 Sulley 框架开发，是一个基于生成的模糊测试框架。除了修复大量的错误外，boofuzz 还基于 Sulley 框架的数据生成方式更新了一系列功能，使得数据生成简单方便，同时增强了系统的兼容性和可扩展性。boofuzz 的主要特性在于最新且仍在更新和维护、安装简单、支持任意通信媒介、数据生成速度快、可扩展性强、可以实时监测并记录测试数据，因此 boofuzz 是一个理想的模糊测试工具。</p>
